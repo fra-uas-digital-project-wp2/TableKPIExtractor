@@ -1,0 +1,16 @@
+ID;PDF_NAME;PAGE_NUM;YEAR;SCOPE_TYPE;VALUE;UNIT;CHECK_IF_EXISTS
+1;shell_sustainability_report_2019.pdf;88;2019;Direct GHG emissions (Scope 1);70;million tonnes CO2 equivalent;Yes
+2;shell_sustainability_report_2019.pdf;88;2018;Direct GHG emissions (Scope 1);71;million tonnes CO2 equivalent;Yes
+3;shell_sustainability_report_2019.pdf;88;2017;Direct GHG emissions (Scope 1);73;million tonnes CO2 equivalent;No
+4;shell_sustainability_report_2019.pdf;88;2016;Direct GHG emissions (Scope 1);70;million tonnes CO2 equivalent;No
+5;shell_sustainability_report_2019.pdf;88;2015;Direct GHG emissions (Scope 1);70;million tonnes CO2 equivalent;No
+6;shell_sustainability_report_2019.pdf;88;2019;Energy indirect GHG emissions (Scope 2);10;million tonnes CO2 equivalent;Yes
+7;shell_sustainability_report_2019.pdf;88;2018;Energy indirect GHG emissions (Scope 2;11;million tonnes CO2 equivalent;Yes
+8;shell_sustainability_report_2019.pdf;88;2017;Energy indirect GHG emissions (Scope 2);12;million tonnes CO2 equivalent;Yes
+9;shell_sustainability_report_2019.pdf;88;2016;Energy indirect GHG emissions (Scope 2);11;million tonnes CO2 equivalent;No
+10;shell_sustainability_report_2019.pdf;88;2015;Energy indirect GHG emissions (Scope 2);9;million tonnes CO2 equivalent;No
+11;shell_sustainability_report_2019.pdf;88;2019;Scope 3;576;million tonnes CO2 equivalent;Yes
+12;shell_sustainability_report_2019.pdf;88;2018;Scope 3;599;million tonnes CO2 equivalent;Yes
+13;shell_sustainability_report_2019.pdf;88;2017;Scope 3;579;million tonnes CO2 equivalent;Yes
+14;shell_sustainability_report_2019.pdf;88;2016;Scope 3;600;million tonnes CO2 equivalent;No
+15;shell_sustainability_report_2019.pdf;88;2015;Scope 3;560;million tonnes CO2 equivalent;Yes
