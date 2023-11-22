@@ -1,0 +1,137 @@
+[
+	{
+		"ID": "1",
+		"KPI_ID": "6",
+		"PDF_NAME": "shell_sustainability_report_2019.pdf",
+		"PAGE_NUM": "88",
+		"YEAR": "2019",
+		"SCOPE_TYPE": "Direct GHG emissions (Scope 1)",
+		"VALUE": "70"
+	},
+	{
+		"ID": "2",
+		"KPI_ID": "6",
+		"PDF_NAME": "shell_sustainability_report_2019.pdf",
+		"PAGE_NUM": "88",
+		"YEAR": "2018",
+		"SCOPE_TYPE": "Direct GHG emissions (Scope 1)",
+		"VALUE": "71"
+	},
+	{
+		"ID": "3",
+		"KPI_ID": "6",
+		"PDF_NAME": "shell_sustainability_report_2019.pdf",
+		"PAGE_NUM": "88",
+		"YEAR": "2017",
+		"SCOPE_TYPE": "Direct GHG emissions (Scope 1)",
+		"VALUE": "73"
+	},
+	{
+		"ID": "4",
+		"KPI_ID": "6",
+		"PDF_NAME": "shell_sustainability_report_2019.pdf",
+		"PAGE_NUM": "88",
+		"YEAR": "2016",
+		"SCOPE_TYPE": "Direct GHG emissions (Scope 1)",
+		"VALUE": "70"
+	},
+	{
+		"ID": "5",
+		"KPI_ID": "6",
+		"PDF_NAME": "shell_sustainability_report_2019.pdf",
+		"PAGE_NUM": "88",
+		"YEAR": "2015",
+		"SCOPE_TYPE": "Direct GHG emissions (Scope 1)",
+		"VALUE": "70"
+	},
+	{
+		"ID": "6",
+		"KPI_ID": "7",
+		"PDF_NAME": "shell_sustainability_report_2019.pdf",
+		"PAGE_NUM": "88",
+		"YEAR": "2019",
+		"SCOPE_TYPE": "Energy indirect GHG emissions (Scope 2)",
+		"VALUE": "10"
+	},
+	{
+		"ID": "7",
+		"KPI_ID": "7",
+		"PDF_NAME": "shell_sustainability_report_2019.pdf",
+		"PAGE_NUM": "88",
+		"YEAR": "2018",
+		"SCOPE_TYPE": "Energy indirect GHG emissions (Scope 2)",
+		"VALUE": "11"
+	},
+	{
+		"ID": "8",
+		"KPI_ID": "7",
+		"PDF_NAME": "shell_sustainability_report_2019.pdf",
+		"PAGE_NUM": "88",
+		"YEAR": "2017",
+		"SCOPE_TYPE": "Energy indirect GHG emissions (Scope 2)",
+		"VALUE": "12"
+	},
+	{
+		"ID": "9",
+		"KPI_ID": "7",
+		"PDF_NAME": "shell_sustainability_report_2019.pdf",
+		"PAGE_NUM": "88",
+		"YEAR": "2016",
+		"SCOPE_TYPE": "Energy indirect GHG emissions (Scope 2)",
+		"VALUE": "11"
+	},
+	{
+		"ID": "10",
+		"KPI_ID": "7",
+		"PDF_NAME": "shell_sustainability_report_2019.pdf",
+		"PAGE_NUM": "88",
+		"YEAR": "2015",
+		"SCOPE_TYPE": "Energy indirect GHG emissions (Scope 2)",
+		"VALUE": "9"
+	},
+	{
+		"ID": "11",
+		"KPI_ID": "8",
+		"PDF_NAME": "shell_sustainability_report_2019.pdf",
+		"PAGE_NUM": "88",
+		"YEAR": "2019",
+		"SCOPE_TYPE": "Scope 3",
+		"VALUE": "576"
+	},
+	{
+		"ID": "12",
+		"KPI_ID": "8",
+		"PDF_NAME": "shell_sustainability_report_2019.pdf",
+		"PAGE_NUM": "88",
+		"YEAR": "2018",
+		"SCOPE_TYPE": "Scope 3",
+		"VALUE": "599"
+	},
+	{
+		"ID": "13",
+		"KPI_ID": "8",
+		"PDF_NAME": "shell_sustainability_report_2019.pdf",
+		"PAGE_NUM": "88",
+		"YEAR": "2017",
+		"SCOPE_TYPE": "Scope 3",
+		"VALUE": "579"
+	},
+	{
+		"ID": "14",
+		"KPI_ID": "8",
+		"PDF_NAME": "shell_sustainability_report_2019.pdf",
+		"PAGE_NUM": "88",
+		"YEAR": "2016",
+		"SCOPE_TYPE": "Scope 3",
+		"VALUE": "600"
+	},
+	{
+		"ID": "15",
+		"KPI_ID": "8",
+		"PDF_NAME": "shell_sustainability_report_2019.pdf",
+		"PAGE_NUM": "88",
+		"YEAR": "2015",
+		"SCOPE_TYPE": "Scope 3",
+		"VALUE": "560"
+	}
+]
