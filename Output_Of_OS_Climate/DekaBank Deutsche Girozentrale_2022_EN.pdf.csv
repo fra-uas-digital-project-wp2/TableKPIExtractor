@@ -1,0 +1,5 @@
+"KPI_ID","KPI_NAME","SRC_FILE","PAGE_NUM","ITEM_IDS","POS_X","POS_Y","RAW_TXT","YEAR","VALUE","SCORE","UNIT","MATCH_TYPE","CLASSIFIED"
+"6","Scope 1 / Direct total GHGs emissions","DekaBank Deutsche Girozentrale_2022_EN.pdf","95","[32]","0.7758319327731092","0.21369797859690845","3.00","2021","3.00","15035.74096224665","Financed Scope 1 CO 2 emissions","AT.indirect","None"
+"6","Scope 1 / Direct total GHGs emissions","DekaBank Deutsche Girozentrale_2022_EN.pdf","95","[33]","0.8752605042016807","0.21369797859690845","3.11","2022","3.11","15035.638901011582","Financed Scope 1 CO 2 emissions","AT.indirect","None"
+"7","Scope 2 Energy indirect total GHGs emissions","DekaBank Deutsche Girozentrale_2022_EN.pdf","2","[99]","0.738672268907563","0.7407372175980975","3,113","2021","3,113","11680.662301915158","t","AT.direct","None"
+"7","Scope 2 Energy indirect total GHGs emissions","DekaBank Deutsche Girozentrale_2022_EN.pdf","2","[138]","0.8817142857142857","0.7407372175980975","2,052","2022","2,052","11673.906110704545","t","AT.direct","None"
