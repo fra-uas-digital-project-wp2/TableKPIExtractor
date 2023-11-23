@@ -34,7 +34,7 @@ for filename in os.listdir(EXPECTED_PATH):
     true_dict = json.load(open(true_path,'r'))
     expec_csv = pd.read_csv(expec_path) 
 
-
+    logging.debug(f"Current File '{fName_no_ending}'")
     eval.evaluate(true_dict,expec_csv)
 
 eval.output_result()

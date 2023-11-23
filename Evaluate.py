@@ -38,31 +38,51 @@ class Evaluate:
         self.classify()
         self.aggregate_Scope()
         self.aggregate_Total()
+        self.truncate()
 
     def classify(self) -> None:
 
         for key,value in self.true_dict.items():
 
-            id = value.get("ID")
             
-            for (y, v, p) in zip(value.get("Year"),value.get("Value"), value.get("Page")):
-                df = self.expec_pd.copy()
-                filtered_df = df[
-                    (df["KPI_ID"] == int(id) ) &
-                    (df["YEAR"] == int(y) ) &
-                    (df["PAGE_NUM"] == int(p) ) &
-                    (df["VALUE"] == v )
-                ]    
-                if len(filtered_df) == 1: 
-                    self.single_result[key].append(True)
+            id = value.get("ID")
+
+            correct = False
+            df = self.expec_pd.copy()
+
+            #empty df
+            if (len(value.get("Year")) == 0) and (len(value.get("Value")) == 0) and (len(value.get("Page")) == 0): 
+                if len(df) == 0: 
+                    correct = True
                 else:
-                    self.single_result[key].append(False)
+                    correct = False
+            #non-empty df
+            else:
+                for (y, v, p) in zip(value.get("Year"),value.get("Value"), value.get("Page")):
+                    
+                    filtered_df = df[
+                        (df["KPI_ID"] == int(id) ) &
+                        (df["YEAR"] == int(y) ) &
+                        (df["PAGE_NUM"] == int(p) ) &
+                        (df["VALUE"] == v )
+                    ]    
+                    if len(filtered_df) == 1: 
+                        correct = True
+                    else:
+                        correct = False
+
+            if correct:
+                self.single_result[key].append(True)
+            else:
+                self.single_result[key].append(False)
+
 
     
     def aggregate_Scope(self) -> None:
         # calculate average by formula hat_{V}_N+1  = hat_{V}_N + a_N+1(V_N+1-hat_{V}_N ) 
         for key,value in self.single_result.items():
             v_N1 = self.mean(value)
+            logging.debug(f"'{key}' accuracy of true vs expected values: '{v_N1}")
             hat_v_N = self.scope_accuracy.get(key)
             self.scope_accuracy[key] = hat_v_N  + (1/self.cnt)*(v_N1-hat_v_N)
 
@@ -86,10 +106,11 @@ class Evaluate:
             mean_value = sum(bool_list) / len(bool_list)
             return mean_value
 
+    def truncate(self) -> None: 
+        for key,value in self.single_result.items():
+            self.single_result[key] = []
 
     def output_result(self):
-        
-
 
         data = [
                     [

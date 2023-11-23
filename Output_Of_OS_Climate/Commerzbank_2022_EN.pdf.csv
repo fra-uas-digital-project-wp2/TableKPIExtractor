@@ -1,0 +1,4 @@
+"KPI_ID","KPI_NAME","SRC_FILE","PAGE_NUM","ITEM_IDS","POS_X","POS_Y","RAW_TXT","YEAR","VALUE","SCORE","UNIT","MATCH_TYPE","CLASSIFIED"
+"6","Scope 1 / Direct total GHGs emissions","Commerzbank_2022_EN.pdf","22","[41]","0.4507563025210084","0.33042755344418057","21,613","2022","21,613","19137.527296500313","Tonnes CO 2 equivalents","AT.indirect","None"
+"7","Scope 2 Energy indirect total GHGs emissions","Commerzbank_2022_EN.pdf","22","[43]","0.4507563025210084","0.3721852731591449","12,857","2022","12,857","17117.323525476742","Commerzbank Aktiengesellschaft","AT.indirect","None"
+"8","Scope 3 Upstream Energy indirect total GHGs emissions","Commerzbank_2022_EN.pdf","22","[44]","0.4507563025210084","0.38736342042755345","43,932","2022","43,932","9212.835760601898","Tonnes CO 2 equivalents","AT.indirect","None"

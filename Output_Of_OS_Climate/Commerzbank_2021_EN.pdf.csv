@@ -1,0 +1,5 @@
+"KPI_ID","KPI_NAME","SRC_FILE","PAGE_NUM","ITEM_IDS","POS_X","POS_Y","RAW_TXT","YEAR","VALUE","SCORE","UNIT","MATCH_TYPE","CLASSIFIED"
+"6","Scope 1 / Direct total GHGs emissions","Commerzbank_2021_EN.pdf","18","[60]","0.28436974789915964","0.52458432304038","37,001","2019","37,001","22424.51231872969","Commerzbank Aktiengesellschaft aims to offer its staff a","AT.indirect","None"
+"6","Scope 1 / Direct total GHGs emissions","Commerzbank_2021_EN.pdf","18","[74]","0.44843697478991595","0.52458432304038","28,314","2020","28,314","22397.20496800881","Commerzbank Aktiengesellschaft aims to offer its staff a","AT.indirect","None"
+"7","Scope 2 Energy indirect total GHGs emissions","Commerzbank_2021_EN.pdf","18","[65]","0.28436974789915964","0.600332541567696","98,282","2019","98,282","10836.028758857998","Commerzbank Aktiengesellschaft aims to offer its staff a","AT.indirect","None"
+"7","Scope 2 Energy indirect total GHGs emissions","Commerzbank_2021_EN.pdf","18","[79]","0.44843697478991595","0.600332541567696","77,903","2020","77,903","10869.735502831449","Commerzbank Aktiengesellschaft aims to offer its staff a","AT.indirect","None"

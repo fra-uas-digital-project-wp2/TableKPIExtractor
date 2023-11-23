@@ -1,0 +1,82 @@
+root - DEBUG - Current File 'Commerzbank_2018_EN'
+root - DEBUG - 'Scope 1' accuracy of true vs expected values: '1.0
+root - DEBUG - 'Scope 2' accuracy of true vs expected values: '1.0
+root - DEBUG - 'Scope 3' accuracy of true vs expected values: '1.0
+root - DEBUG - Current File 'Commerzbank_2019_EN'
+root - DEBUG - 'Scope 1' accuracy of true vs expected values: '1.0
+root - DEBUG - 'Scope 2' accuracy of true vs expected values: '1.0
+root - DEBUG - 'Scope 3' accuracy of true vs expected values: '1.0
+root - DEBUG - Current File 'Commerzbank_2020_EN'
+root - DEBUG - 'Scope 1' accuracy of true vs expected values: '1.0
+root - DEBUG - 'Scope 2' accuracy of true vs expected values: '1.0
+root - DEBUG - 'Scope 3' accuracy of true vs expected values: '1.0
+root - DEBUG - Current File 'Commerzbank_2021_EN'
+root - DEBUG - 'Scope 1' accuracy of true vs expected values: '1.0
+root - DEBUG - 'Scope 2' accuracy of true vs expected values: '1.0
+root - DEBUG - 'Scope 3' accuracy of true vs expected values: '0.0
+root - DEBUG - Current File 'Commerzbank_2022_EN'
+root - DEBUG - 'Scope 1' accuracy of true vs expected values: '1.0
+root - DEBUG - 'Scope 2' accuracy of true vs expected values: '0.0
+root - DEBUG - 'Scope 3' accuracy of true vs expected values: '1.0
+root - DEBUG - Current File 'DekaBank Deutsche Girozentrale_2018_EN'
+root - DEBUG - 'Scope 1' accuracy of true vs expected values: '0.0
+root - DEBUG - 'Scope 2' accuracy of true vs expected values: '0.0
+root - DEBUG - 'Scope 3' accuracy of true vs expected values: '0.0
+root - DEBUG - Current File 'DekaBank Deutsche Girozentrale_2019_EN'
+root - DEBUG - 'Scope 1' accuracy of true vs expected values: '0.0
+root - DEBUG - 'Scope 2' accuracy of true vs expected values: '0.0
+root - DEBUG - 'Scope 3' accuracy of true vs expected values: '0.0
+root - DEBUG - Current File 'DekaBank Deutsche Girozentrale_2020_EN'
+root - DEBUG - 'Scope 1' accuracy of true vs expected values: '0.0
+root - DEBUG - 'Scope 2' accuracy of true vs expected values: '0.0
+root - DEBUG - 'Scope 3' accuracy of true vs expected values: '0.0
+root - DEBUG - Current File 'DekaBank Deutsche Girozentrale_2021_EN'
+root - DEBUG - 'Scope 1' accuracy of true vs expected values: '0.0
+root - DEBUG - 'Scope 2' accuracy of true vs expected values: '0.0
+root - DEBUG - 'Scope 3' accuracy of true vs expected values: '0.0
+root - DEBUG - Current File 'DekaBank Deutsche Girozentrale_2022_EN'
+root - DEBUG - 'Scope 1' accuracy of true vs expected values: '0.0
+root - DEBUG - 'Scope 2' accuracy of true vs expected values: '0.0
+root - DEBUG - 'Scope 3' accuracy of true vs expected values: '0.0
+root - DEBUG - Current File 'Deutsche Bank_2018_EN'
+root - DEBUG - 'Scope 1' accuracy of true vs expected values: '1.0
+root - DEBUG - 'Scope 2' accuracy of true vs expected values: '0.0
+root - DEBUG - 'Scope 3' accuracy of true vs expected values: '1.0
+root - DEBUG - Current File 'Deutsche Bank_2019_EN'
+root - DEBUG - 'Scope 1' accuracy of true vs expected values: '0.0
+root - DEBUG - 'Scope 2' accuracy of true vs expected values: '0.0
+root - DEBUG - 'Scope 3' accuracy of true vs expected values: '0.0
+root - DEBUG - Current File 'Deutsche Bank_2020_EN'
+root - DEBUG - 'Scope 1' accuracy of true vs expected values: '1.0
+root - DEBUG - 'Scope 2' accuracy of true vs expected values: '1.0
+root - DEBUG - 'Scope 3' accuracy of true vs expected values: '1.0
+root - DEBUG - Current File 'Deutsche Bank_2021_EN'
+root - DEBUG - 'Scope 1' accuracy of true vs expected values: '0.0
+root - DEBUG - 'Scope 2' accuracy of true vs expected values: '1.0
+root - DEBUG - 'Scope 3' accuracy of true vs expected values: '0.0
+root - DEBUG - Current File 'Deutsche Bank_2022_EN'
+root - DEBUG - 'Scope 1' accuracy of true vs expected values: '1.0
+root - DEBUG - 'Scope 2' accuracy of true vs expected values: '0.0
+root - DEBUG - 'Scope 3' accuracy of true vs expected values: '1.0
+root - DEBUG - Current File 'DZ Bank_2019_EN'
+root - DEBUG - 'Scope 1' accuracy of true vs expected values: '0.0
+root - DEBUG - 'Scope 2' accuracy of true vs expected values: '0.0
+root - DEBUG - 'Scope 3' accuracy of true vs expected values: '0.0
+root - DEBUG - Current File 'DZ Bank_2020_EN'
+root - DEBUG - 'Scope 1' accuracy of true vs expected values: '0.0
+root - DEBUG - 'Scope 2' accuracy of true vs expected values: '0.0
+root - DEBUG - 'Scope 3' accuracy of true vs expected values: '0.0
+root - DEBUG - Current File 'DZ Bank_2021_EN'
+root - DEBUG - 'Scope 1' accuracy of true vs expected values: '0.0
+root - DEBUG - 'Scope 2' accuracy of true vs expected values: '1.0
+root - DEBUG - 'Scope 3' accuracy of true vs expected values: '1.0
+root - DEBUG - Current File 'DZ Bank_2022_EN'
+root - DEBUG - 'Scope 1' accuracy of true vs expected values: '1.0
+root - DEBUG - 'Scope 2' accuracy of true vs expected values: '1.0
+root - DEBUG - 'Scope 3' accuracy of true vs expected values: '1.0
+root - DEBUG - Total Accuracy: '0.6086428337141228
+root - DEBUG - Scope 1: '0.47368421052631576
+root - DEBUG - Scope 2: '0.42105263157894735
+root - DEBUG - Scope 3: '0.47368421052631576
+root - DEBUG - Comparisons between Expected and True: '19
+root - DEBUG - CSV File 'Quality_Matrix/accuracy.csv' has been successfully generated!
