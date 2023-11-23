@@ -2,6 +2,7 @@ import json
 import logging
 import csv
 import os
+import pandas as pd
 class Evaluate:
     
     cnt = 0
@@ -26,15 +27,24 @@ class Evaluate:
         "Scope 3" : [],
     }
 
+    individual_result = {
+        "Name" : [],
+        "Scope 1" : [],
+        "Scope 2" : [],
+        "Scope 3" : [],
+        }
+
     def __init__(self,ouput_path) -> None:
         self.output_path = ouput_path
 
-    def evaluate(self,true_dict,expec_pd) -> None: 
+    def evaluate(self,true_dict,expec_pd,name) -> None: 
         self.true_dict = true_dict
         self.expec_pd = expec_pd
 
         self.cnt += 1
-    
+
+        self.individual_result["Name"].append(name)
+
         self.classify()
         self.aggregate_Scope()
         self.aggregate_Total()
@@ -83,6 +93,7 @@ class Evaluate:
         for key,value in self.single_result.items():
             v_N1 = self.mean(value)
             logging.debug(f"'{key}' accuracy of true vs expected values: '{v_N1}")
+            self.individual_result[key].append(v_N1)
             hat_v_N = self.scope_accuracy.get(key)
             self.scope_accuracy[key] = hat_v_N  + (1/self.cnt)*(v_N1-hat_v_N)
 
@@ -112,6 +123,12 @@ class Evaluate:
 
     def output_result(self):
 
+        df = pd.DataFrame(self.individual_result)
+        csv_path = os.path.join(self.output_path,"single_accuracy.csv")
+        df.to_csv(csv_path, index=False)
+
+
+
         data = [
                     [
                         'Total Accuracy','Scope 1','Scope 2','Scope 3', 'No. of Tests'
@@ -131,7 +148,7 @@ class Evaluate:
         logging.debug(f"Scope 3: '{data[1][3]}")
         logging.debug(f"Comparisons between Expected and True: '{data[1][4]}")
 
-        csv_path = os.path.join(self.output_path,"accuracy.csv")
+        csv_path = os.path.join(self.output_path,"total_accuracy.csv")
 
         with open(csv_path, 'w', newline='') as csv_file:
                 csv_writer = csv.writer(csv_file)

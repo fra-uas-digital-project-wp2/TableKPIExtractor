@@ -79,4 +79,4 @@ root - DEBUG - Scope 1: '0.47368421052631576
 root - DEBUG - Scope 2: '0.42105263157894735
 root - DEBUG - Scope 3: '0.47368421052631576
 root - DEBUG - Comparisons between Expected and True: '19
-root - DEBUG - CSV File 'Quality_Matrix/accuracy.csv' has been successfully generated!
+root - DEBUG - CSV File 'Quality_Matrix/total_accuracy.csv' has been successfully generated!
