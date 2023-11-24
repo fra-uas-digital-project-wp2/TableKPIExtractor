@@ -57,15 +57,15 @@ class Evaluate:
             
             id = value.get("ID")
 
-            correct = False
+            #correct = False
             df = self.expec_pd.copy()
 
             #empty df
             if (len(value.get("Year")) == 0) and (len(value.get("Value")) == 0) and (len(value.get("Page")) == 0): 
                 if len(df) == 0: 
-                    correct = True
+                    self.single_result[key].append(True)
                 else:
-                    correct = False
+                    self.single_result[key].append(False)
             #non-empty df
             else:
                 for (y, v, p) in zip(value.get("Year"),value.get("Value"), value.get("Page")):
@@ -77,14 +77,14 @@ class Evaluate:
                         (df["VALUE"] == v )
                     ]    
                     if len(filtered_df) == 1: 
-                        correct = True
+                        self.single_result[key].append(True)
                     else:
-                        correct = False
+                        self.single_result[key].append(False)
 
-            if correct:
-                self.single_result[key].append(True)
-            else:
-                self.single_result[key].append(False)
+            #if correct:
+            #    self.single_result[key].append(True)
+            #else:
+            #    self.single_result[key].append(False)
 
 
     
