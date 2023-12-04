@@ -1,15 +1,26 @@
 import os 
 import subprocess
 import config
+import logging
+
+
 
 # constants 
 ABS_DIR = os.path.dirname(os.path.realpath(__file__))
 REL_RULE_BASED_DIR = config.global_rule_based_folder
 REL_OUT_COMP_DIR = config.global_out_comp_folder
 
+log_file_name = 'app.log'
+
+    
+log = os.path.join(ABS_DIR,log_file_name)
+logging.basicConfig(level=logging.DEBUG,filename=log, filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+
+
+
 def exec_rule_based_engine():
     rule_based_dir = os.path.join(ABS_DIR,REL_RULE_BASED_DIR)
-
+    
     rule_based_arguments = [
                             '--raw_pdf_folder',config.global_input_folder,
                             '--output_folder',config.global_output_folder_rulebased,
@@ -23,10 +34,10 @@ def exec_rule_based_engine():
 
     # Check the exit code
     if result.returncode == 0:
-        print(f"Script {exec} has finished successfully.")
+        logging.info(f"Script {exec} has finished successfully.")
         return True
     else:
-        print(f"Script {exec} exited with an error. Exit code: {result.returncode}")
+        logging.error(f"Script {exec} exited with an error. Exit code: {result.returncode}")
         return False
 
 def exec_evaluate_component():
@@ -41,10 +52,10 @@ def exec_evaluate_component():
     result = subprocess.run(['python',exec] + out_comp_arguments, check=True)
 
     if result.returncode == 0:
-        print(f"Script {exec} has finished successfully.")
+        logging.info(f"Script {exec} has finished successfully.")
         return True
     else:
-        print(f"Script {exec} exited with an error. Exit code: {result.returncode}")
+        logging.error(f"Script {exec} exited with an error. Exit code: {result.returncode}")
         return False
 
 def main():

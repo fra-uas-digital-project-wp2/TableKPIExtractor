@@ -78,6 +78,10 @@ def fix_config_paths():
     config.global_approx_font_name = path + r'/' + config.global_approx_font_name
 
 
+def make_directories():
+    os.makedirs(config.global_raw_pdf_folder,exist_ok=True)
+    os.makedirs(config.global_output_folder,exist_ok=True)
+
 def print_configuration():
     """
     Print configuration information.
@@ -186,6 +190,9 @@ def main():
 
     # Fix global paths
     fix_config_paths()
+
+    #make directories if not exist
+    make_directories()
 
     # Print configuration information
     print_configuration()

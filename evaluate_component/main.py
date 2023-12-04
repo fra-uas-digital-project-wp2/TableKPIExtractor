@@ -14,6 +14,7 @@ try:
     log_dir_name = globals()['_dh'][0]
 except KeyError:
     log_dir_name = os.path.dirname(os.path.realpath(__file__))
+    
 log = os.path.join(log_dir_name,log_file_name)
 logging.basicConfig(level=logging.DEBUG,filename=log, filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
@@ -30,6 +31,11 @@ args = parser.parse_args()
 EXPECTED_PATH = args.input_folder
 TRUE_PATH = args.expected_folder
 RESULT_PATH = args.output_folder
+
+os.makedirs(EXPECTED_PATH,exist_ok=True)
+os.makedirs(TRUE_PATH,exist_ok=True)
+os.makedirs(RESULT_PATH,exist_ok=True)
+
 
 eval = Evaluate(RESULT_PATH)
 

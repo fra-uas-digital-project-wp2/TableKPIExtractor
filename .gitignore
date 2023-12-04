@@ -1,5 +1,5 @@
 __pycache__/
-<<<<<<< Updated upstream
-=======
 raw_pdf_single/
->>>>>>> Stashed changes
+raw_pdf/
+output_evaluate_component/
+output_rule_based_pipeline/
