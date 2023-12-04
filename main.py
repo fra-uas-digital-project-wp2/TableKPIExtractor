@@ -29,13 +29,11 @@ for filename in os.listdir(EXPECTED_PATH):
         logging.error("For output: " + filename + " no corresponding true output does exist!")
         continue
 
-
-
     true_dict = json.load(open(true_path,'r'))
     expec_csv = pd.read_csv(expec_path) 
 
-
-    eval.evaluate(true_dict,expec_csv)
+    logging.debug(f"Current File '{fName_no_ending}'")
+    eval.evaluate(true_dict,expec_csv,fName_no_ending)
 
 eval.output_result()
     

@@ -2,6 +2,7 @@ import json
 import logging
 import csv
 import os
+import pandas as pd
 class Evaluate:
     
     cnt = 0
@@ -26,43 +27,73 @@ class Evaluate:
         "Scope 3" : [],
     }
 
+    individual_result = {
+        "Name" : [],
+        "Scope 1" : [],
+        "Scope 2" : [],
+        "Scope 3" : [],
+        }
+
     def __init__(self,ouput_path) -> None:
         self.output_path = ouput_path
 
-    def evaluate(self,true_dict,expec_pd) -> None: 
+    def evaluate(self,true_dict,expec_pd,name) -> None: 
         self.true_dict = true_dict
         self.expec_pd = expec_pd
 
         self.cnt += 1
-    
+
+        self.individual_result["Name"].append(name)
+
         self.classify()
         self.aggregate_Scope()
         self.aggregate_Total()
+        self.truncate()
 
     def classify(self) -> None:
 
         for key,value in self.true_dict.items():
 
-            id = value.get("ID")
             
-            for (y, v, p) in zip(value.get("Year"),value.get("Value"), value.get("Page")):
-                df = self.expec_pd.copy()
-                filtered_df = df[
-                    (df["KPI_ID"] == int(id) ) &
-                    (df["YEAR"] == int(y) ) &
-                    (df["PAGE_NUM"] == int(p) ) &
-                    (df["VALUE"] == v )
-                ]    
-                if len(filtered_df) == 1: 
+            id = value.get("ID")
+
+            #correct = False
+            df = self.expec_pd.copy()
+
+            #empty df
+            if (len(value.get("Year")) == 0) and (len(value.get("Value")) == 0) and (len(value.get("Page")) == 0): 
+                if len(df) == 0: 
                     self.single_result[key].append(True)
                 else:
                     self.single_result[key].append(False)
+            #non-empty df
+            else:
+                for (y, v, p) in zip(value.get("Year"),value.get("Value"), value.get("Page")):
+                    
+                    filtered_df = df[
+                        (df["KPI_ID"] == int(id) ) &
+                        (df["YEAR"] == int(y) ) &
+                        (df["PAGE_NUM"] == int(p) ) &
+                        (df["VALUE"] == v )
+                    ]    
+                    if len(filtered_df) == 1: 
+                        self.single_result[key].append(True)
+                    else:
+                        self.single_result[key].append(False)
+
+            #if correct:
+            #    self.single_result[key].append(True)
+            #else:
+            #    self.single_result[key].append(False)
+
 
     
     def aggregate_Scope(self) -> None:
         # calculate average by formula hat_{V}_N+1  = hat_{V}_N + a_N+1(V_N+1-hat_{V}_N ) 
         for key,value in self.single_result.items():
             v_N1 = self.mean(value)
+            logging.debug(f"'{key}' accuracy of true vs expected values: '{v_N1}")
+            self.individual_result[key].append(v_N1)
             hat_v_N = self.scope_accuracy.get(key)
             self.scope_accuracy[key] = hat_v_N  + (1/self.cnt)*(v_N1-hat_v_N)
 
@@ -86,9 +117,16 @@ class Evaluate:
             mean_value = sum(bool_list) / len(bool_list)
             return mean_value
 
+    def truncate(self) -> None: 
+        for key,value in self.single_result.items():
+            self.single_result[key] = []
 
     def output_result(self):
-        
+
+        df = pd.DataFrame(self.individual_result)
+        csv_path = os.path.join(self.output_path,"single_accuracy.csv")
+        df.to_csv(csv_path, index=False)
+
 
 
         data = [
@@ -110,7 +148,7 @@ class Evaluate:
         logging.debug(f"Scope 3: '{data[1][3]}")
         logging.debug(f"Comparisons between Expected and True: '{data[1][4]}")
 
-        csv_path = os.path.join(self.output_path,"accuracy.csv")
+        csv_path = os.path.join(self.output_path,"total_accuracy.csv")
 
         with open(csv_path, 'w', newline='') as csv_file:
                 csv_writer = csv.writer(csv_file)
