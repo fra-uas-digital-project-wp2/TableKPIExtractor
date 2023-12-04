@@ -1,3 +1,0 @@
-"KPI_ID","KPI_NAME","SRC_FILE","PAGE_NUM","ITEM_IDS","POS_X","POS_Y","RAW_TXT","YEAR","VALUE","SCORE","UNIT","MATCH_TYPE","CLASSIFIED"
-"7","Scope 2 Energy indirect total GHGs emissions","DekaBank Deutsche Girozentrale_2019_EN.pdf","2","[121]","0.7206722689075631","0.7703210463733651","5,032,804","2018","5,032,804","11292.81469840804","t","AT.direct","None"
-"7","Scope 2 Energy indirect total GHGs emissions","DekaBank Deutsche Girozentrale_2019_EN.pdf","2","[139]","0.8397815126050421","0.7703210463733651","4,412,596","2019","4,412,596","11286.894455586675","t","AT.direct","None"

@@ -1,44 +1,64 @@
-import logging 
-import os
-import json
-import pandas as pd
-from Evaluate import *
+import os 
+import subprocess
+import config
 
+# constants 
+ABS_DIR = os.path.dirname(os.path.realpath(__file__))
+REL_RULE_BASED_DIR = config.global_rule_based_folder
+REL_OUT_COMP_DIR = config.global_out_comp_folder
 
-logging.basicConfig(level=logging.DEBUG,filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+def exec_rule_based_engine():
+    rule_based_dir = os.path.join(ABS_DIR,REL_RULE_BASED_DIR)
 
+    rule_based_arguments = [
+                            '--raw_pdf_folder',config.global_input_folder,
+                            '--output_folder',config.global_output_folder_rulebased,
+                            '--verbosity',config.verbosity,
+                            '--working_folder',config.global_working_folder
+                            #'--working_folder',working_folder,
+                            ] 
 
-EXPECTED_PATH = r"Output_Of_OS_Climate/" 
-TRUE_PATH = r"Expected_Values/"
-RESULT_PATH = r"Quality_Matrix/"
+    exec = os.path.join(rule_based_dir,'main.py')
+    result = subprocess.run(['python', exec] + rule_based_arguments,check=True)
 
+    # Check the exit code
+    if result.returncode == 0:
+        print(f"Script {exec} has finished successfully.")
+        return True
+    else:
+        print(f"Script {exec} exited with an error. Exit code: {result.returncode}")
+        return False
 
-eval = Evaluate(RESULT_PATH)
+def exec_evaluate_component():
+    out_comp_dir = os.path.join(ABS_DIR,REL_OUT_COMP_DIR)
+    out_comp_arguments = ['--input_folder',config.global_output_folder_rulebased,
+                          '--expected_folder',config.global_expected_folder,
+                          '--output_folder',config.global_output_folder_evaluate
 
-# Iteratve over Output from OS-C
-for filename in os.listdir(EXPECTED_PATH):
-    expec_path = os.path.join(EXPECTED_PATH,filename)
+    ]
 
+    exec = os.path.join(out_comp_dir,'main.py')
+    result = subprocess.run(['python',exec] + out_comp_arguments, check=True)
+
+    if result.returncode == 0:
+        print(f"Script {exec} has finished successfully.")
+        return True
+    else:
+        print(f"Script {exec} exited with an error. Exit code: {result.returncode}")
+        return False
+
+def main():
     
-
-    # Substring on filename
-    fName_no_ending = filename.split(".")[0]
-    true_path = os.path.join(TRUE_PATH,fName_no_ending+".json")
-    # Check if corresponding file exists, if not log error and continue
-    if not(os.path.isfile(true_path)):
-        logging.error("For output: " + filename + " no corresponding true output does exist!")
-        continue
-
-    true_dict = json.load(open(true_path,'r'))
-    expec_csv = pd.read_csv(expec_path) 
-
-    logging.debug(f"Current File '{fName_no_ending}'")
-    eval.evaluate(true_dict,expec_csv,fName_no_ending)
-
-eval.output_result()
+    success = exec_rule_based_engine()
     
-        
+    if not success:
+        return 0    
+    
+    success = exec_evaluate_component()
+    
+    if success:
+        return 1
+    else:
+        return 0
 
-
-
- 
+main()

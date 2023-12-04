@@ -1,4 +1,0 @@
-"KPI_ID","KPI_NAME","SRC_FILE","PAGE_NUM","ITEM_IDS","POS_X","POS_Y","RAW_TXT","YEAR","VALUE","SCORE","UNIT","MATCH_TYPE","CLASSIFIED"
-"6","Scope 1 / Direct total GHGs emissions","DZ Bank_2019_EN.pdf","27","[75]","0.6099831932773109","0.8866825208085612","385,193","2019","385,193","14431.637054694043","Total CO2 emissions: Electricity","AT.direct","None"
-"6","Scope 1 / Direct total GHGs emissions","DZ Bank_2019_EN.pdf","27","[80]","0.7243361344537815","0.8866825208085612","235,319","2018","235,319","14431.599938748612","Total CO2 emissions: Electricity","AT.direct","None"
-"6","Scope 1 / Direct total GHGs emissions","DZ Bank_2019_EN.pdf","27","[85]","0.8413109243697479","0.8866825208085612","418,482","2017","418,482","14431.575325797792","Total CO2 emissions: Electricity","AT.direct","None"
