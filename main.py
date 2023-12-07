@@ -18,6 +18,7 @@ logging.basicConfig(level=logging.DEBUG,filename=log, filemode='w', format='%(na
 
 def check_dirs():
     os.makedirs(os.path.join(os.path.dirname(os.path.realpath(__file__)),config.global_corrupted_pdf),exist_ok=True)
+    os.makedirs(os.path.join(os.path.dirname(os.path.realpath(__file__)),config.global_working_folder),exist_ok=True)
 
 def exec_corrupted_input_check():
     corrupted_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),config.global_corrupted_pdf)
