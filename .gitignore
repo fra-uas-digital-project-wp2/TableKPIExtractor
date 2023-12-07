@@ -1,1 +1,6 @@
 __pycache__/
+raw_pdf_single/
+raw_pdf/
+output_evaluate_component/
+output_rule_based_pipeline/
+rule_based_pipeline_workdir/

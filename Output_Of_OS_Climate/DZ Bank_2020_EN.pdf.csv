@@ -1,7 +1,0 @@
-"KPI_ID","KPI_NAME","SRC_FILE","PAGE_NUM","ITEM_IDS","POS_X","POS_Y","RAW_TXT","YEAR","VALUE","SCORE","UNIT","MATCH_TYPE","CLASSIFIED"
-"7","Scope 2 Energy indirect total GHGs emissions","DZ Bank_2020_EN.pdf","83","[81]","0.616052318668252","0.6634789915966386","235.319","2018","235.319","5112.0814082206125","Total CO 2 equivalent emissions:","AT.direct","None"
-"7","Scope 2 Energy indirect total GHGs emissions","DZ Bank_2020_EN.pdf","83","[71]","0.5054340071343638","0.6634789915966386","584.462","2020","584.462","5339.755640325525","Total CO 2 equivalent emissions:","AT.indirect","None"
-"7","Scope 2 Energy indirect total GHGs emissions","DZ Bank_2020_EN.pdf","83","[76]","0.5607372175980975","0.6634789915966386","385.193","2019","385.193","5336.725064759124","Total CO 2 equivalent emissions:","AT.indirect","None"
-"8","Scope 3 Upstream Energy indirect total GHGs emissions","DZ Bank_2020_EN.pdf","83","[11]","0.204589774078478","0.32763025210084035","260.0","2020","260.0","14061.318815324115","Tonnes (t)","AT.direct","None"
-"8","Scope 3 Upstream Energy indirect total GHGs emissions","DZ Bank_2020_EN.pdf","83","[16]","0.2599048751486326","0.32763025210084035","537.7","2019","537.7","14059.893569464872","Tonnes (t)","AT.direct","None"
-"8","Scope 3 Upstream Energy indirect total GHGs emissions","DZ Bank_2020_EN.pdf","83","[21]","0.31521997621878717","0.32763025210084035","590.9","2018","590.9","14059.894044172708","Tonnes (t)","AT.direct","None"
