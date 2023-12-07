@@ -99,13 +99,8 @@ class Evaluate:
 
     def aggregate_Total(self) -> None:
         # calculate average by formula hat_{V}_N+1  = hat_{V}_N + a_N+1(V_N+1-hat_{V}_N ) 
-        v_N1 = 0
-        for value in self.scope_accuracy.values():
-            v_N1 += value
-        v_N1 = (v_N1/len(self.scope_accuracy))
-        hat_v_N = self.total_accuracy
-        self.total_accuracy = hat_v_N  + (1/self.cnt)*(v_N1-hat_v_N)
-
+        self.total_accuracy = sum(self.scope_accuracy.values()) / len(self.scope_accuracy)
+ 
     
 
     def mean(self,bool_list) -> float:
