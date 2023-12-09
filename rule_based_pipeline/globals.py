@@ -5,21 +5,12 @@
 # Date   : 12.06.2020
 # ============================================================================================================================
 
-import re
-import sys, codecs
-from datetime import datetime
-import os, glob
-import argparse
-from PIL import Image, ImageDraw, ImageFont
-from copy import deepcopy
-import time
-import statistics
-import json
-import jsonpickle
-import html
-import shutil
+import codecs
+import glob
+import os
+import sys
+
 import config_for_rb
-import math
 
 ALIGN_DEFAULT = 0
 ALIGN_LEFT = 1
@@ -107,8 +98,9 @@ def dist(x1, y1, x2, y2):
 
 
 def get_text_width(text, font):
-    size = font.getsize(text)
-    return size[0]
+    # size = font.getsize(text)
+    # return size[0]
+    return 0
 
 
 def get_html_out_dir(fname):
