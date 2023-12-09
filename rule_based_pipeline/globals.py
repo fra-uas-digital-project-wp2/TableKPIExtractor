@@ -98,9 +98,8 @@ def dist(x1, y1, x2, y2):
 
 
 def get_text_width(text, font):
-    # size = font.getsize(text)
-    # return size[0]
-    return 0
+    size = font.getsize(text)
+    return size[0]
 
 
 def get_html_out_dir(fname):

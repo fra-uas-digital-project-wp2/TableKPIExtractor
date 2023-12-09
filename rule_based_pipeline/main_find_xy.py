@@ -15,7 +15,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 
 def generate_dummy_test_data():
     test_data = TestData()
-    test_data.generate_dummy_test_data(config_for_rb.global_input_folder, '*')
+    test_data.generate_dummy_test_data(config_for_rb.global_raw_pdf_folder)
     return test_data
 
 
