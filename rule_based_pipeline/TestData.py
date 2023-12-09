@@ -255,6 +255,7 @@ class TestData:
 
         count = 0
         for file_info in file_paths:
+            # create the file name based on file_info
             file_name = file_info[2] + '.' + file_info[3]
 
             # Check if the filename needs cleanup; print a warning and skip the file if necessary

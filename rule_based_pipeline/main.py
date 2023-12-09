@@ -10,8 +10,8 @@ from AnalyzerDirectory import *
 from KPIResultSet import *
 from TestData import *
 from DataImportExport import *
-import config
-from test import test_prepare_kpispecs
+import config_for_rb
+from rule_based_pipeline.test import test_prepare_kpispecs
 
 # Constants Variables
 DEFAULT_YEAR = 2022
