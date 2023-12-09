@@ -366,7 +366,7 @@ def load_test_data(test_data_file_path):
 
     fix_list = DataImportExport.import_files(
         r"//Wwg00m.rootdom.net/afs-team/1200000089/FC/R-M/AZUREPOC/2020/KPIs extraction/Training data/03_Oil Gas sector reports/Europe",
-        config.global_input_folder, test_data.get_pdf_list(), 'pdf')
+        config_for_rb.global_raw_pdf_folder, test_data.get_pdf_list(), 'pdf')
     test_data.fix_file_names(fix_list)
 
     # filter out entries with no source file:
@@ -390,7 +390,7 @@ def test_result():
 
 
 def demo():
-    pdf_file = config.global_input_folder + r'test_bp.pdf'
+    pdf_file = config_for_rb.global_raw_pdf_folder + r'test_bp.pdf'
 
     print_big("Convert PDF to HTML")
     HTMLDirectory.convert_pdf_to_html(pdf_file)
@@ -412,7 +412,7 @@ def demo():
 
 
 def test_main():
-    PDF_FILE = config.global_input_folder + r'04_NOVATEK_AR_2016_ENG_11.pdf'
+    PDF_FILE = config_for_rb.global_raw_pdf_folder + r'04_NOVATEK_AR_2016_ENG_11.pdf'
     dir = test_load_json(PDF_FILE, "*")
     test_analyze_directory(dir)
 
