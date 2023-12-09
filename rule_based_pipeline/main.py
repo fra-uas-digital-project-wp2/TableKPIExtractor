@@ -4,12 +4,18 @@
 # Author : Ismail Demir (G124272)
 # Date   : 12.06.2020
 # ============================================================================================================================
-from AnalyzerDirectory import *
+from AnalyzerDirectory import AnalyzerDirectory
+import argparse
 import config_for_rb
-from DataImportExport import *
-from KPIResultSet import *
-from TestData import *
+from DataImportExport import DataImportExport
+from Format_Analyzer import Format_Analyzer
+from globals import file_exists, get_html_out_dir, get_num_of_files, print_verbose, print_big, remove_trailing_slash
+from HTMLDirectory import HTMLDirectory
+from KPIResultSet import KPIResultSet
+import os
 from rule_based_pipeline.test import test_prepare_kpi_specs
+from TestData import TestData
+import time
 
 # Constants Variables
 DEFAULT_YEAR = 2022
@@ -104,7 +110,7 @@ def analyze_and_save_results(pdf_name, kpis, info_file_contents):
     Returns:
         KPIResultSet: Results of the analysis.
     """
-    kpi_results = KPIResultSet(kpimeasures=[])
+    kpi_results = KPIResultSet(kpi_measures=[])
     # Modify * in wildcard_restrict_page in order to analyze specific page, e.g.:  *00042
     cur_kpi_results = analyze_pdf(config_for_rb.global_raw_pdf_folder + pdf_name, kpis, DEFAULT_YEAR, info_file_contents,
                                   wildcard_restrict_page='*')
@@ -220,8 +226,11 @@ def main():
     overall_kpi_results = KPIResultSet()
 
     # Load information from the file info.json
-    info_file_contents = DataImportExport.load_info_file_contents(remove_trailing_slash(config_for_rb.global_working_folder)
-                                                                  + '/info.json')
+    json_file_name = remove_trailing_slash(config_for_rb.global_working_folder) + '/info.json'
+    info_file_contents = DataImportExport.load_path_files_from_json_file(json_file_name)
+
+    # print(info_file_contents)
+    # return info_file_contents
 
     # Record the start time for performance measurement
     time_start = time.time()

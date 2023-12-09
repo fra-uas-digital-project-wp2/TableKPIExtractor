@@ -4,21 +4,20 @@
 # Author : Ismail Demir (G124272)
 # Date   : 12.06.2020
 # ============================================================================================================================
-import re
-import sys, codecs
-from datetime import datetime
-import os, glob
-import argparse
-from PIL import Image, ImageDraw, ImageFont
+import codecs
+import config_for_rb
 from copy import deepcopy
-import time
-import statistics
+import glob
+import html
 import json
 import jsonpickle
-import html
-import shutil
-import config_for_rb
 import math
+import os
+from PIL import Image, ImageDraw, ImageFont
+import re
+import shutil
+import statistics
+import sys
 
 ALIGN_DEFAULT = 0
 ALIGN_LEFT = 1

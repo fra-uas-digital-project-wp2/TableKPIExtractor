@@ -4,7 +4,12 @@
 # Author : Ismail Demir (G124272)
 # Date   : 05.08.2020
 # ============================================================================================================================
-from Format_Analyzer import *
+import config_for_rb
+from Format_Analyzer import Format_Analyzer
+import glob
+from globals import remove_trailing_slash, print_verbose, file_exists
+import jsonpickle
+import shutil
 
 
 class DataImportExport:
@@ -74,12 +79,20 @@ class DataImportExport:
         return res
 
     @staticmethod
-    def load_info_file_contents(json_file):
-        f = open(json_file, "r")
-        data = f.read()
-        f.close()
-        obj = jsonpickle.decode(data)
-        return obj
+    def load_path_files_from_json_file(json_file):
+        """
+        Load the paths of the files from a JSON file.
+
+        Args:
+            json_file (str): Path to the JSON file.
+
+        Returns:
+            json_data: The loaded object.
+        """
+        with open(json_file, "r") as file:
+            data = file.read()
+        json_data = jsonpickle.decode(data)
+        return json_data
 
     @staticmethod
     def save_path_files_to_json_file(file_paths):

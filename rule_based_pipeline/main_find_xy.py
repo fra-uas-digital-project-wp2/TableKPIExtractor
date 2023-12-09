@@ -186,7 +186,7 @@ def main():
     print_big("Data-set", False)
     print_verbose(1, test_data)
 
-    info_file_contents = DataImportExport.load_info_file_contents(
+    info_file_contents = DataImportExport.load_path_files_from_json_file(
         remove_trailing_slash(config_for_rb.global_working_folder) + '/info.json')
 
     time_start = time.time()
