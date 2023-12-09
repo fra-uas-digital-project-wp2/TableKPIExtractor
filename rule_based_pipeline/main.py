@@ -215,8 +215,6 @@ def main():
 
     # Prepare KPI specifications
     kpis = test_prepare_kpi_specs()
-    # print(kpis)
-    # return kpis
 
     # Initialize overall KPI results
     overall_kpi_results = KPIResultSet()
