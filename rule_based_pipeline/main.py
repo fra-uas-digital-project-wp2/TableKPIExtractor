@@ -11,7 +11,7 @@ from KPIResultSet import *
 from TestData import *
 from DataImportExport import *
 import config_for_rb
-from rule_based_pipeline.test import test_prepare_kpispecs
+from rule_based_pipeline.test import test_prepare_kpi_specs
 
 # Constants Variables
 DEFAULT_YEAR = 2022
@@ -216,7 +216,9 @@ def main():
     print_verbose(1, 'Related (fixed) PDFs: ' + str(pdfs) + ', in total : ' + str(len(pdfs)))
 
     # Prepare KPI specifications
-    kpis = test_prepare_kpispecs()
+    kpis = test_prepare_kpi_specs()
+    # print(kpis)
+    # return kpis
 
     # Initialize overall KPI results
     overall_kpi_results = KPIResultSet()
