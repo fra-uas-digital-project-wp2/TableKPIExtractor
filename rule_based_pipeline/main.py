@@ -10,8 +10,8 @@ from AnalyzerDirectory import *
 from KPIResultSet import *
 from TestData import *
 from DataImportExport import *
-import config_for_rb
-from rule_based_pipeline.test import test_prepare_kpispecs
+import config
+from test import test_prepare_kpispecs
 
 # Constants Variables
 DEFAULT_YEAR = 2022
@@ -118,8 +118,19 @@ def analyze_and_save_results(pdf_name, kpis, info_file_contents):
 
 
 def generate_dummy_test_data():
+    """
+    This function creates a TestData object and generates dummy test data from raw_pdf folder (all PDFs in raw_pdf folder).
+
+    Returns:
+        TestData: An instance of TestData with dummy test data from raw_pdf (all PDFs in raw_pdf folder).
+    """
+    # Create a TestData object
     test_data = TestData()
+
+    # Generate dummy test data from raw_pdf
     test_data.generate_dummy_test_data(config_for_rb.global_raw_pdf_folder)
+
+    # Return the populated TestData object
     return test_data
 
 
