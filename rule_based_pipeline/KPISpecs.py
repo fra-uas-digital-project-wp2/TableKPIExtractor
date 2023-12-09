@@ -336,7 +336,7 @@ class KPISpecs:
     def has_unit(self):
         return len(self.unit_regex_match_list) > 0
 
-    # check if nodes are matched by this, and if yes return True togehter with score
+    # check if nodes are matched by this, and if yes return True together with score
     def match_nodes(self, desc_nodes):
         final_score = 0
         at_least_one_match = False
@@ -392,7 +392,7 @@ class KPISpecs:
                 return False
         return True
 
-    def match_anywhere_on_page(self, htmlpage, cur_item_idx):
+    def match_anywhere_on_page(self, html_page, cur_item_idx):
         if len(self.anywhere_regex_match_list) == 0:
             return True, 0
 
@@ -406,7 +406,7 @@ class KPISpecs:
             if d.matching_mode in (MATCHING_MAY_INCLUDE, MATCHING_MUST_INCLUDE):
                 at_least_one_match_needed = True
 
-            match, score = d.match(htmlpage, cur_item_idx)
+            match, score = d.match(html_page, cur_item_idx)
             print_verbose(7, '..... matching anywhere "' + d.general_match.pattern_raw + '"  => match,score=' + str(
                 match) + ',' + str(score))
             if not match:
@@ -428,7 +428,8 @@ class KPISpecs:
 
         return final_score > 0, final_score
 
-    def extract_value(self, val_str):
+    @staticmethod
+    def extract_value(val_str):
         # for now just return the input
         # converting to standardized numbers could be done here
         return val_str

@@ -4,7 +4,6 @@
 # Author : Ismail Demir (G124272)
 # Date   : 02.08.2020
 # ============================================================================================================================
-
 from DataImportExport import DataImportExport
 from Format_Analyzer import Format_Analyzer
 from glob import glob

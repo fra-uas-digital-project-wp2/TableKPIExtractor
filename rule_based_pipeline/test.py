@@ -6,8 +6,6 @@
 #
 # Note: This file contains procedure used for testing only.
 # ============================================================================================================================
-
-
 from AnalyzerDirectory import *
 from TestData import *
 from DataImportExport import *

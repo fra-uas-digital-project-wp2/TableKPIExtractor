@@ -4,9 +4,8 @@
 # Author : Ismail Demir (G124272)
 # Date   : 12.06.2020
 # ============================================================================================================================
-
-from KPIMeasure import *
 from ConsoleTable import *
+from KPIMeasure import *
 
 
 class KPIResultSet:

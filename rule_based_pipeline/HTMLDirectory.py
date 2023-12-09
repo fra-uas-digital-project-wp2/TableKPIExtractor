@@ -7,7 +7,6 @@
 # Note   : 1 HTMLDirectory consistens of * HTMLPages
 # Note   : 1 HTMLDirectory corresponds to 1 PDF-File
 # ============================================================================================================================
-
 from HTMLPage import *
 from Format_Analyzer import *
 

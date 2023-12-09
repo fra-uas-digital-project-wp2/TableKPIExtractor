@@ -4,13 +4,11 @@
 # Author : Ismail Demir (G124272)
 # Date   : 12.06.2020
 # ============================================================================================================================
-
-
 from AnalyzerDirectory import *
+import config_for_rb
+from DataImportExport import *
 from KPIResultSet import *
 from TestData import *
-from DataImportExport import *
-import config_for_rb
 from rule_based_pipeline.test import test_prepare_kpi_specs
 
 # Constants Variables

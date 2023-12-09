@@ -9,7 +9,6 @@
 # Note   : 1 HTMLPage consistens of * HTMLCluster
 # Note   : 1 HTMLDirectory consistens of * HTMLPages
 # ============================================================================================================================
-
 from HTMLTable import *
 from HTMLCluster import *
 import copy

@@ -7,7 +7,6 @@
 # Note   : 1 HTMLTable referes to * HTMLItems
 # Note   : 1 HTMLPage consistens of * HTMLTables
 # ============================================================================================================================
-
 from HTMLItem import *
 from ConsoleTable import *
 
