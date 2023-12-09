@@ -4,8 +4,9 @@
 # Author : Ismail Demir (G124272)
 # Date   : 10.09.2020
 # ============================================================================================================================
-from KPIResultSet import *
-from ConsoleTable import *
+from ConsoleTable import ConsoleTable
+from Format_Analyzer import Format_Analyzer
+from globals import print_verbose
 
 
 class TestEvaluation:

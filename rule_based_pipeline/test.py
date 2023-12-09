@@ -11,6 +11,7 @@ from TestData import *
 from DataImportExport import *
 from TestEvaluation import *
 from KPISpecs import *
+from globals import *
 
 
 def test(pdf_file, wildcard):
