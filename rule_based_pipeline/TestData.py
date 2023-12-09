@@ -5,13 +5,24 @@
 # Date   : 02.08.2020
 # ============================================================================================================================
 
-from TestDataSample import *
-from DataImportExport import *
+from DataImportExport import DataImportExport
+from Format_Analyzer import Format_Analyzer
+from glob import glob
+from globals import print_verbose, save_txt_to_file
+from TestDataSample import TestDataSample
 
 
 class TestData:
+    """
+    TestData class manages a collection of TestDataSample objects for testing purposes.
+    It provides methods for filtering, loading data from CSV files, generating dummy test data, and saving to CSV.
+
+    Attributes:
+        samples: A list to store instances of TestDataSample.
+    """
     samples = None
 
+    # Constants variables
     SRC_FILE_FORMAT_AUTO = 0
     SRC_FILE_FORMAT_OLD = 1
     SRC_FILE_FORMAT_NEW = 2
@@ -61,7 +72,6 @@ class TestData:
                     break
 
     def load_from_csv(self, src_file_path, src_file_format=SRC_FILE_FORMAT_AUTO):
-
         raw_data = ''
 
         def read_next_cell(p):
@@ -206,48 +216,97 @@ class TestData:
 
                 self.samples.append(sample)
 
-    def generate_dummy_test_data(self, pdf_folder, filter='*'):
-        def ext(f):
-            res = [f]
-            res.extend(Format_Analyzer.extract_file_path(f))
-            return res
-
-        file_paths = glob.glob(pdf_folder + '/**/' + filter + '.pdf', recursive=True)
-        file_paths = [ext(f.replace('\\', '/')) for f in file_paths]  # unixize all file paths
-
-        cnt = 0
-        for f in file_paths:
-            file_name = f[2] + '.' + f[3]
-
-            if file_name != Format_Analyzer.cleanup_filename(file_name):
-                print("Warning: Bad filename: '" + file_name + "' - this file will be skipped")
-                continue
-
-            sample = TestDataSample()
-            sample.data_number = cnt
-            sample.data_sector = 'N/A'
-            sample.data_unit = 'N/A'
-            sample.data_answer = 'N/A'
-            sample.data_comments_questions = 'N/A'
-            sample.data_company = 'N/A'
-            sample.data_data_type = 'N/A'
-            sample.data_irrelevant_paragraphs = 'N/A'
-            sample.data_kpi_id = 0
-            sample.data_relevant_paragraphs = 'N/A'
-            sample.data_sector = 'N/A'
-            sample.data_source_file = file_name
-            sample.fixed_source_file = file_name
-            sample.data_source_page = 0
-            sample.data_year = 1900
-
-            self.samples.append(sample)
-
-            cnt += 1
-
-        DataImportExport.save_info_file_contents(file_paths)
-
     def save_to_csv(self, dst_file_path):
         save_txt_to_file(TestDataSample.samples_to_csv(self.samples), dst_file_path)
 
+    def generate_dummy_test_data(self, pdf_folder, pdf_filter='*'):
+        """
+        Generates dummy test data by populating samples with information from PDF files in a specified folder.
+
+        Args:
+            pdf_folder (str): Path to the folder containing PDF files.
+            pdf_filter (str): Filter for PDF files (default is '*').
+
+        Returns:
+            None
+        """
+        def extract_file_info(file_path):
+            """
+            Extracts file information (path, name and extension of the file) using Format_Analyzer.
+
+            Args:
+                file_path (str): Path to the PDF file.
+
+            Returns:
+                list: A list containing the path, name and extension of the file
+
+            Example: raw_pdf/filename.pdf
+                ['raw_pdf/', 'filename', 'pdf']
+            """
+            result = [file_path]
+            result.extend(Format_Analyzer.extract_file_path(file_path))
+            return result
+
+        # Use glob to get a list of PDF file paths in the given folder (*/raw_pdf)
+        file_paths = glob(pdf_folder + '/**/' + pdf_filter + '.pdf', recursive=True)
+
+        # Convert Windows-style paths to Unix-style paths and extract file information (path, name and extension)
+        file_paths = [extract_file_info(f.replace('\\', '/')) for f in file_paths]
+
+        count = 0
+        for file_info in file_paths:
+            file_name = file_info[2] + '.' + file_info[3]
+
+            # Check if the filename needs cleanup; print a warning and skip the file if necessary
+            if file_name != Format_Analyzer.cleanup_filename(file_name):
+                print_verbose(1, "Warning: Bad filename: '" + file_name + "' - this file will be skipped")
+                continue
+
+            # Create a TestDataSample object with dummy data
+            sample = self.dummy_data_sample_factory(count, file_name)
+
+            # Add the TestDataSample to the TestData object
+            self.samples.append(sample)
+            count += 1
+
+        # Save paths of the pdf files to a JSON file named 'info.json' using DataImportExport
+        DataImportExport.save_path_files_to_json_file(file_paths)
+
+    @staticmethod
+    def dummy_data_sample_factory(count, file_name):
+        """
+        Create a TestDataSample object with dummy data.
+
+        Args:
+            count (int): The data_number for the TestDataSample.
+            file_name (str): The data_source_file and fixed_source_file for the TestDataSample.
+
+        Returns:
+            TestDataSample: The TestDataSample object with dummy data.
+        """
+        sample = TestDataSample()
+        sample.data_number = count
+        sample.data_sector = 'N/A'
+        sample.data_unit = 'N/A'
+        sample.data_answer = 'N/A'
+        sample.data_comments_questions = 'N/A'
+        sample.data_company = 'N/A'
+        sample.data_data_type = 'N/A'
+        sample.data_irrelevant_paragraphs = 'N/A'
+        sample.data_kpi_id = 0
+        sample.data_relevant_paragraphs = 'N/A'
+        sample.data_sector = 'N/A'
+        sample.data_source_file = file_name
+        sample.fixed_source_file = file_name
+        sample.data_source_page = 0
+        sample.data_year = 1900
+        return sample
+
     def __repr__(self):
+        """
+        Returns a string representation of the TestData object.
+
+        Returns:
+            str: A string representation of the TestData object.
+        """
         return TestDataSample.samples_to_string(self.samples)
