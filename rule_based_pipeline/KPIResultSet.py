@@ -48,9 +48,10 @@ class KPIResultSet:
 
         # Add data cells
         for k in self.kpi_measures:
-            console_table.cells.extend([str(k.kpi_id), str(k.kpi_name), str(k.src_file), str(k.page_num), str(k.item_ids),
-                              str(k.pos_x), str(k.pos_y), str(k.raw_txt), str(k.year), str(k.value), str(k.score),
-                              str(k.unit), str(k.match_type)])
+            console_table.cells.extend(
+                [str(k.kpi_id), str(k.kpi_name), str(k.src_file), str(k.page_num), str(k.item_ids), str(k.pos_x),
+                 str(k.pos_y), str(k.raw_txt), str(k.year), str(k.value), str(k.score), str(k.unit), str(k.match_type)]
+            )
 
         return console_table
 
