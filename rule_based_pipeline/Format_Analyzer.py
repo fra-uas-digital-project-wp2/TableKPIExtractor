@@ -4,6 +4,7 @@
 # Author : Ismail Demir (G124272)
 # Date   : 12.06.2020
 # ============================================================================================================================
+import re
 
 from globals import *
 
@@ -19,19 +20,28 @@ class Format_Analyzer:
         r'^.*[0-3][0-9](\.|\\|/)[0-3][0-9](\.|\\|/)(19[8-9][0-9]|20[0-9][0-9]).*$')  # 1980-2099
     pattern_year_extended_2 = re.compile(
         r'^.*(19[8-9][0-9]|20[0-9][0-9])(\.|\\|/)[0-3][0-9](\.|\\|/)[0-3][0-9].*$')  # 1980-2099
-
     pattern_year_in_txt = re.compile(r'(19[8-9][0-9]|20[0-9][0-9])')  # 1980-2099
     pattern_null = re.compile(r'^(null|n/a|na|-*|\.*|,*|;*)$')
     pattern_whitespace = re.compile("^\s+|\s+$")
     pattern_ends_with_full_stop = re.compile(".*\.$")
     pattern_pagenum = re.compile(r'^[0-9]{1,3}$')
     pattern_non_numeric_char = re.compile(r'[^0-9\-\.]')
-    pattern_file_path = re.compile(r'(.*/)(.*)\.(.*)')
     pattern_cleanup_text = re.compile(r'[^a-z ]')
-
-    pattern_cleanup_filename = re.compile(r'(\[|\]|\(|\))')
-
     pattern_footnote = re.compile(r'[0-9]+\).*')
+
+    '''
+    pattern_file_path: (.*/) (.*) \.(.*)
+        (.*/): Captures the directory portion of the path. 
+        (.*): Captures the filename (excluding the extension).
+        \.(.*): Captures the file extension.
+    '''
+    pattern_file_path = re.compile(r'(.*/)(.*)\.(.*)')
+
+    '''
+    pattern_cleanup_filename: (\[|\]|\(|\))
+        Captures any one of the specified characters [, ], (, or ).
+    '''
+    pattern_cleanup_filename = re.compile(r'(\[|\]|\(|\))')
 
     @staticmethod
     def trim_whitespaces(val):
@@ -169,17 +179,9 @@ class Format_Analyzer:
         return re.sub(Format_Analyzer.pattern_year, '', val)
 
     @staticmethod
-    def extract_file_path(val):
-        return Format_Analyzer.pattern_file_path.match(val).groups()
-
-    @staticmethod
     def extract_file_name(val):
         fp = Format_Analyzer.extract_file_path('/' + val.replace('\\', '/'))
         return fp[1] + '.' + fp[2]
-
-    @staticmethod
-    def cleanup_filename(val):
-        return re.sub(Format_Analyzer.pattern_cleanup_filename, '_', val)
 
     @staticmethod
     def extract_year_from_text(val):
@@ -191,3 +193,35 @@ class Format_Analyzer:
     @staticmethod
     def cnt_overlapping_items(l0, l1):
         return len(list(set(l0) & set(l1)))
+
+    @staticmethod
+    def extract_file_path(value):
+        """
+        Extracts file information (path, name and extension of the file) using Format_Analyzer's pattern_file_path.
+
+        Args:
+            value (str): The input value containing the file path.
+
+        Returns:
+            tuple: A tuple containing the path, name and extension of the extracted file.
+
+        Example: /path/to/file/filename.pdf
+            ('/path/to/file/', 'filename', 'pdf')
+        """
+        return Format_Analyzer.pattern_file_path.match(value).groups()
+
+    @staticmethod
+    def cleanup_filename(value):
+        """
+        Cleans up a filename by replacing certain characters [, ], (, or ) with underscores.
+
+        Args:
+            value (str): The input filename.
+
+        Returns:
+            str: The cleaned filename with specified characters replaced by underscores.
+
+        Example: filename[12]test
+                -> filename_12_test
+        """
+        return re.sub(Format_Analyzer.pattern_cleanup_filename, '_', value)
