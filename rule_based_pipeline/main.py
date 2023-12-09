@@ -212,7 +212,7 @@ def main():
     print_verbose(1, test_data)
 
     # Get a list of PDFs from the test data
-    pdfs = test_data.get_fixed_pdf_list()
+    pdfs = test_data.get_unique_list_of_pdf_files()
     print_verbose(1, 'Related (fixed) PDFs: ' + str(pdfs) + ', in total : ' + str(len(pdfs)))
     # return # (only for Debugging purpose) I will delete it
 

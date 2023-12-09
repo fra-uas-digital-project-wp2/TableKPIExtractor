@@ -137,7 +137,7 @@ class TestEvaluation:
 
     @staticmethod
     def generate_evaluation(kpispecs, kpiresults, test_data):
-        pdf_file_names = test_data.get_fixed_pdf_list()
+        pdf_file_names = test_data.get_unique_list_of_pdf_files()
         res = TestEvaluation()
         for kpispec in kpispecs:
             print_verbose(1, 'Evaluating KPI: kpi_id=' + str(kpispec.kpi_id) + ', kpi_name="' + kpispec.kpi_name + '"')

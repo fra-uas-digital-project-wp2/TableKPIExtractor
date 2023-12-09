@@ -56,14 +56,6 @@ class TestData:
         res = sorted(res, key=lambda s: s.lower())
         return res
 
-    def get_fixed_pdf_list(self):
-        res = []
-        for s in self.samples:
-            res.append(s.fixed_source_file)
-        res = list(set(res))
-        res = sorted(res, key=lambda s: s.lower())
-        return res
-
     def fix_file_names(self, fix_list):
         for i in range(len(self.samples)):
             for f in fix_list:
@@ -218,6 +210,18 @@ class TestData:
 
     def save_to_csv(self, dst_file_path):
         save_txt_to_file(TestDataSample.samples_to_csv(self.samples), dst_file_path)
+
+    def get_unique_list_of_pdf_files(self):
+        """
+        Get a list of unique fixed_source_file values from TestDataSample objects.
+
+        Returns:
+            list: A sorted list of unique fixed_source_file values.
+        """
+        fixed_files = [sample.fixed_source_file for sample in self.samples]
+        unique_fixed_files = list(set(fixed_files))
+        sorted_unique_fixed_files = sorted(unique_fixed_files, key=lambda sample: sample.lower())
+        return sorted_unique_fixed_files
 
     def generate_dummy_test_data(self, pdf_folder, pdf_filter='*'):
         """
