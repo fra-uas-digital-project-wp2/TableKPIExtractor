@@ -68,7 +68,7 @@ class DataImportExport:
         jsonpickle.set_preferred_backend('json')
         jsonpickle.set_encoder_options('json', sort_keys=True, indent=4)
         data = jsonpickle.encode(info_file_contents)
-        f_info = open(remove_trailing_slash(config.global_working_folder) + '/info.json', "w")
+        f_info = open(remove_trailing_slash(config_for_rb.global_working_folder) + '/info.json', "w")
         f_info.write(data)
         f_info.close()
 
@@ -84,7 +84,7 @@ class DataImportExport:
         jsonpickle.set_preferred_backend('json')
         jsonpickle.set_encoder_options('json', sort_keys=True, indent=4)
         data = jsonpickle.encode(info_file_contents)
-        f_info = open(remove_trailing_slash(config.global_working_folder) + '/info.json', "w")
+        f_info = open(remove_trailing_slash(config_for_rb.global_working_folder) + '/info.json', "w")
         f_info.write(data)
         f_info.close()
 

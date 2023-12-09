@@ -8,7 +8,7 @@
 # ============================================================================================================================
 
 from AnalyzerPage import AnalyzerPage
-from config import global_analyze_multiple_pages_at_one, global_ignore_all_years
+from config_for_rb import global_analyze_multiple_pages_at_one, global_ignore_all_years
 from globals import print_verbose
 from HTMLDirectory import HTMLDirectory
 from HTMLPage import HTMLPage

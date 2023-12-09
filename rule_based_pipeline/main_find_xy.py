@@ -7,7 +7,7 @@
 
 from HTMLDirectory import *
 from TestData import *
-import config
+import config_for_rb
 import pandas as pd
 
 pd.options.mode.chained_assignment = None  # default='warn'
@@ -15,7 +15,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 
 def generate_dummy_test_data():
     test_data = TestData()
-    test_data.generate_dummy_test_data(config.global_input_folder, '*')
+    test_data.generate_dummy_test_data(config_for_rb.global_input_folder, '*')
     return test_data
 
 
@@ -110,7 +110,7 @@ def modify_csv(csv, info_file_contents):
     for c in range(len(csvPD)):  # check columns
         # print(str(c) + str(csvPD['PDF_NAME'][c]))
         if str(csvPD['POS_X'][c]) == "nan" or str(csvPD['POS_Y'][c]) == "nan":
-            coordis = analyze_pdf(config.global_input_folder + str(csvPD['PDF_NAME'][c]), int(csvPD['PAGE'][c]),
+            coordis = analyze_pdf(config_for_rb.global_input_folder + str(csvPD['PDF_NAME'][c]), int(csvPD['PAGE'][c]),
                                   str(csvPD['ANSWER_RAW'][c]), info_file_contents, assume_conversion_done=False,
                                   force_parse_pdf=False)
             print_verbose(2, "coord:")
@@ -151,20 +151,20 @@ def main():
                         help='Verbosity level (0=shut up)')
 
     args = parser.parse_args()
-    config.global_input_folder = remove_trailing_slash(
+    config_for_rb.global_input_folder = remove_trailing_slash(
         get_input_variable(args.raw_pdf_folder, "What is the raw pdf folder?")).replace('\\', '/') + r'/'
-    config.global_working_folder = remove_trailing_slash(
+    config_for_rb.global_working_folder = remove_trailing_slash(
         get_input_variable(args.working_folder, "What is the working folder?")).replace('\\', '/') + r'/'
-    config.global_pdf_name = get_input_variable(args.pdf_name, "Which pdf do you want to check?")
-    config.global_csv_name = get_input_variable(args.csv_name, "Which csv file do you want to check?")
-    config.global_output_folder = remove_trailing_slash(
+    config_for_rb.global_pdf_name = get_input_variable(args.pdf_name, "Which pdf do you want to check?")
+    config_for_rb.global_csv_name = get_input_variable(args.csv_name, "Which csv file do you want to check?")
+    config_for_rb.global_output_folder = remove_trailing_slash(
         get_input_variable(args.output_folder, "What is the output folder?")).replace('\\', '/') + r'/'
-    config.global_verbosity = args.verbosity
+    config_for_rb.global_verbosity = args.verbosity
 
-    os.makedirs(config.global_working_folder, exist_ok=True)
-    os.makedirs(config.global_output_folder, exist_ok=True)
+    os.makedirs(config_for_rb.global_working_folder, exist_ok=True)
+    os.makedirs(config_for_rb.global_output_folder, exist_ok=True)
 
-    # fix config.global_exec_folder and config.global_rendering_font_override
+    # fix config_for_rb.global_exec_folder and config_for_rb.global_rendering_font_override
     path = ''
     try:
         path = globals()['_dh'][0]
@@ -172,15 +172,15 @@ def main():
         path = os.path.dirname(os.path.realpath(__file__))
     path = remove_trailing_slash(path).replace('\\', '/')
 
-    config.global_exec_folder = path + r'/'
-    config.global_rendering_font_override = path + r'/' + config.global_rendering_font_override
+    config_for_rb.global_exec_folder = path + r'/'
+    config_for_rb.global_rendering_font_override = path + r'/' + config_for_rb.global_rendering_font_override
 
-    print_verbose(1, "Using config.global_exec_folder=" + config.global_exec_folder)
-    print_verbose(1, "Using config.global_raw_pdf_folder=" + config.global_input_folder)
-    print_verbose(1, "Using config.global_working_folder=" + config.global_working_folder)
-    print_verbose(1, "Using config.global_output_folder=" + config.global_output_folder)
-    print_verbose(1, "Using config.global_verbosity=" + str(config.global_verbosity))
-    print_verbose(5, "Using config.global_rendering_font_override=" + config.global_rendering_font_override)
+    print_verbose(1, "Using config_for_rb.global_exec_folder=" + config_for_rb.global_exec_folder)
+    print_verbose(1, "Using config_for_rb.global_raw_pdf_folder=" + config_for_rb.global_input_folder)
+    print_verbose(1, "Using config_for_rb.global_working_folder=" + config_for_rb.global_working_folder)
+    print_verbose(1, "Using config_for_rb.global_output_folder=" + config_for_rb.global_output_folder)
+    print_verbose(1, "Using config_for_rb.global_verbosity=" + str(config_for_rb.global_verbosity))
+    print_verbose(5, "Using config_for_rb.global_rendering_font_override=" + config_for_rb.global_rendering_font_override)
 
     test_data = generate_dummy_test_data()
 
@@ -188,13 +188,13 @@ def main():
     print_verbose(1, test_data)
 
     info_file_contents = DataImportExport.load_info_file_contents(
-        remove_trailing_slash(config.global_working_folder) + '/info.json')
+        remove_trailing_slash(config_for_rb.global_working_folder) + '/info.json')
 
     time_start = time.time()
 
     coordisresults = []
-    modify_csv(config.global_csv_name, info_file_contents)
-    print_verbose(1, "RESULT FOR " + config.global_pdf_name)
+    modify_csv(config_for_rb.global_csv_name, info_file_contents)
+    print_verbose(1, "RESULT FOR " + config_for_rb.global_pdf_name)
     print_verbose(1, coordisresults)
 
     time_finish = time.time()

@@ -283,7 +283,7 @@ class KPISpecs:
 
     def match_unit(self, unit_str):
         for u in self.unit_regex_match_list:
-            if (not u.match(unit_str)):
+            if not u.match(unit_str):
                 return False
         return True
 
