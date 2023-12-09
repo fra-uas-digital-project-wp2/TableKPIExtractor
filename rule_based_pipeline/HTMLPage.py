@@ -347,17 +347,19 @@ class HTMLPage:
     def explode_item(self, idx, sep=' '):  # return concatenated txt
         def expl_int(dir, idx, sep):
             return (
-                '' if self.items[idx].left_id == -1 or dir > 0 else expl_int(-1, self.items[idx].left_id, sep) + sep) + \
-                self.items[idx].txt + \
-                ('' if self.items[idx].right_id == -1 or dir < 0 else sep + expl_int(1, self.items[idx].right_id, sep))
+                       '' if self.items[idx].left_id == -1 or dir > 0 else expl_int(-1, self.items[idx].left_id,
+                                                                                    sep) + sep) + \
+                   self.items[idx].txt + \
+                   ('' if self.items[idx].right_id == -1 or dir < 0 else sep + expl_int(1, self.items[idx].right_id,
+                                                                                        sep))
 
         return expl_int(0, idx, sep)
 
     def explode_item_by_idx(self, idx):  # return list of idx
         def expl_int(dir, idx):
             return ([] if self.items[idx].left_id == -1 or dir > 0 else expl_int(-1, self.items[idx].left_id)) + \
-                [idx] + \
-                ([] if self.items[idx].right_id == -1 or dir < 0 else expl_int(1, self.items[idx].right_id))
+                   [idx] + \
+                   ([] if self.items[idx].right_id == -1 or dir < 0 else expl_int(1, self.items[idx].right_id))
 
         return expl_int(0, idx)
 
@@ -909,7 +911,7 @@ class HTMLPage:
 
             table = self.discover_table(next)
             print_verbose(2, "FOUND TABLE: " + str(table))
-            if (config.global_force_special_items_into_table):
+            if config_for_rb.global_force_special_items_into_table:
                 table.force_special_items_into_table()
 
             if (table.is_good_table()):
@@ -924,14 +926,14 @@ class HTMLPage:
         for t in self.tables:
             tmp_sp_idx = []
             for sp_idx in t.special_idx:
-                if (self.items[sp_idx].txt != ''):
+                if self.items[sp_idx].txt != '':
                     tmp_sp_idx.append(sp_idx)
                 else:
                     self.items[sp_idx].category = CAT_MISC
             t.special_idx = tmp_sp_idx
 
         # merge non-overlapping rows, if needed
-        if (config.global_table_merge_non_overlapping_rows):
+        if config_for_rb.global_table_merge_non_overlapping_rows:
             for table in self.tables:
                 table.merge_non_overlapping_rows()
             # pass
@@ -1012,7 +1014,7 @@ class HTMLPage:
                 font_color = it.rendering_color
 
             span_font = ImageFont.truetype(
-                it.font_file if config.global_rendering_font_override == "" else config.global_rendering_font_override,
+                it.font_file if config_for_rb.global_rendering_font_override == "" else config_for_rb.global_rendering_font_override,
                 it.font_size)
             context.text((it.pos_x, it.pos_y), it.txt, font=span_font, fill=font_color)
 
@@ -1042,7 +1044,7 @@ class HTMLPage:
         count = 0
         for it in self.items:
             for w in it.words:
-                if (w.txt == txt):
+                if w.txt == txt:
                     count += 1
 
         # print('-->count: '+str(count))
@@ -1053,10 +1055,10 @@ class HTMLPage:
             for it in self.items:
                 new_words = []
                 for w in it.words:
-                    if (w.txt != txt):
+                    if w.txt != txt:
                         w.item_id = cur_id
                         new_words.append(w)
-                if (len(new_words) == 0):
+                if len(new_words) == 0:
                     continue  # skip this item
 
                 it.this_id = cur_id
@@ -1073,7 +1075,7 @@ class HTMLPage:
         new_items = []
         cur_id = 0
         for it in self.items:
-            if (it.height > threshold):
+            if it.height > threshold:
                 it.this_id = cur_id
                 new_items.append(it)
                 cur_id += 1
@@ -1111,8 +1113,8 @@ class HTMLPage:
                 remove_trailing_slash(outdir) + r'/tab_' + str(self.page_num) + r'_' + str(i + 1) + r'.csv')
 
     def save_all_footnotes_to_txt(self, outdir):
-        if (len(self.footnotes_idx) == 0):
-            return  # dont save if empty
+        if len(self.footnotes_idx) == 0:
+            return  # don't save if empty
         res = ""
         for idx in self.footnotes_idx:
             res += self.get_txt_unsplit(idx) + "\n"
@@ -1170,9 +1172,9 @@ class HTMLPage:
         for t in self.tables:
             t.items = self.items
 
-        if (self.clusters is not None):
+        if self.clusters is not None:
             self.clusters.regenerate_not_exported(self.items)
-        if (self.clusters_text is not None):
+        if self.clusters_text is not None:
             self.clusters_text.regenerate_not_exported(self.items)
 
         return data
@@ -1190,8 +1192,8 @@ class HTMLPage:
         for t in obj.tables:
             t.items = obj.items
 
-        # regenerate clustes, if they are not available
-        if (obj.clusters is None or obj.clusters_text is None):
+        # regenerate clusters, if they are not available
+        if obj.clusters is None or obj.clusters_text is None:
             obj.generate_clusters()
         else:
             # just fill up clusters with missing values
@@ -1277,7 +1279,8 @@ class HTMLPage:
             good_old_bytes = 0
             for i in range(len(new_bytes)):
                 if i < len(new_bytes) - 6:
-                    if new_bytes[i] == 60 and new_bytes[i + 1] == 98 and new_bytes[i + 2] == 111 and new_bytes[i + 3] == 100 and new_bytes[i + 4] == 121 and new_bytes[i + 5] == 62:
+                    if new_bytes[i] == 60 and new_bytes[i + 1] == 98 and new_bytes[i + 2] == 111 and new_bytes[
+                        i + 3] == 100 and new_bytes[i + 4] == 121 and new_bytes[i + 5] == 62:
                         hit_body = True
                 if i > 0 and new_bytes[i - 1] == 62:
                     is_txt = True
@@ -1326,7 +1329,7 @@ class HTMLPage:
 
         cur_item_id = 0
 
-        with open(htmlfile, errors='ignore', encoding=config.global_html_encoding) as f:
+        with open(htmlfile, errors='ignore', encoding=config_for_rb.global_html_encoding) as f:
             html_file = f.readlines()
 
         for i in range(0, len(html_file)):
@@ -1337,11 +1340,11 @@ class HTMLPage:
                 res.page_num = int(bg[2 + 2])
                 res.page_width = int(bg[0 + 2])
                 res.page_height = int(bg[1 + 2])
-            if (pattern_font.match(h)):
+            if pattern_font.match(h):
                 f = pattern_font.match(h).groups()
                 font_dict[int(f[0])] = int(f[1])
                 print_verbose(7, 'Font-> f=' + str(f))
-            if (pattern_font_url.match(h)):
+            if pattern_font_url.match(h):
                 fu = pattern_font_url.match(h).groups()
                 font_url_dict[int(fu[0])] = fu[1]
             if (pattern_bold.match(h)):
@@ -1377,15 +1380,15 @@ class HTMLPage:
                                                            int(gs[1]))
                             item.font_file = fonts_dir + '/' + font_url_dict[font_dict[int(gs[0])]]
                         else:
-                            span_font = ImageFont.truetype(config.global_approx_font_name, int(gs[1]))
-                            item.font_file = config.global_approx_font_name
+                            span_font = ImageFont.truetype(config_for_rb.global_approx_font_name, int(gs[1]))
+                            item.font_file = config_for_rb.global_approx_font_name
 
                         try:
                             space_width = max(space_width, get_text_width(' ', span_font),
                                               get_text_width('x', span_font))
                         except:
-                            span_font = ImageFont.truetype(config.global_approx_font_name, int(gs[1]))
-                            item.font_file = config.global_approx_font_name
+                            span_font = ImageFont.truetype(config_for_rb.global_approx_font_name, int(gs[1]))
+                            item.font_file = config_for_rb.global_approx_font_name
                             space_width = max(space_width, get_text_width(' ', span_font),
                                               get_text_width('x', span_font))
 
@@ -1408,8 +1411,9 @@ class HTMLPage:
                                     item.words.append(word)
 
                 item.space_width = max(space_width, get_text_width(' ',
-                                                                   ImageFont.truetype(config.global_approx_font_name,
-                                                                                      item.font_size)))
+                                                                   ImageFont.truetype(
+                                                                       config_for_rb.global_approx_font_name,
+                                                                       item.font_size)))
                 item.fix_overlapping_words()
                 item.recalc_geometry()
                 item.rejoin_words()
