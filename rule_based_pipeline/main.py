@@ -213,12 +213,12 @@ def convert_html_to_json_and_png(html_dir_path, force_parse_pdf=False, do_wait=F
         None
     """
     print_big("Convert HTML to JSON and PNG", do_wait)
-    dir = HTMLDirectory()
+    html_directory = HTMLDirectory()
     if (force_parse_pdf or get_num_of_files(os.path.join(html_dir_path, 'jpage*.json')) != get_num_of_files(
             os.path.join(html_dir_path, 'page*.html'))):
-        dir.parse_html_directory(html_dir_path, 'page*.html')  # ! page*
-        dir.render_to_png(html_dir_path, html_dir_path)
-        dir.save_to_dir(html_dir_path)
+        html_directory.parse_html_directory(html_dir_path, 'page*.html')  # ! page*
+        html_directory.render_to_png(html_dir_path, html_dir_path)
+        html_directory.save_to_dir(html_dir_path)
 
 
 def load_json_files(html_dir_path, do_wait, wildcard_restrict_page='*'):
@@ -234,9 +234,9 @@ def load_json_files(html_dir_path, do_wait, wildcard_restrict_page='*'):
         HTMLDirectory: Loaded HTML directory.
     """
     print_big("Load from JSON", do_wait)
-    dir = HTMLDirectory()
-    dir.load_from_dir(html_dir_path, 'jpage' + str(wildcard_restrict_page) + '.json')
-    return dir
+    directory = HTMLDirectory()
+    directory.load_from_dir(html_dir_path, 'jpage' + str(wildcard_restrict_page) + '.json')
+    return directory
 
 
 def analyze_pages(directory, guess_year, kpis, do_wait):
@@ -314,7 +314,7 @@ def main():
     print_verbose(1, overall_kpi_results)
 
     # Save overall KPI results to a CSV file
-    overall_kpi_results.save_to_csv_file(config_for_rb.global_output_folder + r'kpiresults_tmp.csv')
+    overall_kpi_results.save_to_csv_file(config_for_rb.global_output_folder + r'kpi_results_tmp.csv')
 
     # Calculate and print the total run-time
     total_time = time_finish - time_start
