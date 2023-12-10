@@ -92,7 +92,8 @@ def print_configuration():
     print_verbose(1, "Using config_for_rb.global_working_folder=" + config_for_rb.global_working_folder)
     print_verbose(1, "Using config_for_rb.global_output_folder=" + config_for_rb.global_output_folder)
     print_verbose(1, "Using config_for_rb.global_verbosity=" + str(config_for_rb.global_verbosity))
-    print_verbose(1, "Using config_for_rb.global_rendering_font_override=" + config_for_rb.global_rendering_font_override)
+    print_verbose(1,
+                  "Using config_for_rb.global_rendering_font_override=" + config_for_rb.global_rendering_font_override)
     # new optional arguments (for Debugging mode):
     print_verbose(1, "Using config_for_rb.global_name_of_pdf=" + config_for_rb.global_name_of_pdf)
     print_verbose(1, "Using config_for_rb.global_page_of_pdf=" + config_for_rb.global_page_of_pdf)
@@ -112,7 +113,8 @@ def analyze_and_save_results(pdf_name, kpis, info_file_contents):
     """
     kpi_results = KPIResultSet(kpi_measures=[])
     # Modify * in wildcard_restrict_page in order to analyze specific page, e.g.:  *00042
-    cur_kpi_results = analyze_pdf(config_for_rb.global_raw_pdf_folder + pdf_name, kpis, info_file_contents, wildcard_restrict_page='*')
+    cur_kpi_results = analyze_pdf(config_for_rb.global_raw_pdf_folder + pdf_name, kpis, info_file_contents,
+                                  wildcard_restrict_page='*')
     kpi_results.extend(cur_kpi_results)
     kpi_results.save_to_csv_file(config_for_rb.global_output_folder + pdf_name + r'.csv')
     print_verbose(1, "RESULT FOR " + pdf_name)
@@ -137,57 +139,122 @@ def generate_dummy_test_data():
     return test_data
 
 
-def analyze_pdf(pdf_file, kpis, info_file_contents, wildcard_restrict_page='*', force_pdf_convert=False, force_parse_pdf=False, assume_conversion_done=False, do_wait=False):
+def analyze_pdf(pdf_file, kpis, info_file_contents, wildcard_restrict_page='*', force_pdf_convert=False,
+                force_parse_pdf=False, assume_conversion_done=False, do_wait=False):
+    """
+    Analyze the specified PDF, save the results, and print verbose information.
+
+    Args:
+        pdf_file (str): The name of the PDF file.
+        kpis (list): List of KPI specifications.
+        info_file_contents (dict): Information loaded from an info file.
+        wildcard_restrict_page (str): Page wildcard.
+        force_pdf_convert (bool): If True, forces PDF to HTML conversion.
+        force_parse_pdf (bool): If True, forces HTML to JSON and PNG conversion.
+        assume_conversion_done (bool): If True, assumes conversion is done.
+        do_wait (bool): If True, display a progress indicator.
+
+    Returns:
+        KPIResultSet: Results of the analysis.
+    """
     print_verbose(1, "Analyzing PDF: " + str(pdf_file))
 
     guess_year = Format_Analyzer.extract_year_from_text(pdf_file)
-    if guess_year is None:
-        guess_year = DEFAULT_YEAR
+    guess_year = guess_year if guess_year is not None else DEFAULT_YEAR
 
     html_dir_path = get_html_out_dir(pdf_file)
     os.makedirs(html_dir_path, exist_ok=True)
 
-    reload_necessary = True
+    convert_pdf_to_html(pdf_file, html_dir_path, force_pdf_convert, info_file_contents, do_wait)
 
     if not assume_conversion_done:
-        # convert pdf to html
-        print_big("Convert PDF to HTML", do_wait)
-        if force_pdf_convert or not file_exists(html_dir_path + '/index.html'):
-            HTMLDirectory.convert_pdf_to_html(pdf_file, info_file_contents)
-
-        # return KPIResultSet() # STOP after converting PDF files (don't continue with analysis)
-
         # parse and create json and png
-        print_big("Convert HTML to JSON and PNG", do_wait)
-        # print(html_dir_path)
-        dir = HTMLDirectory()
-        if (force_parse_pdf or get_num_of_files(html_dir_path + '/jpage*.json') != get_num_of_files(
-                html_dir_path + '/page*.html')):
-            dir.parse_html_directory(get_html_out_dir(pdf_file), 'page*.html')  # ! page*
-            dir.render_to_png(html_dir_path, html_dir_path)
-            dir.save_to_dir(html_dir_path)
-            if wildcard_restrict_page == '*':
-                reload_necessary = False
+        convert_html_to_json_and_png(html_dir_path, force_parse_pdf, do_wait)
 
-    # return KPIResultSet()# STOP after parsing HTML files (don't continue with analysis)
+    directory = load_json_files(html_dir_path, do_wait, wildcard_restrict_page)
 
-    # load json files
-    print_big("Load from JSON", do_wait)
-    if reload_necessary:
-        dir = HTMLDirectory()
-        dir.load_from_dir(html_dir_path, 'jpage' + str(wildcard_restrict_page) + '.json')
+    kpi_results = analyze_pages(directory, guess_year, kpis, do_wait)
 
-    # analyze
-    print_big("Analyze Pages", do_wait)
-    ana = AnalyzerDirectory(dir, guess_year)
-    # kpis = test_prepare_kpispecs()
-    # print(kpis)
-
-    kpi_results = KPIResultSet(ana.find_multiple_kpis(kpis))
-
-    print_big("FINAL RESULT FOR: " + str(pdf_file.upper()), do_wait=False)
+    print_big("FINAL RESULT FOR: " + str(pdf_file.upper()), do_wait)
     print_verbose(1, kpi_results)
 
+    return kpi_results
+
+
+def convert_pdf_to_html(pdf_file, html_dir_path, force_pdf_convert=False, info_file_contents=None, do_wait=False):
+    """
+    Convert PDF to HTML.
+
+    Args:
+        pdf_file (str): Path to the PDF file.
+        html_dir_path (str): Directory to store HTML files.
+        force_pdf_convert (bool): If True, forces PDF to HTML conversion.
+        info_file_contents (dict): Information loaded from an info file.
+        do_wait (bool): If True, display a progress indicator.
+
+    Returns:
+        None
+    """
+    print_big("Convert PDF to HTML", do_wait)
+    if force_pdf_convert or not file_exists(os.path.join(html_dir_path, 'index.html')):
+        HTMLDirectory.convert_pdf_to_html(pdf_file, info_file_contents)
+
+
+def convert_html_to_json_and_png(html_dir_path, force_parse_pdf=False, do_wait=False):
+    """
+    Convert HTML to JSON and PNG.
+
+    Args:
+        html_dir_path (str): Directory containing HTML files.
+        force_parse_pdf (bool): If True, forces HTML to JSON and PNG conversion.
+        do_wait (bool): If True, display a progress indicator.
+
+    Returns:
+        None
+    """
+    print_big("Convert HTML to JSON and PNG", do_wait)
+    dir = HTMLDirectory()
+    if (force_parse_pdf or get_num_of_files(os.path.join(html_dir_path, 'jpage*.json')) != get_num_of_files(
+            os.path.join(html_dir_path, 'page*.html'))):
+        dir.parse_html_directory(html_dir_path, 'page*.html')  # ! page*
+        dir.render_to_png(html_dir_path, html_dir_path)
+        dir.save_to_dir(html_dir_path)
+
+
+def load_json_files(html_dir_path, do_wait, wildcard_restrict_page='*'):
+    """
+    Load JSON files.
+
+    Args:
+        html_dir_path (str): Directory containing JSON files.
+        do_wait (bool): If True, display a progress indicator.
+        wildcard_restrict_page (str): Page wildcard.
+
+    Returns:
+        HTMLDirectory: Loaded HTML directory.
+    """
+    print_big("Load from JSON", do_wait)
+    dir = HTMLDirectory()
+    dir.load_from_dir(html_dir_path, 'jpage' + str(wildcard_restrict_page) + '.json')
+    return dir
+
+
+def analyze_pages(directory, guess_year, kpis, do_wait):
+    """
+    Analyze HTML pages.
+
+    Args:
+        directory (HTMLDirectory): HTML directory.
+        guess_year (int): Guessed year.
+        kpis (list): List of KPI specifications.
+        do_wait (bool): If True, display a progress indicator.
+
+    Returns:
+        KPIResultSet: Results of the analysis.
+    """
+    print_big("Analyze Pages", do_wait)
+    ana = AnalyzerDirectory(directory, guess_year)
+    kpi_results = KPIResultSet(ana.find_multiple_kpis(kpis))
     return kpi_results
 
 
@@ -251,7 +318,8 @@ def main():
 
     # Calculate and print the total run-time
     total_time = time_finish - time_start
-    print_verbose(1, "Total run-time: " + str(total_time) + " sec ( " + str(total_time / max(len(pdfs), 1)) + " sec per PDF)")
+    print_verbose(1, "Total run-time: " + str(total_time) + " sec ( " + str(
+        total_time / max(len(pdfs), 1)) + " sec per PDF)")
 
 
 # Entry point of the program
