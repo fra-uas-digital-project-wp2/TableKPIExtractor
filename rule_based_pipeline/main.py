@@ -112,8 +112,7 @@ def analyze_and_save_results(pdf_name, kpis, info_file_contents):
     """
     kpi_results = KPIResultSet(kpi_measures=[])
     # Modify * in wildcard_restrict_page in order to analyze specific page, e.g.:  *00042
-    cur_kpi_results = analyze_pdf(config_for_rb.global_raw_pdf_folder + pdf_name, kpis, DEFAULT_YEAR, info_file_contents,
-                                  wildcard_restrict_page='*')
+    cur_kpi_results = analyze_pdf(config_for_rb.global_raw_pdf_folder + pdf_name, kpis, info_file_contents, wildcard_restrict_page='*')
     kpi_results.extend(cur_kpi_results)
     kpi_results.save_to_csv_file(config_for_rb.global_output_folder + pdf_name + r'.csv')
     print_verbose(1, "RESULT FOR " + pdf_name)
@@ -138,13 +137,12 @@ def generate_dummy_test_data():
     return test_data
 
 
-def analyze_pdf(pdf_file, kpis, default_year, info_file_contents, wildcard_restrict_page='*', force_pdf_convert=False,
-                force_parse_pdf=False, assume_conversion_done=False, do_wait=False):
+def analyze_pdf(pdf_file, kpis, info_file_contents, wildcard_restrict_page='*', force_pdf_convert=False, force_parse_pdf=False, assume_conversion_done=False, do_wait=False):
     print_verbose(1, "Analyzing PDF: " + str(pdf_file))
 
     guess_year = Format_Analyzer.extract_year_from_text(pdf_file)
     if guess_year is None:
-        guess_year = default_year
+        guess_year = DEFAULT_YEAR
 
     html_dir_path = get_html_out_dir(pdf_file)
     os.makedirs(html_dir_path, exist_ok=True)
