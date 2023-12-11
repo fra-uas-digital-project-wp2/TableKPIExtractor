@@ -6,12 +6,14 @@
 #
 # Note: This file contains procedure used for testing only.
 # ============================================================================================================================
-from AnalyzerDirectory import *
-from TestData import *
-from DataImportExport import *
-from TestEvaluation import *
-from KPISpecs import *
+from AnalyzerDirectory import AnalyzerDirectory
+from DataImportExport import DataImportExport
 from globals import *
+from HTMLDirectory import HTMLDirectory
+from KPIResultSet import KPIResultSet
+from KPISpecs import *
+from TestData import TestData
+from TestEvaluation import TestEvaluation
 
 
 def test(pdf_file, wildcard):

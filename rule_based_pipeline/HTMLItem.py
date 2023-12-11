@@ -7,9 +7,9 @@
 # Note   : 1 HTMLItem consists of * HTMLWords
 # Note   : 1 HTMLPage consists of * HTMLItems
 # ============================================================================================================================
-from globals import *
-from HTMLWord import *
 from Format_Analyzer import Format_Analyzer
+from globals import *
+from Rect import Rect
 
 
 class HTMLItem:

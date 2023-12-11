@@ -7,10 +7,10 @@
 # Note   : 1 HTMLPage consists of 1 HTMLCluster (root-node)
 # Note   : 1 HTMLCluster contains * HTMLClusters (internal nodes), or consists of 1 HTMLItem (leaf node)
 # ============================================================================================================================
-from HTMLItem import *
+from globals import hsv_to_rgba, dist, print_verbose
+import numpy
 import scipy.cluster.hierarchy as hcl
 from scipy.spatial.distance import squareform
-import numpy
 
 CLUSTER_DISTANCE_MODE_EUCLIDIAN = 0
 CLUSTER_DISTANCE_MODE_RAW_TEXT = 1

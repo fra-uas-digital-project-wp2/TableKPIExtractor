@@ -112,9 +112,8 @@ def analyze_and_save_results(pdf_name, kpis, info_file_contents):
         KPIResultSet: Results of the analysis.
     """
     kpi_results = KPIResultSet(kpi_measures=[])
-    # Modify * in wildcard_restrict_page in order to analyze specific page, e.g.:  *00042
-    cur_kpi_results = analyze_pdf(config_for_rb.global_raw_pdf_folder + pdf_name, kpis, info_file_contents,
-                                  wildcard_restrict_page='*')
+    # to analyze specific page, add e.g.:  wildcard_restrict_page=*00042
+    cur_kpi_results = analyze_pdf(config_for_rb.global_raw_pdf_folder + pdf_name, kpis, info_file_contents)
     kpi_results.extend(cur_kpi_results)
     kpi_results.save_to_csv_file(config_for_rb.global_output_folder + pdf_name + r'.csv')
     print_verbose(1, "RESULT FOR " + pdf_name)
