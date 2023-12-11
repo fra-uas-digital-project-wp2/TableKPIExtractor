@@ -9,6 +9,7 @@
 # ============================================================================================================================
 from Format_Analyzer import Format_Analyzer
 from globals import *
+from PIL import ImageFont
 from Rect import Rect
 
 

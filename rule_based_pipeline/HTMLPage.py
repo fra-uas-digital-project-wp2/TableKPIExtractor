@@ -9,9 +9,20 @@
 # Note   : 1 HTMLPage consistens of * HTMLCluster
 # Note   : 1 HTMLDirectory consistens of * HTMLPages
 # ============================================================================================================================
-from HTMLTable import *
-from HTMLCluster import *
 import copy
+from Format_Analyzer import Format_Analyzer
+from globals import *
+import jsonpickle
+import html
+from HTMLCluster import HTMLCluster, CLUSTER_DISTANCE_MODE_EUCLIDIAN, CLUSTER_DISTANCE_MODE_RAW_TEXT
+from HTMLItem import HTMLItem
+from HTMLTable import HTMLTable
+from HTMLWord import HTMLWord
+from PIL import ImageDraw, Image, ImageFont
+import re
+from Rect import Rect
+import shutil
+import statistics
 
 
 class HTMLPage:

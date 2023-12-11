@@ -6,17 +6,8 @@
 # ============================================================================================================================
 import codecs
 import config_for_rb
-from copy import deepcopy
 import glob
-import html
-import json
-import jsonpickle
-import math
 import os
-from PIL import Image, ImageDraw, ImageFont
-import re
-import shutil
-import statistics
 import sys
 
 ALIGN_DEFAULT = 0

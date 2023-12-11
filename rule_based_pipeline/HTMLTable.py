@@ -7,9 +7,13 @@
 # Note   : 1 HTMLTable referes to * HTMLItems
 # Note   : 1 HTMLPage consistens of * HTMLTables
 # ============================================================================================================================
+from ConsoleTable import ConsoleTable
+from copy import deepcopy
+from Format_Analyzer import Format_Analyzer
+from globals import *
+import math
+from Rect import Rect
 import time
-from HTMLItem import *
-from ConsoleTable import *
 
 
 class HTMLTable:
