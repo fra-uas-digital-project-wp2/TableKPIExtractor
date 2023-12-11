@@ -8,6 +8,7 @@ from ConsoleTable import ConsoleTable
 from Format_Analyzer import Format_Analyzer
 
 
+# TODO:I think we don't need this class! -> delete or need refactor
 class TestDataSample:
     """
     Class representing a data sample for testing.
