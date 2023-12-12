@@ -87,7 +87,7 @@ class DataImportExport:
             json_file (str): Path to the JSON file.
 
         Returns:
-            json_data: The loaded object.
+            json_data (str): The loaded json data.
         """
         with open(json_file, "r") as file:
             data = file.read()

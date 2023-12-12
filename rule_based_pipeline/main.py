@@ -111,9 +111,10 @@ def analyze_and_save_results(pdf_name, kpis, info_file_contents):
     Returns:
         KPIResultSet: Results of the analysis.
     """
-    kpi_results = KPIResultSet(kpi_measures=[])
+    kpi_results = KPIResultSet()
     # to analyze specific page, add e.g.:  wildcard_restrict_page=*00042
-    cur_kpi_results = analyze_pdf(config_for_rb.global_raw_pdf_folder + pdf_name, kpis, info_file_contents)
+    input_pdf = config_for_rb.global_raw_pdf_folder + pdf_name
+    cur_kpi_results = analyze_pdf(input_pdf, kpis, info_file_contents)
     kpi_results.extend(cur_kpi_results)
     kpi_results.save_to_csv_file(config_for_rb.global_output_folder + pdf_name + r'.csv')
     print_verbose(1, "RESULT FOR " + pdf_name)
@@ -292,9 +293,6 @@ def main():
     # Load information from the file info.json
     json_file_name = remove_trailing_slash(config_for_rb.global_working_folder) + '/info.json'
     info_file_contents = DataImportExport.load_path_files_from_json_file(json_file_name)
-
-    # print(info_file_contents)
-    # return info_file_contents
 
     # Record the start time for performance measurement
     time_start = time.time()
