@@ -1,0 +1,7 @@
+jsonpickle
+numpy 
+pandas 
+Pillow==9.5
+PyPDF2 
+scipy
+PyCryptodome

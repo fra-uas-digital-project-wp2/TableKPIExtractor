@@ -16,6 +16,26 @@ log_file_name = 'app.log'
 log = os.path.join(ABS_DIR,log_file_name)
 logging.basicConfig(level=logging.DEBUG,filename=log, filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
+def check_dirs():
+    os.makedirs(os.path.join(os.path.dirname(os.path.realpath(__file__)),config.global_corrupted_pdf),exist_ok=True)
+    os.makedirs(os.path.join(os.path.dirname(os.path.realpath(__file__)),config.global_working_folder),exist_ok=True)
+
+def exec_corrupted_input_check():
+    corrupted_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),config.global_corrupted_pdf)
+    check_pdf_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),config.global_corrupted_folder)
+    raw_pdf_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),config.global_input_folder)
+    
+    if not os.path.exists(raw_pdf_dir) :
+        return False
+    
+    corrupt_check_arguments = [
+        '--dirpath',raw_pdf_dir,
+        '--output',check_pdf_dir,
+        '--corruptedpath',corrupted_dir
+    ]
+    
+    exec = os.path.join(check_pdf_dir,'main.py')
+    subprocess.run(['python',exec]+corrupt_check_arguments,check=True)
 
 
 def exec_rule_based_engine():
@@ -59,6 +79,10 @@ def exec_evaluate_component():
         return False
 
 def main():
+
+    check_dirs()
+
+    exec_corrupted_input_check()
     
     success = exec_rule_based_engine()
     

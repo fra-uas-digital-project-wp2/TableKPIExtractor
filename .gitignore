@@ -4,3 +4,6 @@ raw_pdf/
 output_evaluate_component/
 output_rule_based_pipeline/
 rule_based_pipeline_workdir/
+raw_pdf - Kopie/
+corrupted_pdf/
+checkPDFCorrupted/result.csv
