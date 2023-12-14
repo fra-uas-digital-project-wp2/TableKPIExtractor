@@ -4,8 +4,12 @@
 # Author : Ismail Demir (G124272)
 # Date   : 05.08.2020
 # ============================================================================================================================
-
-from Format_Analyzer import *
+import config_for_rb
+from Format_Analyzer import Format_Analyzer
+import glob
+from globals import remove_trailing_slash, print_verbose, file_exists
+import jsonpickle
+import shutil
 
 
 class DataImportExport:
@@ -68,30 +72,56 @@ class DataImportExport:
         jsonpickle.set_preferred_backend('json')
         jsonpickle.set_encoder_options('json', sort_keys=True, indent=4)
         data = jsonpickle.encode(info_file_contents)
-        f_info = open(remove_trailing_slash(config.global_working_folder) + '/info.json', "w")
+        f_info = open(remove_trailing_slash(config_for_rb.global_working_folder) + '/info.json', "w")
         f_info.write(data)
         f_info.close()
 
         return res
 
     @staticmethod
-    def save_info_file_contents(file_paths):
-        info_file_contents = {}
+    def load_path_files_from_json_file(json_file):
+        """
+        Load the paths of the files from a JSON file.
 
-        for f in file_paths:
-            info_file_contents[f[0]] = f[0]
+        Args:
+            json_file (str): Path to the JSON file.
 
-        jsonpickle.set_preferred_backend('json')
-        jsonpickle.set_encoder_options('json', sort_keys=True, indent=4)
-        data = jsonpickle.encode(info_file_contents)
-        f_info = open(remove_trailing_slash(config.global_working_folder) + '/info.json', "w")
-        f_info.write(data)
-        f_info.close()
+        Returns:
+            json_data (str): The loaded json data.
+        """
+        with open(json_file, "r") as file:
+            data = file.read()
+        json_data = jsonpickle.decode(data)
+        return json_data
 
     @staticmethod
-    def load_info_file_contents(json_file):
-        f = open(json_file, "r")
-        data = f.read()
-        f.close()
-        obj = jsonpickle.decode(data)
-        return obj
+    def save_path_files_to_json_file(file_paths):
+        """
+        Saves paths of the files to a JSON file named 'info.json'.
+
+        Args:
+            file_paths (list): A list of file paths.
+
+        Returns:
+            None
+        """
+        info_file_contents = {}
+
+        for file_info in file_paths:
+            # save paths of the files to info_file_contents:
+            # example: "raw_pdf/example.pdf": "raw_pdf/example.pdf"
+            info_file_contents[file_info[0]] = file_info[0]
+
+        # Set up jsonpickle options for encoding
+        jsonpickle.set_preferred_backend('json')
+        jsonpickle.set_encoder_options('json', sort_keys=True, indent=4)
+
+        # Encode the info_file_contents dictionary into JSON format
+        json_data = jsonpickle.encode(info_file_contents)
+
+        # Construct the file path for the 'info.json' file
+        info_file_path = remove_trailing_slash(config_for_rb.global_working_folder) + '/info.json'
+
+        # Write the JSON data to the 'info.json' file
+        with open(info_file_path, "w") as info_file:
+            info_file.write(json_data)

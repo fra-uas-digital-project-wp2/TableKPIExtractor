@@ -4,23 +4,11 @@
 # Author : Ismail Demir (G124272)
 # Date   : 12.06.2020
 # ============================================================================================================================
-# -*- coding: utf-8 -*-
-
-import re
-import sys, codecs
-from datetime import datetime
-import os, glob
-import argparse
-from PIL import Image, ImageDraw, ImageFont
-from copy import deepcopy
-import time
-import statistics
-import json
-import jsonpickle
-import html
-import shutil
-import config
-import math
+import codecs
+import config_for_rb
+import glob
+import os
+import sys
 
 ALIGN_DEFAULT = 0
 ALIGN_LEFT = 1
@@ -34,17 +22,17 @@ CAT_HEADLINE = 2
 CAT_OTHER_TEXT = 3
 CAT_TABLE_DATA = 4
 CAT_TABLE_HEADLINE = 5
-CAT_TABLE_SPECIAL = 6  # e.g., annonations
+CAT_TABLE_SPECIAL = 6  # e.g., annotations
 CAT_MISC = 7  # probably belongs to figures
 CAT_FOOTER = 8  # bugfix 26.07.2022
-CAT_FOOTNOTE = 9  # new categorie for finding footnotes
+CAT_FOOTNOTE = 9  # new categories for finding footnotes
 
 # Other constants
 DEFAULT_VTHRESHOLD = 15.0 / 609.0  # 609px is sample page width
 DEFAULT_SPECIAL_ITEM_MAX_DIST = 15.0 / 609.0  # 609px is sample page width
 DEFAULT_HTHROWAWAY_DIST = 0.3
 DEFAULT_SPECIAL_ITEM_CUTOFF_DIST = 15.0 / 609.9  # 609px is sample page width
-DEFAULT_FLYSPECK_HEIGHT = 3.0 / 841.0  # 841.0 is sampe page height
+DEFAULT_FLYSPECK_HEIGHT = 3.0 / 841.0  # 841.0 is sample page height
 
 # Rendering options
 RENDERING_USE_CLUSTER_COLORS = False
@@ -61,19 +49,19 @@ def wait_for_user():
 
 
 def print_big(txt, do_wait=True):
-    if (config.global_verbosity == 0):
+    if config_for_rb.global_verbosity == 0:
         return
-    if (do_wait):
+    if do_wait:
         wait_for_user()
     print("=======================================")
     print(txt.upper())
     print("=======================================")
-    if (do_wait):
+    if do_wait:
         wait_for_user()
 
 
 def print_verbose(verbosity, txt):
-    if (verbosity <= config.global_verbosity):
+    if verbosity <= config_for_rb.global_verbosity:
         print(str(txt))
 
 
@@ -114,7 +102,7 @@ def get_text_width(text, font):
 
 def get_html_out_dir(fname):
     fname = '/' + fname.replace('\\', '/')
-    return config.global_working_folder + r'html/' + fname[(fname.rfind(r'/') + 1):] + r'.html_dir'
+    return config_for_rb.global_working_folder + r'html/' + fname[(fname.rfind(r'/') + 1):] + r'.html_dir'
 
 
 def save_txt_to_file(txt, fname):

@@ -4,8 +4,8 @@
 # Author : Ismail Demir (G124272)
 # Date   : 19.06.2020
 # ============================================================================================================================
-
-from Format_Analyzer import *
+from Format_Analyzer import Format_Analyzer
+from globals import remove_trailing_slash
 
 
 class KPIMeasure:
