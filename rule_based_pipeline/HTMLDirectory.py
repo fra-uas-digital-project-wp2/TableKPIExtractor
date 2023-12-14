@@ -7,9 +7,9 @@
 # Note   : 1 HTMLDirectory consistens of * HTMLPages
 # Note   : 1 HTMLDirectory corresponds to 1 PDF-File
 # ============================================================================================================================
-
-from HTMLPage import *
+from HTMLPage import HTMLPage
 from Format_Analyzer import *
+import shutil
 
 
 class HTMLDirectory:
@@ -24,7 +24,7 @@ class HTMLDirectory:
     def call_pdftohtml(infile, outdir):
         print_verbose(2, '-> call pdftohtml_mod ' + infile)
         os.system(
-            config.global_exec_folder + r'/pdftohtml_mod/pdftohtml_mod "' + infile + '" "' + remove_trailing_slash(
+            config_for_rb.global_exec_folder + r'/pdftohtml_mod/pdftohtml_mod "' + infile + '" "' + remove_trailing_slash(
                 outdir) + '"')  # TODO: Specify correct path here!
 
     @staticmethod

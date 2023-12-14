@@ -7,10 +7,10 @@
 # Note   : 1 HTMLItem consists of * HTMLWords
 # Note   : 1 HTMLPage consists of * HTMLItems
 # ============================================================================================================================
-
-from globals import *
-from HTMLWord import *
 from Format_Analyzer import Format_Analyzer
+from globals import *
+from PIL import ImageFont
+from Rect import Rect
 
 
 class HTMLItem:
@@ -414,7 +414,7 @@ class HTMLItem:
                 "L" if self.alignment == ALIGN_LEFT else "R" if self.alignment == ALIGN_RIGHT else "C") + ", brightness=" + str(
                 self.brightness) \
             + (", cat=" + str(self.category) + ", tmp_ass=" + str(
-                self.temp_assignment) if config.global_verbosity >= 8 else "") \
+                self.temp_assignment) if config_for_rb.global_verbosity >= 8 else "") \
             + ", depth=" + str(self.get_depth()) + ",font_size=" + str(
                 self.font_size) + ", txt='" + self.txt + "', id=" + str(self.this_id) + ", pid=" + str(
                 self.prev_id) + ", nid=" + str(self.next_id) + ">"

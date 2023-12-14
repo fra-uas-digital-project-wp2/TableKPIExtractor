@@ -6,10 +6,11 @@
 #
 # Note   : 1 AnalyzerPage refers to * AnalyzerTable (one for each HTMLTable on that page)
 # ============================================================================================================================
-
-
-from KPISpecs import *
-from KPIMeasure import *
+from Format_Analyzer import Format_Analyzer
+from globals import *
+from HTMLItem import HTMLItem
+from KPIMeasure import KPIMeasure
+from Rect import Rect
 
 HIERARCHY_DIR_UP = 0
 HIERARCHY_DIR_LEFT = 1

@@ -6,7 +6,6 @@
 #
 # Note   : 1 AnalyzerPage refers to * AnalyzerCluster (for the root-node of each cluster)
 # ============================================================================================================================
-
 from Format_Analyzer import Format_Analyzer
 from globals import dist, print_verbose
 from KPISpecs import KPISpecs

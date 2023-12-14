@@ -7,10 +7,13 @@
 # Note   : 1 HTMLTable referes to * HTMLItems
 # Note   : 1 HTMLPage consistens of * HTMLTables
 # ============================================================================================================================
-
+from ConsoleTable import ConsoleTable
+from copy import deepcopy
+from Format_Analyzer import Format_Analyzer
 from globals import *
-from HTMLItem import *
-from ConsoleTable import *
+import math
+from Rect import Rect
+import time
 
 
 class HTMLTable:
@@ -190,7 +193,7 @@ class HTMLTable:
         # Calc table rect
         for i in range(self.num_rows):
             for j in range(self.num_cols):
-                if (self.has_item_at(i, j)):
+                if self.has_item_at(i, j):
                     table_rect.grow(self.get_item(i, j).get_rect())
 
         self.table_rect = table_rect
@@ -466,23 +469,23 @@ class HTMLTable:
             if (min_y1 == 9999999 or min_y0 == 9999999):
                 return True  # at least one row was empty => consider always as connected
 
-            y_limit = min_y0 + (
-                    max_y0 - min_y0) * config.global_row_connection_threshold  # at least space that woulld occupy 4x row r0 are (not) empty #New: 27.06.2022 (was previously: * 4)
+            # at least space that would occupy 4x row r0 are (not) empty #New: 27.06.2022 (was previously: * 4)
+            y_limit = min_y0 + (max_y0 - min_y0) * config_for_rb.global_row_connection_threshold
 
-            if (min_y1 <= y_limit):
+            if min_y1 <= y_limit:
                 return True
 
             sp_idx = self.find_special_item_idx_in_rect(self.rows[r0])
 
             for k in sp_idx:
                 cur_y = self.items[k].pos_y
-                if (cur_y <= y_limit):
+                if cur_y <= y_limit:
                     return True
 
             return False
 
         for i in range(self.num_rows - 1):
-            if (not is_connected_row(i)):
+            if not is_connected_row(i):
                 print_verbose(5, "Throw away non-connected rows after /excl. :" + str(i))
                 print_verbose(5, "Current table: " + str(self))
                 self.delete_rows(i + 1, self.num_rows)
@@ -490,7 +493,7 @@ class HTMLTable:
 
     def throw_away_rows_after_new_header(self):
 
-        if (self.num_cols < 2 or self.num_rows < 3):
+        if self.num_cols < 2 or self.num_rows < 3:
             return
 
         num_numeric_rows = 0
@@ -499,31 +502,31 @@ class HTMLTable:
         last_delta_y = 9999999
 
         for i in range(self.num_rows):
-            if (self.has_item_at(i, 0) and Format_Analyzer.looks_words(self.get_item(i, 0).txt)):
+            if self.has_item_at(i, 0) and Format_Analyzer.looks_words(self.get_item(i, 0).txt):
                 num_rows_with_left_txt += 1
             cur_numeric_values = 0
             cur_header_values = 0
             cur_other_values = 0
             cur_pos_y = 9999999
             for j in range(1, self.num_cols):
-                if (self.has_item_at(i, j)):
-                    if (cur_pos_y == 9999999):
+                if self.has_item_at(i, j):
+                    if cur_pos_y == 9999999:
                         cur_pos_y = self.get_item(i, j).pos_y
                     txt = self.get_item(i, j).txt
-                    if (Format_Analyzer.looks_numeric(txt) and not Format_Analyzer.looks_year(txt)):
+                    if Format_Analyzer.looks_numeric(txt) and not Format_Analyzer.looks_year(txt):
                         cur_numeric_values += 1
                     elif ((Format_Analyzer.looks_words(txt) and txt[0].isupper()) or Format_Analyzer.looks_year(txt)):
                         cur_header_values += 1
                     else:
                         cur_other_values += 1
 
-            if (cur_numeric_values > max(self.num_cols * 0.6, 1)):
+            if cur_numeric_values > max(self.num_cols * 0.6, 1):
                 num_numeric_rows += 1
 
             cur_delta_y = cur_pos_y - last_pos_y
 
-            if (num_rows_with_left_txt > 2 and num_numeric_rows > 2 and cur_delta_y > last_delta_y * 1.05 + 2):
-                if (cur_numeric_values == 0 and cur_header_values > 0 and cur_other_values == 0):
+            if num_rows_with_left_txt > 2 and num_numeric_rows > 2 and cur_delta_y > last_delta_y * 1.05 + 2:
+                if cur_numeric_values == 0 and cur_header_values > 0 and cur_other_values == 0:
                     print_verbose(5, "Throw away non-connected rows after probably new headline at row = " + str(
                         i) + ", cur/last_delta_y=" + str(cur_delta_y) + "/" + str(last_delta_y))
                     self.delete_rows(i, self.num_rows)
@@ -534,17 +537,17 @@ class HTMLTable:
 
     def throw_away_last_headline(self):
         # a headline at the end of a table probably doesnt belong to it, rather, it belongs to the next table
-        if (self.num_rows < 2 or self.num_cols < 2):
+        if self.num_rows < 2 or self.num_cols < 2:
             return
 
-        if (not self.has_non_empty_item_at(self.num_rows - 1, 0)):
+        if not self.has_non_empty_item_at(self.num_rows - 1, 0):
             return
 
-        if (Format_Analyzer.looks_numeric(self.get_item(self.num_rows - 1, 0).txt)):
+        if Format_Analyzer.looks_numeric(self.get_item(self.num_rows - 1, 0).txt):
             return
 
         for j in range(1, self.num_cols):
-            if (self.has_non_empty_item_at(self.num_rows - 1, j)):
+            if self.has_non_empty_item_at(self.num_rows - 1, j):
                 return
 
         self.delete_rows(self.num_rows - 1, self.num_rows)
@@ -555,21 +558,21 @@ class HTMLTable:
             max_x0 = -1
             min_x1 = 9999999
             for i in range(self.num_rows):
-                if (self.has_item_at(i, c0)):
+                if self.has_item_at(i, c0):
                     min_x0 = min(min_x0, self.get_item(i, c0).pos_x)
                     max_x0 = max(max_x0, self.get_item(i, c0).pos_x + self.get_item(i, c0).width)
-                if (self.has_item_at(i, c0 + 1)):
+                if self.has_item_at(i, c0 + 1):
                     min_x1 = min(min_x1, self.get_item(i, c0 + 1).pos_x)
 
-            if (min_x1 == 9999999 or min_x0 == 9999999):
+            if min_x1 == 9999999 or min_x0 == 9999999:
                 return True  # at least one col was empty => consider always as connected
 
-            if (min_x1 <= max_x0 + DEFAULT_HTHROWAWAY_DIST * page_width):  # at least that much space is not empty
+            if min_x1 <= max_x0 + DEFAULT_HTHROWAWAY_DIST * page_width:  # at least that much space is not empty
                 return True
 
             num_reg_text = 0
             for i in range(self.num_rows):
-                if (not self.has_item_at(i, c0)):
+                if not self.has_item_at(i, c0):
                     continue
                 y0 = self.get_item(i, c0).pos_y
                 y1 = self.get_item(i, c0).pos_y + self.get_item(i, c0).height
@@ -577,7 +580,7 @@ class HTMLTable:
                 x1 = min_x1
                 cur_rect = Rect(x0, y0, x1, y1)
                 for it in self.items:
-                    if (it.category not in [CAT_HEADLINE, CAT_OTHER_TEXT, CAT_RUNNING_TEXT, CAT_FOOTER]):
+                    if it.category not in [CAT_HEADLINE, CAT_OTHER_TEXT, CAT_RUNNING_TEXT, CAT_FOOTER]:
                         continue
                     it_rect = it.get_rect()
                     if (Rect.calc_intersection_area(cur_rect, it_rect) > 0):
@@ -737,7 +740,7 @@ class HTMLTable:
                 print_verbose(6, "-------->> throw away because : " + str(yc))
                 can_throw_away = True
 
-        if (can_throw_away):
+        if can_throw_away:
             self.delete_cols(year_cols[max_overlap_yc].c1 + 1, self.num_cols)
 
     def throw_away_duplicate_looking_cols(
@@ -757,7 +760,7 @@ class HTMLTable:
                 return
 
     def identify_headline(self):
-        if (self.num_rows == 0 or self.num_cols == 0):
+        if self.num_rows == 0 or self.num_cols == 0:
             return
 
         if not self.has_item_at(0, 0) or not Format_Analyzer.looks_words(self.get_item(0, 0).txt):
@@ -775,9 +778,9 @@ class HTMLTable:
             num_numbers = 0
             num_words = 0
             for i in range(self.num_rows):
-                if (self.has_item_at(i, c0)):
+                if self.has_item_at(i, c0):
                     txt = self.get_item(i, c0).txt
-                    if (Format_Analyzer.looks_numeric(txt)):
+                    if Format_Analyzer.looks_numeric(txt):
                         num_numbers += 1
                     elif (Format_Analyzer.looks_words(txt)):
                         num_words += 1
@@ -788,12 +791,12 @@ class HTMLTable:
                 if (self.has_item_at(r0, j)):
                     return False
             for j in range(c0 + 1, self.num_cols):
-                if (self.has_item_at(r0, j)):
+                if self.has_item_at(r0, j):
                     return False
             return True
 
         for j in range(self.num_cols):
-            if (col_looks_numeric(j)):
+            if col_looks_numeric(j):
                 print_verbose(5, 'Numeric col found : ' + str(j))
                 # find first possible special item of this col
                 r0 = self.find_first_non_empty_row_in_col(j)
@@ -859,7 +862,7 @@ class HTMLTable:
 
         def find_first_overlapping_col(boundaries):
             for j in range(self.num_cols - 1):
-                if (boundaries[j][1] == -1):
+                if boundaries[j][1] == -1:
                     continue  # skip empty columns
 
                 # find nextnon-empty col
@@ -870,7 +873,7 @@ class HTMLTable:
                 if k == self.num_cols:
                     return -1  # only empty columns left
 
-                if (boundaries[j][0] + (boundaries[j][1] - boundaries[j][0]) * 0.99 > boundaries[k][0]):
+                if boundaries[j][0] + (boundaries[j][1] - boundaries[j][0]) * 0.99 > boundaries[k][0]:
                     # 0.99 tolerance, because sometimes font width is overestimated
                     return j
             return -1
@@ -904,35 +907,25 @@ class HTMLTable:
 
             if (rec_counter % 1000 == 0):
                 t_now = time.time()
-                if (t_now - t_start > config.global_max_identify_complex_items_timeout):  # max 5 sec TODO
+                if (t_now - t_start > config_for_rb.global_max_identify_complex_items_timeout):  # max 5 sec TODO
                     timeout = True
 
-            if (num_sp_items >= lowest_num_so_far or timeout):
+            if num_sp_items >= lowest_num_so_far or timeout:
                 print_verbose(20, "No better solution exists")
                 return 9999999, []  # we cant find a better solution
 
             first_overlapping_col = find_first_overlapping_col(tmp_boundaries)
-            if (first_overlapping_col == -1):
+            if first_overlapping_col == -1:
                 print_verbose(9, "Found solution, num_sp_items=" + str(num_sp_items))
                 return num_sp_items, [last_sp_ix]  # we found allowed set, where only num_sp_items items are excluded
-
-            # raise ValueError('first_overlapping_col='+str(first_overlapping_col))
 
             possible_overlap_ix = find_possible_overlapping_ix(first_overlapping_col, tmp_idx, tmp_boundaries)
             best_sp_ix = []
 
-            # raise ValueError('possible_overlap_ix='+str(possible_overlap_ix))
-
-            # print_verbose(15, "num_sp_item="+str(num_sp_items)+", Boundaries = "+str(tmp_boundaries)+", first_overlapping_col = " \
-            #              +str(first_overlapping_col) + " lowest_num_so_far="+str(lowest_num_so_far)) # ", possible_overlap_ix= " +str(possible_overlap_ix) +
-
             for ix in possible_overlap_ix:
                 # try this ix
-                if (looks_numeric[ix]):
+                if looks_numeric[ix]:
                     continue  # never use numbers as special items
-
-                # if(num_sp_items==0):
-                #	print_verbose(0, "---> Trying: " +str(self.items[tmp_idx[ix]]))
 
                 col = ix % self.num_cols
 
@@ -943,10 +936,10 @@ class HTMLTable:
                 cur_lowest_num, cur_sp_ix = find_allowed_set_rec(tmp_idx, num_sp_items + 1, ix, lowest_num_so_far)
                 tmp_idx[ix] = old
                 tmp_boundaries[col] = old_bdry
-                if (cur_lowest_num < lowest_num_so_far):
+                if cur_lowest_num < lowest_num_so_far:
                     lowest_num_so_far = cur_lowest_num
                     best_sp_ix = cur_sp_ix
-                if (cur_lowest_num == num_sp_items + 1):
+                if cur_lowest_num == num_sp_items + 1:
                     break  # we cannot find a better solution, so escape early
 
             return lowest_num_so_far, best_sp_ix + [last_sp_ix]
@@ -967,22 +960,17 @@ class HTMLTable:
         print_verbose(3, "---> find_allowed_set_rec completed after time=" + str(
             t_end - t_start) + "sec,  recursions=" + str(rec_counter))
 
-        if (timeout and lowest_num_so_far == 9999999):
-            # we coulnt find a solution => give up on this table
+        if timeout and lowest_num_so_far == 9999999:
+            # we couldn't find a solution => give up on this table
             print_verbose(3, "---> No solution. Give up")
-            # for k in range(len(self.idx)):
-            #	self.special_idx.append(self.idx[k])
-            #	self.idx[k] = -1
             return
 
-        if (lowest_num_so_far == 9999999):
-            # print(str(self))
-            # raise ValueError('Some columns are overlapping, but after backtracking, no items were found that could be removed.')
+        if lowest_num_so_far == 9999999:
             return
 
-        # make sure, that we dont throw out too much items
+        # make sure, that we don't throw out too many items
         for ix in sp_ix:
-            if (ix != -1):
+            if ix != -1:
                 tmp_idx[ix] = -1
 
         tmp_bdry = calc_col_boundaries(tmp_idx)
@@ -994,12 +982,9 @@ class HTMLTable:
                 # could this one stay?
                 tmp_idx[ix] = self.idx[ix]
                 tmp_bdry = calc_col_boundaries(tmp_idx)
-                # print(self.items[self.idx[ix]].txt)
-                # print(tmp_bdry)
-                if (find_first_overlapping_col(tmp_bdry) != -1):
+                if find_first_overlapping_col(tmp_bdry) != -1:
                     # no, it can't
                     sp_ix_final.append(ix)
-                # print('----> No!')
                 tmp_idx[ix] = -1
 
         for ix in sp_ix_final:
@@ -1126,7 +1111,7 @@ class HTMLTable:
         print_verbose(3, "===============>>>>>>>>>>>>>>>> Cleanup done <<<<<<<<<<<< =====================")
 
     def is_good_table(self):
-        neccessary_actual_items = 4 if not config.global_be_more_generous_with_good_tables else 2
+        neccessary_actual_items = 4 if not config_for_rb.global_be_more_generous_with_good_tables else 2
         if not (self.num_rows >= 2 and self.num_cols >= 2 and self.count_actual_items() >= neccessary_actual_items):
             print_verbose(7, "----->> bad, reason:1")
             return False
@@ -1162,7 +1147,7 @@ class HTMLTable:
         return (cnt_numerics > 3 and density > 0.6) or (cnt_numerics > 7 and density > 0.4) or cnt_numerics > 10 \
             or (cnt_weak_numerics > 3 and num_items > 5 and density > 0.4) \
             or (
-                    cnt_weak_numerics > 0 and num_items > 2 and density > 0.4 and config.global_be_more_generous_with_good_tables)
+                    cnt_weak_numerics > 0 and num_items > 2 and density > 0.4 and config_for_rb.global_be_more_generous_with_good_tables)
 
     def categorize_as_table(self):
         print_verbose(7, "--> Categorize as new table: " + str(self))

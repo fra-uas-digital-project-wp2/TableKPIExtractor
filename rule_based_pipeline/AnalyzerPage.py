@@ -7,7 +7,6 @@
 # Note   : 1 AnalyzerPage refers to * AnalyzerTable (one for each HTMLTable on that page)
 # Note   : 1 AnalyzerDirectory refers to * AnalyzerPage (one for each HTMLPage in that directory, resp. pdf-file)
 # ============================================================================================================================
-
 from HTMLPage import HTMLPage
 from AnalyzerTable import AnalyzerTable
 from AnalyzerCluster import AnalyzerCluster

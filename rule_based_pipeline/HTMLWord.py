@@ -6,9 +6,7 @@
 #
 # Note   : 1 HTMLItem consists of * HTMLWords
 # ============================================================================================================================
-
-
-from Rect import *
+from Rect import Rect
 
 
 class HTMLWord:
