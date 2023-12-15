@@ -138,14 +138,14 @@ class TestEvaluation:
             self.measure_precision = 0.0
             self.measure_recall = 0.0
 
-    def to_string(self, max_width, min_col_width, format):
+    def to_string(self, max_width, min_col_width, console_table_format):
         """
         Convert the evaluation results to a formatted string.
 
         Args:
             max_width (int): Maximum width of the output string.
             min_col_width (int): Minimum width of each column.
-            format (str): Output format (e.g., ConsoleTable.FORMAT_CSV).
+            console_table_format (str): Output format (e.g., ConsoleTable.FORMAT_CSV).
 
         Returns:
             str: Formatted string representation of the evaluation results.
@@ -169,7 +169,7 @@ class TestEvaluation:
             ])
 
         # Generate formatted string
-        result = console_table.to_string(max_width, min_col_width, format)
+        result = console_table.to_string(max_width, min_col_width, console_table_format)
 
         # Add summary information to the result string
         result += "\nSUMMARY:\n"
