@@ -105,13 +105,22 @@ class TestEvaluation:
     def do_evaluations(self):
         """
         Perform evaluations based on collected samples.
+
+        Updates the evaluation metrics including true positives, false positives,
+        true negatives, false negatives, precision, and recall.
         """
+
+        # Initialize evaluation counters
         self.num_true_positive = 0
         self.num_false_positive = 0
         self.num_true_negative = 0
         self.num_false_negative = 0
+
+        # Iterate through collected samples
         for e in self.eval_samples:
             eval_id = e.eval()
+
+            # Update counters based on evaluation results
             if eval_id == TestEvaluation.EVAL_TRUE_POSITIVE:
                 self.num_true_positive += 1
             if eval_id == TestEvaluation.EVAL_FALSE_POSITIVE:
@@ -121,6 +130,7 @@ class TestEvaluation:
             if eval_id == TestEvaluation.EVAL_FALSE_NEGATIVE:
                 self.num_false_negative += 1
 
+        # Calculate precision and recall
         if self.num_true_positive > 0:
             self.measure_precision = self.num_true_positive / float(self.num_true_positive + self.num_false_positive)
             self.measure_recall = self.num_true_positive / float(self.num_true_positive + self.num_false_negative)
@@ -140,12 +150,17 @@ class TestEvaluation:
         Returns:
             str: Formatted string representation of the evaluation results.
         """
+
+        # Initialize ConsoleTable for formatting
         console_table = ConsoleTable(7)
+
+        # Define column headers
         column_headers = [
             'KPI_ID', 'KPI_NAME', 'PDF_FILE', 'YEAR', 'TRUE VALUE', 'EXTRACTED VALUE', 'CLASSIFICATION'
         ]
         console_table.cells.extend(column_headers)
 
+        # Populate ConsoleTable with sample data
         for e in self.eval_samples:
             console_table.cells.extend([
                 str(e.kpispec.kpi_id), str(e.kpispec.kpi_name), str(e.pdf_file_name),
@@ -153,8 +168,10 @@ class TestEvaluation:
                 e.eval_to_str().upper()
             ])
 
+        # Generate formatted string
         result = console_table.to_string(max_width, min_col_width, format)
 
+        # Add summary information to the result string
         result += "\nSUMMARY:\n"
         result += "True Positives : " + str(self.num_true_positive) + "\n"
         result += "False Positives : " + str(self.num_false_positive) + "\n"
@@ -187,45 +204,58 @@ class TestEvaluation:
         Returns:
             TestEvaluation: Evaluation results.
         """
+
+        # Get unique PDF file names from the test data
         pdf_file_names = test_data.get_unique_list_of_pdf_files()
+
+        # Initialize TestEvaluation object to store evaluation results
         res = TestEvaluation()
 
+        # Iterate through each KPI specification for evaluation
         for kpi_spec in kpi_specs:
             print_verbose(1,
                           'Evaluating KPI: kpi_id=' + str(kpi_spec.kpi_id) + ', kpi_name="' + kpi_spec.kpi_name + '"')
+
+            # Iterate through each PDF file for evaluation
             for pdf_file_name in pdf_file_names:
                 print_verbose(1, '--->> Evaluating PDF = "' + pdf_file_name + '"')
 
-                # Find values in test data samples for this kpi/pdf:
+                # Find values in test data samples for this KPI/PDF
                 for s in test_data.samples:
                     if s.data_kpi_id == kpi_spec.kpi_id and s.fixed_source_file == pdf_file_name:
                         # match (True KPI exists in pdf)
                         cur_eval_sample = None
-                        # are there any matches in our results?
+
+                        # Check if there are any matches in the KPI results
                         for k in kpi_results.kpimeasures:
-                            if k.kpi_id == kpi_spec.kpi_id and k.src_file == pdf_file_name and k.year == s.data_year:  # yes (Extracted KPI exists)
+                            if k.kpi_id == kpi_spec.kpi_id and k.src_file == pdf_file_name and k.year == s.data_year:
                                 # yes (Extracted KPI exists)
                                 cur_eval_sample = TestEvaluation.TestEvalSample(kpi_spec, k, s, k.year, pdf_file_name)
                                 break
+
                         if cur_eval_sample is None:
-                            # no
+                            # no (True KPI exists but not extracted)
                             cur_eval_sample = TestEvaluation.TestEvalSample(kpi_spec, None, s, s.data_year,
                                                                             pdf_file_name)
                         res.eval_samples.append(cur_eval_sample)
 
-                # Any unmatched kpi results (i.e. extracted KPIs) left?
+                # Check for any unmatched KPI results (i.e., extracted KPIs)
                 for k in kpi_results.kpimeasures:
                     if k.src_file != pdf_file_name:
                         continue
                     found = False
+
+                    # Iterate through existing evaluation samples
                     for e in res.eval_samples:
                         if e.kpi_measure is not None and k.kpi_id == e.kpi_spec.kpi_id and k.year == e.year and e.kpi_measure.src_file == pdf_file_name:
                             found = True
                             break
+
                     if not found:
-                        # unmatched
+                        # unmatched (Extracted KPI not matched with any true KPI)
                         cur_eval_sample = TestEvaluation.TestEvalSample(kpi_spec, k, None, k.year, pdf_file_name)
                         res.eval_samples.append(cur_eval_sample)
 
+        # Perform evaluations based on collected samples
         res.do_evaluations()
         return res
