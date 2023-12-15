@@ -60,16 +60,20 @@ class TestEvaluation:
                 int: Evaluation code (True Positive, False Positive, True Negative, False Negative).
             """
             if self.kpi_measure is not None and self.test_sample is not None:
+                # Check if the absolute difference between extracted and true values is below a threshold
                 if abs(self.get_extracted_value() - self.get_true_value()) < 0.0001:
                     return TestEvaluation.EVAL_TRUE_POSITIVE
                 return TestEvaluation.EVAL_FALSE_POSITIVE
 
+            # No KPI measure, but there is a test sample (False Negative)
             if self.test_sample is not None:
                 return TestEvaluation.EVAL_FALSE_NEGATIVE
 
+            # No test sample, but there is a KPI measure (False Positive)
             if self.kpi_measure is not None:
                 return TestEvaluation.EVAL_FALSE_POSITIVE
 
+            # No KPI measure and no test sample (True Negative)
             return TestEvaluation.EVAL_TRUE_NEGATIVE
 
         def eval_to_str(self):
@@ -79,7 +83,9 @@ class TestEvaluation:
             Returns:
                 str: Human-readable evaluation result.
             """
+
             eval_id = self.eval()
+
             if eval_id == TestEvaluation.EVAL_TRUE_POSITIVE:
                 return "True Positive"
             if eval_id == TestEvaluation.EVAL_FALSE_POSITIVE:
