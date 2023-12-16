@@ -23,24 +23,18 @@ class TestData:
     """
     samples = None
 
-    # Constants variables
-    SRC_FILE_FORMAT_AUTO = 0
-    SRC_FILE_FORMAT_OLD = 1
-    SRC_FILE_FORMAT_NEW = 2
-
     def __init__(self):
         """
         Initializes an instance of the TestData class.
         """
         self.samples = []
 
-    def filter_kpis(self, by_kpi_id=None, by_data_type=None, by_source_file=None, by_has_fixed_source_file=False):
+    def filter_kpis(self, by_kpi_id=None, by_source_file=None, by_has_fixed_source_file=False):
         """
         Filters TestData samples based on specified criteria.
 
         Args:
             by_kpi_id (list): List of KPI IDs to filter by.
-            by_data_type (list): List of data types to filter by.
             by_source_file (list): List of source files to filter by.
             by_has_fixed_source_file (bool): Flag to filter samples with fixed source files.
 
@@ -50,13 +44,14 @@ class TestData:
         samples_new = []
         for s in self.samples:
             keep = True
-            if by_kpi_id is not None and s.data_kpi_id not in by_kpi_id:
+
+            if by_kpi_id is not None and s.kpi_id not in by_kpi_id:
                 keep = False
-            if by_data_type is not None and s.data_data_type not in by_data_type:
+
+            if by_source_file is not None and s.src_file not in by_source_file:
                 keep = False
-            if by_has_fixed_source_file and s.fixed_source_file is None:
-                keep = False
-            if by_source_file is not None and s.data_source_file not in by_source_file:
+
+            if by_has_fixed_source_file and s.src_file is None:
                 keep = False
 
             if keep:
@@ -98,7 +93,6 @@ class TestData:
 
         Args:
             src_file_path (str): Path to the CSV file.
-            src_file_format (int): Format of the CSV file (SRC_FILE_FORMAT_OLD or SRC_FILE_FORMAT_NEW).
 
         Returns:
             None
@@ -127,19 +121,19 @@ class TestData:
                 raise ValueError('Found invalid year "' + str(year) + '" at row ' + str(result_list))
 
             sample = TestDataSample()
-            sample.data_number = Format_Analyzer.to_int_number(result_list[0])  # 0
-            sample.data_sector = result_list[10]  # ''
-            sample.data_unit = 'N/A'
-            sample.data_answer = result_list[6]  # ''
-            sample.data_comments_questions = result_list[11]  # ''
-            sample.data_company = result_list[1]  # ''
-            sample.data_data_type = result_list[7]  # ''
-            sample.data_irrelevant_paragraphs = 'N/A'
-            sample.data_kpi_id = Format_Analyzer.to_float_number(result_list[4])  # 0
-            sample.data_relevant_paragraphs = result_list[8]  # ''
-            sample.data_source_file = result_list[2]  # ''
-            sample.data_source_page = Format_Analyzer.to_int_number(result_list[3])  # 0
-            sample.data_year = year  # 0
+            sample.kpi_id = result_list[0]
+            sample.kpi_name = result_list[1]
+            sample.src_file = result_list[2]
+            sample.page_num = result_list[3]
+            sample.item_ids = result_list[4]
+            sample.pos_x = result_list[5]
+            sample.pos_y = result_list[6]
+            sample.raw_txt = result_list[7]
+            sample.year = year
+            sample.value = Format_Analyzer.to_float_number(result_list[9])
+            sample.score = result_list[10]
+            sample.unit = result_list[11]
+            sample.match_type = result_list[12]
 
             self.samples.append(sample)
 
@@ -162,7 +156,7 @@ class TestData:
         Returns:
             list: A sorted list of unique fixed_source_file values.
         """
-        fixed_files = [sample.fixed_source_file for sample in self.samples]
+        fixed_files = [sample.src_file for sample in self.samples]
         unique_fixed_files = list(set(fixed_files))
         sorted_unique_fixed_files = sorted(unique_fixed_files, key=lambda sample: sample.lower())
         return sorted_unique_fixed_files

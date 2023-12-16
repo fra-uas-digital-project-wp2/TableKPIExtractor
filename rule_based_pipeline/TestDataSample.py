@@ -65,7 +65,7 @@ class TestDataSample:
         Returns:
             str: Formatted string representation of the TestDataSample instances.
         """
-        console_table = ConsoleTable(12)
+        console_table = ConsoleTable(13)
         console_table.cells.extend(
             ['KPI_ID', 'KPI_NAME', 'SRC_FILE', 'PAGE_NUM', 'ITEM_IDS', 'POS_X', 'POS_Y', 'RAW_TXT', 'YEAR', 'VALUE',
              'SCORE', 'UNIT', 'MATCH_TYPE'])

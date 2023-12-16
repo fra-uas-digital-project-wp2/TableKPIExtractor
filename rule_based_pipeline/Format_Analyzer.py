@@ -102,7 +102,7 @@ class Format_Analyzer:
         return int(float(s if limit_chars is None else s[0:limit_chars]))
 
     @staticmethod
-    def to_float_number(val, limit_chars=None):
+    def to_float_number(val):
         s = Format_Analyzer.cleanup_number(val)
         if s == '':
             return None

@@ -228,25 +228,24 @@ class TestEvaluation:
 
                 # Find values in test data samples for this KPI/PDF
                 for s in test_data.samples:
-                    if s.data_kpi_id == kpi_spec.kpi_id and s.fixed_source_file == pdf_file_name:
+                    if s.kpi_id == kpi_spec.kpi_id and s.src_file == pdf_file_name:
                         # match (True KPI exists in pdf)
                         cur_eval_sample = None
 
                         # Check if there are any matches in the KPI results
                         for k in kpi_results.kpimeasures:
-                            if k.kpi_id == kpi_spec.kpi_id and k.src_file == pdf_file_name and k.year == s.data_year:
+                            if k.kpi_id == kpi_spec.kpi_id and k.src_file == pdf_file_name and k.year == s.year:
                                 # yes (Extracted KPI exists)
                                 cur_eval_sample = TestEvaluation.TestEvalSample(kpi_spec, k, s, k.year, pdf_file_name)
                                 break
 
                         if cur_eval_sample is None:
                             # no (True KPI exists but not extracted)
-                            cur_eval_sample = TestEvaluation.TestEvalSample(kpi_spec, None, s, s.data_year,
-                                                                            pdf_file_name)
+                            cur_eval_sample = TestEvaluation.TestEvalSample(kpi_spec, None, s, s.year, pdf_file_name)
                         res.eval_samples.append(cur_eval_sample)
 
                 # Check for any unmatched KPI results (i.e., extracted KPIs)
-                for k in kpi_results.kpimeasures:
+                for k in kpi_results.kpi_measures:
                     if k.src_file != pdf_file_name:
                         continue
                     found = False

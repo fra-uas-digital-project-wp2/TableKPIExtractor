@@ -13,7 +13,7 @@ def evaluation():
 
     print_big("Data-set", False)
     print(test_data)
-    kpi_results = KPIResultSet.load_from_file(r'test_data/kpiresults_test_all_files_against_kpi_2_0.json')
+    kpi_results = KPIResultSet.load_from_file(r'rule_based_pipeline_workdir/info.json')
     print_big("Kpi-Results", do_wait=False)
     print(kpi_results)
     print_big("Kpi-Evaluation", do_wait=False)
