@@ -219,8 +219,7 @@ class TestEvaluation:
 
         # Iterate through each KPI specification for evaluation
         for kpi_spec in kpi_specs:
-            print_verbose(1,
-                          'Evaluating KPI: kpi_id=' + str(kpi_spec.kpi_id) + ', kpi_name="' + kpi_spec.kpi_name + '"')
+            print_verbose(1, 'Evaluating KPI: kpi_id=' + str(kpi_spec.kpi_id) + ', kpi_name="' + kpi_spec.kpi_name + '"')
 
             # Iterate through each PDF file for evaluation
             for pdf_file_name in pdf_file_names:

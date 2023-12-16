@@ -18,7 +18,7 @@ def evaluation():
     print(kpi_results)
     print_big("Kpi-Evaluation", do_wait=False)
     kpis = test_prepare_kpi_specs()
-    test_eval = TestEvaluation.generate_evaluation(kpis, None, test_data)
+    test_eval = TestEvaluation.generate_evaluation(kpis, kpi_results, test_data)
     print(test_eval)
 
 
