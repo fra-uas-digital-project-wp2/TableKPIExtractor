@@ -157,8 +157,11 @@ class TestData:
             list: A sorted list of unique fixed_source_file values.
         """
         fixed_files = [sample.src_file for sample in self.samples]
+
         unique_fixed_files = list(set(fixed_files))
+
         sorted_unique_fixed_files = sorted(unique_fixed_files, key=lambda sample: sample.lower())
+
         return sorted_unique_fixed_files
 
     def generate_dummy_test_data(self, pdf_folder, pdf_filter='*'):
@@ -229,21 +232,19 @@ class TestData:
             TestDataSample: The TestDataSample object with dummy data.
         """
         sample = TestDataSample()
-        sample.data_number = count
-        sample.data_sector = 'N/A'
-        sample.data_unit = 'N/A'
-        sample.data_answer = 'N/A'
-        sample.data_comments_questions = 'N/A'
-        sample.data_company = 'N/A'
-        sample.data_data_type = 'N/A'
-        sample.data_irrelevant_paragraphs = 'N/A'
-        sample.data_kpi_id = 0
-        sample.data_relevant_paragraphs = 'N/A'
-        sample.data_sector = 'N/A'
-        sample.data_source_file = file_name
-        sample.fixed_source_file = file_name
-        sample.data_source_page = 0
-        sample.data_year = 1900
+        sample.kpi_id = count
+        sample.src_file = file_name
+        sample.page_num = 0
+        sample.item_ids = []
+        sample.pos_x = 0.0
+        sample.pos_y = 0.0
+        sample.raw_txt = ''
+        sample.year = 'N/A'
+        sample.data_kpi_id = 1900
+        sample.value = 0
+        sample.score = 0
+        sample.unit = 'N/A'
+
         return sample
 
     def __repr__(self):
