@@ -5,9 +5,11 @@
 # Date   : 02.08.2020
 # ============================================================================================================================
 from DataImportExport import DataImportExport
+import csv
 from Format_Analyzer import Format_Analyzer
 from glob import glob
 from globals import print_verbose, save_txt_to_file
+from io import StringIO
 from TestDataSample import TestDataSample
 
 
@@ -27,9 +29,24 @@ class TestData:
     SRC_FILE_FORMAT_NEW = 2
 
     def __init__(self):
+        """
+        Initializes an instance of the TestData class.
+        """
         self.samples = []
 
     def filter_kpis(self, by_kpi_id=None, by_data_type=None, by_source_file=None, by_has_fixed_source_file=False):
+        """
+        Filters TestData samples based on specified criteria.
+
+        Args:
+            by_kpi_id (list): List of KPI IDs to filter by.
+            by_data_type (list): List of data types to filter by.
+            by_source_file (list): List of source files to filter by.
+            by_has_fixed_source_file (bool): Flag to filter samples with fixed source files.
+
+        Returns:
+            None
+        """
         samples_new = []
         for s in self.samples:
             keep = True
@@ -48,166 +65,94 @@ class TestData:
         self.samples = samples_new
 
     def get_pdf_list(self):
-        res = []
-        for s in self.samples:
-            res.append(s.data_source_file)
-        res = list(set(res))
-        res = sorted(res, key=lambda s: s.lower())
-        return res
+        """
+        Get a list of PDF files from TestData samples.
+
+        Returns:
+            list: A list of PDF file names.
+        """
+        result = [s.data_source_file for s in self.samples]
+        result = list(set(result))
+        result = sorted(result, key=lambda s: s.lower())
+        return result
 
     def fix_file_names(self, fix_list):
+        """
+        Fixes TestData sample file names based on the provided fix list.
+
+        Args:
+            fix_list (list): List of tuples containing old and new file names.
+
+        Returns:
+            None
+        """
         for i in range(len(self.samples)):
             for f in fix_list:
                 if self.samples[i].data_source_file == f[0]:
                     self.samples[i].fixed_source_file = f[1]
                     break
 
-    def load_from_csv(self, src_file_path, src_file_format=SRC_FILE_FORMAT_AUTO):
-        raw_data = ''
+    def load_from_csv(self, src_file_path):
+        """
+        Loads TestData samples from a CSV file.
 
-        def read_next_cell(p):
-            p0 = -1
-            p1 = -1
-            p2 = -1
-            # print("====>> p = "+str(p))
-            if raw_data[p:(p + 4)] == '"[""':
-                p0 = p + 4
-                p1 = raw_data.find('""]"', p + 1)
-                p2 = p1 + 4
-            elif raw_data[p] == '"':
-                p0 = p + 1
-                p_cur = p0
-                while True:
-                    p1 = raw_data.find('"', p_cur)
-                    if raw_data[p1 + 1] != '"':
-                        break
-                    p_cur = p1 + 2
+        Args:
+            src_file_path (str): Path to the CSV file.
+            src_file_format (int): Format of the CSV file (SRC_FILE_FORMAT_OLD or SRC_FILE_FORMAT_NEW).
 
-                p2 = p1 + 1
-            else:
-                p0 = p
-                p2_a = raw_data.find(',' if src_file_format == TestData.SRC_FILE_FORMAT_OLD else ';', p)
-                p2_b = raw_data.find('\n', p)
-                if p2_a == -1:
-                    p2 = p2_b
-                elif p2_b == -1:
-                    p2 = p2_a
-                else:
-                    p2 = min(p2_a, p2_b)
-
-                p1 = p2
-            # print("===>> p1="+str(p1))
-
-            if (p1 == -1 or raw_data[p2] not in (
-                    ',' if src_file_format == TestData.SRC_FILE_FORMAT_OLD else ';', '\n')):
-                raise ValueError(
-                    'No cell delimiter detected after position ' + str(p) + ' at "' + raw_data[p:p + 20] + '..."')
-
-            cell_data = raw_data[p0:p1].replace('\n', ' ')
-            # print("===>>>" + cell_data)
-
-            return cell_data, p2 + 1, raw_data[p2] == '\n'
-
-        def read_next_row(p, n):
-            res = []
-            for i in range(n):
-                cell_data, p, is_at_end = read_next_cell(p)
-                if i == n - 1:
-                    if not is_at_end:
-                        raise ValueError(
-                            'Row has not ended after position ' + str(p) + ' at "' + raw_data[p:p + 20] + '..."')
-                else:
-                    if is_at_end:
-                        raise ValueError(
-                            'Row has ended too early after position ' + str(p) + ' at "' + raw_data[p:p + 20] + '..."')
-                res.append(cell_data)
-
-            # print('==>> next row starts at pos '+str(p)  + ' at "'+raw_data[p:p+20]+'..."')
-            return res, p
-
-        if src_file_format == TestData.SRC_FILE_FORMAT_AUTO:
-            try:
-                # try old format:
-                print_verbose(2, 'Trying old csv format')
-                return self.load_from_csv(src_file_path, TestData.SRC_FILE_FORMAT_OLD)
-            except ValueError:
-                # try new format:
-                print_verbose(2, 'Trying new csv format')
-                return self.load_from_csv(src_file_path, TestData.SRC_FILE_FORMAT_NEW)
+        Returns:
+            None
+        """
 
         self.samples = []
 
         with open(src_file_path, errors='ignore', encoding="ascii") as f:
             data_lines = f.readlines()
 
-        # print(len(data_lines))
         for i in range(len(data_lines)):
             data_lines[i] = data_lines[i].replace('\n', '')
-        raw_data = '\n'.join(data_lines[1:]) + '\n'
 
-        # current format in sample csv file (old-format):
-        # Number,Sector,Unit,answer,"comments, questions",company,data_type,irrelevant_paragraphs,kpi_id,relevant_paragraphs,sector,source_file,source_page,year
+        raw_data = data_lines[1:]
 
-        # and for new format:
-        # Number;company;source_file;source_page;kpi_id;year;answer;data_type;relevant_paragraphs;annotator;sector;comments
+        result_list_of_lists = []
 
-        p = 0
+        for input_string in raw_data:
+            csv_reader = csv.reader(StringIO(input_string))
+            result_list = next(csv_reader)
+            result_list_of_lists.append(result_list)
 
-        while p < len(raw_data):
-            if src_file_format == TestData.SRC_FILE_FORMAT_OLD:
-                # parse next row
-                row_data, p = read_next_row(p, 14)
-                # print(row_data)
+        for result_list in result_list_of_lists:
+            year = Format_Analyzer.to_int_number(result_list[8], 4)
+            if not Format_Analyzer.looks_year(str(year)):
+                raise ValueError('Found invalid year "' + str(year) + '" at row ' + str(result_list))
 
-                year = Format_Analyzer.to_int_number(row_data[13], 4)
-                if not Format_Analyzer.looks_year(str(year)):
-                    raise ValueError('Found invalid year "' + str(year) + '" at row ' + str(row_data))
+            sample = TestDataSample()
+            sample.data_number = Format_Analyzer.to_int_number(result_list[0])  # 0
+            sample.data_sector = result_list[10]  # ''
+            sample.data_unit = 'N/A'
+            sample.data_answer = result_list[6]  # ''
+            sample.data_comments_questions = result_list[11]  # ''
+            sample.data_company = result_list[1]  # ''
+            sample.data_data_type = result_list[7]  # ''
+            sample.data_irrelevant_paragraphs = 'N/A'
+            sample.data_kpi_id = Format_Analyzer.to_float_number(result_list[4])  # 0
+            sample.data_relevant_paragraphs = result_list[8]  # ''
+            sample.data_source_file = result_list[2]  # ''
+            sample.data_source_page = Format_Analyzer.to_int_number(result_list[3])  # 0
+            sample.data_year = year  # 0
 
-                sample = TestDataSample()
-                sample.data_number = Format_Analyzer.to_int_number(row_data[0])  # 0
-                sample.data_sector = row_data[1]  # ''
-                sample.data_unit = row_data[2]  # ''
-                sample.data_answer = row_data[3]  # ''
-                sample.data_comments_questions = row_data[4]  # ''
-                sample.data_company = row_data[5]  # ''
-                sample.data_data_type = row_data[6]  # ''
-                sample.data_irrelevant_paragraphs = row_data[7]  # ''
-                sample.data_kpi_id = Format_Analyzer.to_int_number(row_data[8])  # 0
-                sample.data_relevant_paragraphs = row_data[9]  # ''
-                sample.data_sector = row_data[10]  # ''
-                sample.data_source_file = row_data[11]  # ''
-                sample.data_source_page = Format_Analyzer.to_int_number(row_data[12])  # 0
-                sample.data_year = year  # 0
-
-                self.samples.append(sample)
-
-            if src_file_format == TestData.SRC_FILE_FORMAT_NEW:
-                # parse next row
-                row_data, p = read_next_row(p, 12)
-                # print(row_data)
-
-                year = Format_Analyzer.to_int_number(row_data[5], 4)
-                if not Format_Analyzer.looks_year(str(year)):
-                    raise ValueError('Found invalid year "' + str(year) + '" at row ' + str(row_data))
-
-                sample = TestDataSample()
-                sample.data_number = Format_Analyzer.to_int_number(row_data[0])  # 0
-                sample.data_sector = row_data[10]  # ''
-                sample.data_unit = 'N/A'
-                sample.data_answer = row_data[6]  # ''
-                sample.data_comments_questions = row_data[11]  # ''
-                sample.data_company = row_data[1]  # ''
-                sample.data_data_type = row_data[7]  # ''
-                sample.data_irrelevant_paragraphs = 'N/A'
-                sample.data_kpi_id = Format_Analyzer.to_float_number(row_data[4])  # 0
-                sample.data_relevant_paragraphs = row_data[8]  # ''
-                sample.data_source_file = row_data[2]  # ''
-                sample.data_source_page = Format_Analyzer.to_int_number(row_data[3])  # 0
-                sample.data_year = year  # 0
-
-                self.samples.append(sample)
+            self.samples.append(sample)
 
     def save_to_csv(self, dst_file_path):
+        """
+        Saves TestData samples to a CSV file.
+
+        Args:
+            dst_file_path (str): Path to the destination CSV file.
+
+        Returns:
+            None
+        """
         save_txt_to_file(TestDataSample.samples_to_csv(self.samples), dst_file_path)
 
     def get_unique_list_of_pdf_files(self):
@@ -233,6 +178,7 @@ class TestData:
         Returns:
             None
         """
+
         def extract_file_info(file_path):
             """
             Extracts file information (path, name and extension of the file) using Format_Analyzer.
