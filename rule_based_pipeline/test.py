@@ -375,17 +375,6 @@ def test_prepare_kpi_specs():
 def load_test_data(test_data_file_path):
     test_data = TestData()
     test_data.load_from_csv(test_data_file_path)
-
-    # for testing purpose:
-    test_data.filter_kpis(by_kpi_id=[7], by_data_type=['TABLE'])
-
-    fix_list = DataImportExport.import_files(
-        r"//Wwg00m.rootdom.net/afs-team/1200000089/FC/R-M/AZUREPOC/2020/KPIs extraction/Training data/03_Oil Gas sector reports/Europe",
-        config_for_rb.global_raw_pdf_folder, test_data.get_pdf_list(), 'pdf')
-    test_data.fix_file_names(fix_list)
-
-    # filter out entries with no source file:
-    test_data.filter_kpis(by_has_fixed_source_file=True)
     return test_data
 
 
@@ -418,7 +407,6 @@ def demo():
     dir.render_to_png(get_html_out_dir(pdf_file), get_html_out_dir(pdf_file))
 
     print_big("Load from JSON")
-    dir = None
     dir = HTMLDirectory()
     dir.load_from_dir(get_html_out_dir(pdf_file), r'jpage*.json')
 
@@ -436,18 +424,18 @@ def test_evaluation():
     test_data = load_test_data(r'test_data/aggregated_complete_samples_new.csv')
 
     test_data.filter_kpis(by_source_file=[
-        'Aker-BP-Sustainability-Report-2019.pdf'  # KPIs are on pg: 84: 2009:665.1 ... 2013:575.7
-        # , 'NYSE_TOT_2018 annual.pdf'                       # KPIs are on pg: 129: 2017:914, 2018:917
-        # , 'Transocean_Sustain_digital_FN_4 2017_2018.pdf'                        # KPIs are on pg: 112: 2016:711.1,  2015: 498.2
+        'Aker-BP-Sustainability-Report-2019.pdf'            # KPIs are on pg: 84: 2009:665.1 ... 2013:575.7
+        # , 'NYSE_TOT_2018 annual.pdf'                      # KPIs are on pg: 129: 2017:914, 2018:917
+        # , 'Transocean_Sustain_digital_FN_4 2017_2018.pdf' # KPIs are on pg: 112: 2016:711.1,  2015: 498.2
         # , 'Wintershall-Dea_Sustainability_Report_2019.pdf'
     ])
 
     print_big("Data-set", False)
     print(test_data)
-    kpiresults = KPIResultSet.load_from_file(r'test_data/kpiresults_test_all_files_against_kpi_2_0.json')
+    kpi_results = KPIResultSet.load_from_file(r'test_data/kpiresults_test_all_files_against_kpi_2_0.json')
     print_big("Kpi-Results", do_wait=False)
-    print(kpiresults)
+    print(kpi_results)
     print_big("Kpi-Evaluation", do_wait=False)
     kpis = test_prepare_kpi_specs()
-    test_eval = TestEvaluation.generate_evaluation(kpis, kpiresults, test_data)
+    test_eval = TestEvaluation.generate_evaluation(kpis, kpi_results, test_data)
     print(test_eval)
