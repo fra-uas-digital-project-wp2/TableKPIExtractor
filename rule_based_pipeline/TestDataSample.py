@@ -8,26 +8,24 @@ from ConsoleTable import ConsoleTable
 from Format_Analyzer import Format_Analyzer
 
 
-# TODO:I think we don't need this class! -> delete or need refactor
 class TestDataSample:
     """
     Class representing a data sample for testing.
 
     Attributes:
-        data_number (int): The data number.
-        data_sector (str): The data sector.
-        data_unit (str): The data unit.
-        data_answer (str): The data answer.
-        data_comments_questions (str): Comments and questions associated with the data.
-        data_company (str): The data company.
-        data_data_type (str): The data type.
-        data_irrelevant_paragraphs (str): Irrelevant paragraphs related to the data.
-        data_kpi_id (int): The KPI ID.
-        data_relevant_paragraphs (str): Relevant paragraphs related to the data.
-        data_source_file (str): The source file of the data.
-        data_source_page (int): The source page of the data.
-        data_year (int): The year associated with the data.
-        fixed_source_file: Additional source file information.
+        kpi_id (int): The kpi id.
+        kpi_name (str): The name of kpi.
+        src_file (str): The source file.
+        page_num (int): The number of page.
+        item_ids (list): The ids of items.
+        pos_x (float): The x position for items.
+        pos_y (float): The y position for items.
+        raw_txt (str): The row of text.
+        year (int): The year ...
+        value (int): ...
+        score (int): ...
+        unit (str): ...
+        match_type (str): ...
 
     Methods:
         __init__: Initializes an instance of the TestDataSample class.
@@ -40,21 +38,19 @@ class TestDataSample:
         """
         Initializes an instance of the TestDataSample class with default values.
         """
-        self.data_number = 0
-        self.data_sector = ''
-        self.data_unit = ''
-        self.data_answer = ''
-        self.data_comments_questions = ''
-        self.data_company = ''
-        self.data_data_type = ''
-        self.data_irrelevant_paragraphs = ''
-        self.data_kpi_id = 0
-        self.data_relevant_paragraphs = ''
-        self.data_sector = ''
-        self.data_source_file = ''
-        self.data_source_page = 0
-        self.data_year = 0
-        self.fixed_source_file = None
+        self.kpi_id = 0
+        self.kpi_name = ''
+        self.src_file = ''
+        self.page_num = 0
+        self.item_ids = []
+        self.pos_x = 0.0
+        self.pos_y = 0.0
+        self.raw_txt = ''
+        self.year = 0
+        self.value = 0
+        self.score = 0
+        self.unit = ''
+        self.match_type = 0
 
     @staticmethod
     def samples_to_string(lst, max_width=140, min_col_width=5):
@@ -69,17 +65,15 @@ class TestDataSample:
         Returns:
             str: Formatted string representation of the TestDataSample instances.
         """
-        console_table = ConsoleTable(14)
+        console_table = ConsoleTable(12)
         console_table.cells.extend(
-            ['NUMBER', 'SECTOR', 'UNIT', 'ANSWER', 'COMMENTS', 'COMPANY', 'DATA_TYPE', 'IRREL_PARAG', 'KPI_ID',
-             'RELEV_PARAG', 'SECTOR', 'SOURCE_FILE', 'SOURCE_PAGE', 'YEAR'])
+            ['KPI_ID', 'KPI_NAME', 'SRC_FILE', 'PAGE_NUM', 'ITEM_IDS', 'POS_X', 'POS_Y', 'RAW_TXT', 'YEAR', 'VALUE',
+             'SCORE', 'UNIT', 'MATCH_TYPE'])
 
         for k in lst:
             console_table.cells.extend([
-                str(k.data_number), str(k.data_sector), str(k.data_unit), str(k.data_answer),
-                str(k.data_comments_questions), str(k.data_company), str(k.data_data_type),
-                str(k.data_irrelevant_paragraphs), str(k.data_kpi_id), str(k.data_relevant_paragraphs),
-                str(k.data_sector), str(k.data_source_file), str(k.data_source_page), str(k.data_year)
+                str(k.kpi_id), str(k.kpi_name), str(k.src_file), str(k.page_num), str(k.item_ids), str(k.pos_x),
+                str(k.pos_y), str(k.raw_txt), str(k.year), str(k.value), str(k.score), str(k.unit), str(k.match_type)
             ])
 
         return console_table.to_string(max_width, min_col_width)
@@ -104,20 +98,19 @@ class TestDataSample:
 
         result = ""
         for k in lst:
-            result += escape(str(k.data_number)) + ";"
-            result += escape(str(k.data_sector)) + ";"
-            result += escape(str(k.data_unit)) + ";"
-            result += escape(str(k.data_answer)) + ";"
-            result += escape(str(k.data_comments_questions)) + ";"
-            result += escape(str(k.data_company)) + ";"
-            result += escape(str(k.data_data_type)) + ";"
-            result += escape(str(k.data_irrelevant_paragraphs)) + ";"
-            result += escape(str(k.data_kpi_id)) + ";"
-            result += escape(str(k.data_relevant_paragraphs)) + ";"
-            result += escape(str(k.data_sector)) + ";"
-            result += escape(str(k.data_source_file)) + ";"
-            result += escape(str(k.data_source_page)) + ";"
-            result += escape(str(k.data_year)) + "\n"
+            result += escape(str(k.kpi_id)) + ";"
+            result += escape(str(k.kpi_name)) + ";"
+            result += escape(str(k.src_file)) + ";"
+            result += escape(str(k.page_num)) + ";"
+            result += escape(str(k.item_ids)) + ";"
+            result += escape(str(k.pos_x)) + ";"
+            result += escape(str(k.pos_y)) + ";"
+            result += escape(str(k.raw_txt)) + ";"
+            result += escape(str(k.year)) + ";"
+            result += escape(str(k.value)) + ";"
+            result += escape(str(k.score)) + ";"
+            result += escape(str(k.unit)) + ";"
+            result += escape(str(k.match_type)) + "\n"
 
         return result
 
