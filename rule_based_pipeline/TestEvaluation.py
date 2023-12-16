@@ -215,7 +215,7 @@ class TestEvaluation:
         pdf_file_names = test_data.get_unique_list_of_pdf_files()
 
         # Initialize TestEvaluation object to store evaluation results
-        res = TestEvaluation()
+        results = TestEvaluation()
 
         # Iterate through each KPI specification for evaluation
         for kpi_spec in kpi_specs:
@@ -226,40 +226,42 @@ class TestEvaluation:
                 print_verbose(1, '--->> Evaluating PDF = "' + pdf_file_name + '"')
 
                 # Find values in test data samples for this KPI/PDF
-                for s in test_data.samples:
-                    if s.kpi_id == kpi_spec.kpi_id and s.src_file == pdf_file_name:
+                for sample in test_data.samples:
+
+                    if sample.kpi_id == kpi_spec.kpi_id and sample.src_file == pdf_file_name:
                         # match (True KPI exists in pdf)
                         cur_eval_sample = None
 
                         # Check if there are any matches in the KPI results
-                        for k in kpi_results.kpimeasures:
-                            if k.kpi_id == kpi_spec.kpi_id and k.src_file == pdf_file_name and k.year == s.year:
+                        for kpi_measure in kpi_results.kpi_measures:
+                            if kpi_measure.kpi_id == kpi_spec.kpi_id and kpi_measure.src_file == pdf_file_name and kpi_measure.year == sample.year:
                                 # yes (Extracted KPI exists)
-                                cur_eval_sample = TestEvaluation.TestEvalSample(kpi_spec, k, s, k.year, pdf_file_name)
+                                cur_eval_sample = TestEvaluation.TestEvalSample(kpi_spec, kpi_measure, sample, kpi_measure.year, pdf_file_name)
                                 break
 
                         if cur_eval_sample is None:
                             # no (True KPI exists but not extracted)
-                            cur_eval_sample = TestEvaluation.TestEvalSample(kpi_spec, None, s, s.year, pdf_file_name)
-                        res.eval_samples.append(cur_eval_sample)
+                            cur_eval_sample = TestEvaluation.TestEvalSample(kpi_spec, None, sample, sample.year, pdf_file_name)
+
+                        results.eval_samples.append(cur_eval_sample)
 
                 # Check for any unmatched KPI results (i.e., extracted KPIs)
-                for k in kpi_results.kpi_measures:
-                    if k.src_file != pdf_file_name:
+                for kpi_measure in kpi_results.kpi_measures:
+                    if kpi_measure.src_file != pdf_file_name:
                         continue
                     found = False
 
                     # Iterate through existing evaluation samples
-                    for e in res.eval_samples:
-                        if e.kpi_measure is not None and k.kpi_id == e.kpi_spec.kpi_id and k.year == e.year and e.kpi_measure.src_file == pdf_file_name:
+                    for eval_sample in results.eval_samples:
+                        if eval_sample.kpi_measure is not None and kpi_measure.kpi_id == eval_sample.kpi_spec.kpi_id and kpi_measure.year == eval_sample.year and eval_sample.kpi_measure.src_file == pdf_file_name:
                             found = True
                             break
 
                     if not found:
                         # unmatched (Extracted KPI not matched with any true KPI)
-                        cur_eval_sample = TestEvaluation.TestEvalSample(kpi_spec, k, None, k.year, pdf_file_name)
-                        res.eval_samples.append(cur_eval_sample)
+                        cur_eval_sample = TestEvaluation.TestEvalSample(kpi_spec, kpi_measure, None, kpi_measure.year, pdf_file_name)
+                        results.eval_samples.append(cur_eval_sample)
 
         # Perform evaluations based on collected samples
-        res.do_evaluations()
-        return res
+        results.do_evaluations()
+        return results
