@@ -41,7 +41,7 @@ class TestEvaluation:
             Returns:
                 float: The true value or None if not applicable.
             """
-            return None if self.test_sample is None else Format_Analyzer.to_float_number(self.test_sample.data_answer)
+            return None if self.test_sample is None else self.test_sample.value
 
         def get_extracted_value(self):
             """
@@ -60,6 +60,7 @@ class TestEvaluation:
                 int: Evaluation code (True Positive, False Positive, True Negative, False Negative).
             """
             if self.kpi_measure is not None and self.test_sample is not None:
+
                 # Check if the absolute difference between extracted and true values is below a threshold
                 if abs(self.get_extracted_value() - self.get_true_value()) < 0.0001:
                     return TestEvaluation.EVAL_TRUE_POSITIVE
@@ -122,9 +123,10 @@ class TestEvaluation:
         self.num_true_negative = 0
         self.num_false_negative = 0
 
+        counter = 0
         # Iterate through collected samples
-        for e in self.eval_samples:
-            eval_id = e.eval()
+        for eval_sample in self.eval_samples:
+            eval_id = eval_sample.eval()
 
             # Update counters based on evaluation results
             if eval_id == TestEvaluation.EVAL_TRUE_POSITIVE:
@@ -167,11 +169,11 @@ class TestEvaluation:
         console_table.cells.extend(column_headers)
 
         # Populate ConsoleTable with sample data
-        for e in self.eval_samples:
+        for eval_sample in self.eval_samples:
             console_table.cells.extend([
-                str(e.kpispec.kpi_id), str(e.kpispec.kpi_name), str(e.pdf_file_name),
-                str(e.year), str(e.get_true_value()), str(e.get_extracted_value()),
-                e.eval_to_str().upper()
+                str(eval_sample.kpi_spec.kpi_id), str(eval_sample.kpi_spec.kpi_name), str(eval_sample.pdf_file_name),
+                str(eval_sample.year), str(eval_sample.get_true_value()), str(eval_sample.get_extracted_value()),
+                eval_sample.eval_to_str().upper()
             ])
 
         # Generate formatted string
@@ -228,13 +230,14 @@ class TestEvaluation:
                 # Find values in test data samples for this KPI/PDF
                 for sample in test_data.samples:
 
-                    if sample.kpi_id == kpi_spec.kpi_id and sample.src_file == pdf_file_name:
+                    if str(sample.kpi_id) == str(kpi_spec.kpi_id) and sample.src_file == pdf_file_name:
                         # match (True KPI exists in pdf)
                         cur_eval_sample = None
 
                         # Check if there are any matches in the KPI results
                         for kpi_measure in kpi_results.kpi_measures:
-                            if kpi_measure.kpi_id == kpi_spec.kpi_id and kpi_measure.src_file == pdf_file_name and kpi_measure.year == sample.year:
+
+                            if str(kpi_measure.kpi_id) == str(kpi_spec.kpi_id) and kpi_measure.src_file == pdf_file_name and str(kpi_measure.year) == str(sample.year):
                                 # yes (Extracted KPI exists)
                                 cur_eval_sample = TestEvaluation.TestEvalSample(kpi_spec, kpi_measure, sample, kpi_measure.year, pdf_file_name)
                                 break
