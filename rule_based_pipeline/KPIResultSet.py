@@ -5,7 +5,9 @@
 # Date   : 12.06.2020
 # ============================================================================================================================
 from ConsoleTable import ConsoleTable
+import csv
 import jsonpickle
+from KPIMeasure import KPIMeasure
 
 
 class KPIResultSet:
@@ -133,6 +135,54 @@ class KPIResultSet:
         with open(json_file, "r") as f:
             data = f.read()
         return KPIResultSet.load_from_json(data)
+
+    @staticmethod
+    def load_from_csv(csv_file):
+        """
+        Load a KPIResultSet from a CSV file.
+
+        Args:
+            csv_file (str): Path to the CSV file.
+
+        Returns:
+            KPIResultSet: The loaded KPIResultSet.
+        """
+        with open(csv_file, "r") as f:
+            reader = csv.DictReader(f)
+            data = [row for row in reader]
+        print(data)
+        return KPIResultSet.create_from_csv_data(data)
+
+    @classmethod
+    def create_from_csv_data(cls, csv_data):
+        """
+        Create a KPIResultSet instance from CSV data.
+
+        Args:
+            csv_data (list): List containing dictionaries with CSV data for each row.
+
+        Returns:
+            KPIResultSet: The created KPIResultSet instance.
+        """
+        kpi_measures = []
+        for row in csv_data:
+            kpi_measure = KPIMeasure()
+            kpi_measure.kpi_id = row["KPI_ID"]
+            kpi_measure.kpi_name = row["KPI_NAME"]
+            kpi_measure.src_file = row["SRC_FILE"]
+            kpi_measure.page_num = row["PAGE_NUM"]
+            kpi_measure.item_ids = row["ITEM_IDS"]
+            kpi_measure.pos_x = row["POS_X"]
+            kpi_measure.pos_y = row["POS_Y"]
+            kpi_measure.raw_txt = row["RAW_TXT"]
+            kpi_measure.year = row["YEAR"]
+            kpi_measure.value = row["VALUE"]
+            kpi_measure.score = row["SCORE"]
+            kpi_measure.unit = row["UNIT"]
+            kpi_measure.match_type = row["MATCH_TYPE"]
+            kpi_measures.append(kpi_measure)
+
+        return cls(kpi_measures)
 
     def __repr__(self):
         """
