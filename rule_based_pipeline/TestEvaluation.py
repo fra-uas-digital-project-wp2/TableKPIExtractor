@@ -123,9 +123,9 @@ class TestEvaluation:
         self.num_true_negative = 0
         self.num_false_negative = 0
 
-        counter = 0
         # Iterate through collected samples
         for eval_sample in self.eval_samples:
+
             eval_id = eval_sample.eval()
 
             # Update counters based on evaluation results
@@ -246,23 +246,6 @@ class TestEvaluation:
                             # no (True KPI exists but not extracted)
                             cur_eval_sample = TestEvaluation.TestEvalSample(kpi_spec, None, sample, sample.year, pdf_file_name)
 
-                        results.eval_samples.append(cur_eval_sample)
-
-                # Check for any unmatched KPI results (i.e., extracted KPIs)
-                for kpi_measure in kpi_results.kpi_measures:
-                    if kpi_measure.src_file != pdf_file_name:
-                        continue
-                    found = False
-
-                    # Iterate through existing evaluation samples
-                    for eval_sample in results.eval_samples:
-                        if eval_sample.kpi_measure is not None and kpi_measure.kpi_id == eval_sample.kpi_spec.kpi_id and kpi_measure.year == eval_sample.year and eval_sample.kpi_measure.src_file == pdf_file_name:
-                            found = True
-                            break
-
-                    if not found:
-                        # unmatched (Extracted KPI not matched with any true KPI)
-                        cur_eval_sample = TestEvaluation.TestEvalSample(kpi_spec, kpi_measure, None, kpi_measure.year, pdf_file_name)
                         results.eval_samples.append(cur_eval_sample)
 
         # Perform evaluations based on collected samples
