@@ -38,10 +38,12 @@ class HTMLDirectory:
         Returns:
             None
         """
-        print_verbose(2, '-> call pdftohtml_mod ' + infile)
+
+        print_verbose(1, '-> call pdftohtml_mod ' + infile)
+
         os.system(
             config_for_rb.global_exec_folder + r'/pdftohtml_mod/pdftohtml_mod "' + infile + '" "' +
-            remove_trailing_slash(outdir) + '"')  # TODO: Specify correct path here!
+            remove_trailing_slash(outdir) + '"')
 
     @staticmethod
     def fix_strange_encryption(html_dir):
@@ -60,7 +62,7 @@ class HTMLDirectory:
 
         for f in glob.glob(pathname):
             print_verbose(3, "---> " + str(f))
-            # HTMLPage.fix_strange_encryption(f)  # TODO: Uncomment if needed.
+            HTMLPage.fix_strange_encryption(f)
 
     @staticmethod
     def convert_pdf_to_html(pdf_file, info_file_contents, out_dir=None):
@@ -84,7 +86,7 @@ class HTMLDirectory:
         HTMLDirectory.call_pdftohtml(pdf_file, out_dir)
 
         # Fix strange encryption
-        HTMLDirectory.fix_strange_encryption(out_dir)
+        # HTMLDirectory.fix_strange_encryption(out_dir) # TODO: Uncomment if needed.
 
         with open(out_dir + '/info.txt', 'w') as file:
             file.write(info_file_contents[pdf_file])
