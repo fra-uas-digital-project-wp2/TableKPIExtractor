@@ -13,6 +13,7 @@ global_exec_folder = r"./"
 global_raw_pdf_folder = r"raw_pdf/"
 global_working_folder = r"rule_based_pipeline_workdir/"
 global_output_folder = r"output_rule_based_pipeline/"
+global_expected_values_folder = r"expected_values/"
 
 # Filter PDFs and pages
 global_name_of_pdf = "*"
