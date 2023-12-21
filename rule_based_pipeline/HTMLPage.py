@@ -1310,6 +1310,22 @@ class HTMLPage:
 
     @staticmethod
     def parse_html_file(fonts_dir, htmlfile):
+        """Parses a single .html file into a HTMLPage object.
+
+            HTML Files are mapped to HTMLPage objecs.
+            Div Containers are mapped to HTMLItems.
+            BBoxes are mapped to HTMLWords.
+
+
+        Args:
+            fonts_dir (str): Path to the fonts for this file.
+            htmlfile (str): Path to the .html file which will be parsed.
+
+        Returns:
+            None
+        """
+
+
         pattern_pgnum = re.compile('.*page([0-9]+)\\.html')
         pattern_background = re.compile(
             '<img id="background" style="position:absolute; (left|right):0px; (top|bottom):0px;" width="([0-9]+)" height="([0-9]+)" src="page([0-9]+)\.png">')
