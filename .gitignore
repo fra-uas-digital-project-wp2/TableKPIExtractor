@@ -7,4 +7,4 @@ rule_based_pipeline_workdir/
 raw_pdf - Kopie/
 corrupted_pdf/
 checkPDFCorrupted/result.csv
-*.log
+app.log
