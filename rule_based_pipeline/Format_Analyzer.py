@@ -57,6 +57,14 @@ class Format_Analyzer:
 
     @staticmethod
     def looks_weak_numeric(val):
+        """Returns True if at least on integer is in String.
+
+        Args:
+            val (str): String to be investigated.
+
+        Returns:
+            boolean: True if at least one integer.
+        """
         num_numbers = sum(c.isnumeric() for c in val)
         return num_numbers > 0
 

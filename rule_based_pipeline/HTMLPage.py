@@ -147,9 +147,24 @@ class HTMLPage:
         return res
 
     def detect_split_items(self):
-
+        """Splits HTMLItems (Div Containers) into multiple containers if
+           HTMLWords are to far apart.
+        """
         def find_aligned_words_in_direction(all_words, k0, use_alignment, dir):
-            SPLIT_DETECTION_THRESHOLD = 1.0 / 609.0
+            """Checks HTMLWord (BBox) k0 is aligned with HTMLWords in all_words.
+
+            Args:
+                all_words (list): All words on page.
+                k0 (int): Index current word in all_words.
+                use_alignment (int): Option, left or right alignment (1/2). 
+                dir (int): Option, traverse through list forward or backward (1/-1). 
+
+            Returns:
+                list: Indices of HTMLWords (BBoxes) aligned with HTMLWord k0.
+                bool: is k numeric
+
+            """
+            SPLIT_DETECTION_THRESHOLD = 1.0 / 609.0  
 
             threshold = SPLIT_DETECTION_THRESHOLD * self.page_width
 
@@ -187,6 +202,19 @@ class HTMLPage:
             return res, is_numeric
 
         def find_space_in_direction(all_words, k0, dir):
+            """Determines space (free pixel values) between HTMLWords (BBoxes).
+
+            Args:
+                all_words (list): All words on page.
+                k0 (int): Index current word in all_words.
+                dir (int): Option, traverse through list forward or backward (1/-1). 
+
+            Raises:
+                ValueError: Error is thrown when dir not like -1/1.
+
+            Returns:
+                int: Free pixels between two adjacent HTMLWords Bounding Boxes.
+            """
             item_id = all_words[k0][0]
             word_id = all_words[k0][1]
             num_words = len(self.items[item_id].words)
@@ -200,6 +228,10 @@ class HTMLPage:
             return -1  # should never happen
 
         # prepare sorted order of all words
+        # HTMLWords (BBoxes) in HTMLItems (Div Containers) are indirectly ordered from top-left
+        # to bottom right.
+        # Order is given when HTMLDirectory is parsed.
+
         all_words = []
 
         for i in range(len(self.items)):
@@ -212,11 +244,14 @@ class HTMLPage:
         do_split_r = []
 
         # find words that can be split
+        # This function 
         for k in range(len(all_words)):
             item_id = all_words[k][0]
             word_id = all_words[k][1]
             num_words = len(self.items[item_id].words)
 
+            # Check if HTMLWord (BBox) and left and right adjacent have at least one 
+            # number in text.
             isnum = Format_Analyzer.looks_weak_numeric(self.items[item_id].words[word_id].txt)
             isnum_l = Format_Analyzer.looks_weak_numeric(
                 self.items[item_id].words[word_id - 1].txt) if word_id > 0 else False
@@ -316,6 +351,9 @@ class HTMLPage:
         return self.items[idx].txt + " " + self.get_txt_unsplit(self.items[idx].right_id)
 
     def find_left_distributions(self):
+        """Counts the number of (left/first) X-Coordinates of HTMLItems (Div Containers).
+           This results in a distribution.
+        """
         self.left_distrib = {}
         for it in self.items:
             cur_x = it.pos_x
@@ -440,6 +478,8 @@ class HTMLPage:
             it.temp_assignment = 0
 
     def guess_all_alignments(self):
+        """Esimates the vertical alignments HTMLItems (Div Containers) on the HTMLPage. 
+        """
         for it in self.items:
             dummy, score_left = self.find_vertical_aligned_items(it, ALIGN_LEFT, DEFAULT_VTHRESHOLD)
             dummy, score_right = self.find_vertical_aligned_items(it, ALIGN_RIGHT, DEFAULT_VTHRESHOLD)
@@ -460,8 +500,20 @@ class HTMLPage:
         return None
 
     def identify_connected_txt_lines(self):
+        """_summary_
+        """
 
         def insert_next_id(cur_id, next_id, items):
+            """_summary_
+
+            Args:
+                cur_id (_type_): _description_
+                next_id (_type_): _description_
+                items (_type_): _description_
+
+            Raises:
+                ValueError: _description_
+            """
             if (items[next_id].pos_y <= items[cur_id].pos_y):
                 raise ValueError('Invalid item order:' + str(items[cur_id]) + ' --> ' + str(items[next_id]))
 
@@ -479,15 +531,17 @@ class HTMLPage:
                 else:
                     # sometimes this can happen, but then we dont update anything in order to avoid cycles
                     pass
-
+        
         threshold = int(0.03 * self.page_width + 0.5)  # allow max 3% deviation to the left
         cur_threshold = 0
 
+        # Iterate over the left distribution. 
+        # Multiple cnts for a key (cur_x) are interpreted as a column
         for cur_x, cnt in self.left_distrib.items():
             if cnt < 2:
                 # if we have less than 2 lines, we skip this "column"
                 continue
-
+                    
             cur_lines = {}  # for each line in this column, we store its y position
             last_pos_y = -1
             for i in range(len(self.items)):
@@ -1051,6 +1105,13 @@ class HTMLPage:
     # =====================================================================================================================
 
     def remove_certain_items(self, txt, threshold):  # they would confuse tables and are not needed
+        """Remove char "txt" from HTMLItem (Div Container) if occurence > threshold.
+
+        Args:
+            txt (str): String to check.
+            threshold (int): Accepted number of occurences for "txt".
+        """
+        
         count = 0
         for it in self.items:
             for w in it.words:
@@ -1081,6 +1142,10 @@ class HTMLPage:
             self.items = new_items
 
     def remove_flyspeck(self):
+        """Removes HTMLItems (Div Containers) below a certain threshold.
+           These are considered flyspeck.
+        """
+
         threshold = DEFAULT_FLYSPECK_HEIGHT * self.page_height
         new_items = []
         cur_id = 0
@@ -1095,6 +1160,8 @@ class HTMLPage:
         self.items = new_items
 
     def remove_overlapping_items(self):
+        """Remove HTMLItems (Div containers) with overlapping boxes
+        """
 
         keep = [True] * len(self.items)
 
@@ -1132,6 +1199,8 @@ class HTMLPage:
         save_txt_to_file(res, remove_trailing_slash(outdir) + r'/footnotes_' + str(self.page_num) + r'.txt')
 
     def preprocess_data(self):
+        """Preprocesses raw data extracted from page
+        """
         self.remove_flyspeck()
         self.remove_certain_items('.', 50)
         self.remove_overlapping_items()
@@ -1315,6 +1384,11 @@ class HTMLPage:
             HTML Files are mapped to HTMLPage objecs.
             Div Containers are mapped to HTMLItems.
             BBoxes are mapped to HTMLWords.
+            
+            1.  RegEx Patterns are initialized
+            2.  Iterate over each line of HTML File and match Patterns. 
+                Nested for loops are due to structure of HTML File
+            3.  Preprocess of detected raw data
 
 
         Args:
@@ -1325,7 +1399,7 @@ class HTMLPage:
             None
         """
 
-
+        # 1. RegEx Patterns are initialized
         pattern_pgnum = re.compile('.*page([0-9]+)\\.html')
         pattern_background = re.compile(
             '<img id="background" style="position:absolute; (left|right):0px; (top|bottom):0px;" width="([0-9]+)" height="([0-9]+)" src="page([0-9]+)\.png">')
@@ -1355,6 +1429,7 @@ class HTMLPage:
 
         cur_item_id = 0
 
+        # 2.  Iterate over each line of HTML File and match Patterns.
         with open(htmlfile, errors='ignore', encoding=config_for_rb.global_html_encoding) as f:
             html_file = f.readlines()
 
@@ -1446,5 +1521,6 @@ class HTMLPage:
                 print_verbose(7, item)
                 res.items.append(item)
                 cur_item_id += 1
+        # 3.  Preprocess of detected raw data
         res.preprocess_data()
         return res

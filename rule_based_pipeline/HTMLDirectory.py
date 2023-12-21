@@ -22,6 +22,16 @@ class HTMLDirectory:
 
     @staticmethod
     def call_pdftohtml(infile, outdir):
+        """
+        System Call "pdftohtml.exe". Converts PDF to HTML
+
+        Args:
+            infile (str): Path to the PDF file.
+            outfile (str): Directory to store HTML files.
+
+        Returns:
+            None
+        """
         print_verbose(2, '-> call pdftohtml_mod ' + infile)
         os.system(
             config_for_rb.global_exec_folder + r'/pdftohtml_mod/pdftohtml_mod "' + infile + '" "' + remove_trailing_slash(
@@ -40,6 +50,18 @@ class HTMLDirectory:
 
     @staticmethod
     def convert_pdf_to_html(pdf_file, info_file_contents, out_dir=None):
+        """
+        Cleans target dir for PDF to HTML conversion.
+        Calls PDF to HTML function.
+
+        Args:
+            pdf_file (str): Path to the PDF file.
+            info_file_contents (dict): Information loaded from an info file.
+            out_dir (str): Directory to store HTML files.
+
+        Returns:
+            None
+        """
         out_dir = get_html_out_dir(pdf_file) if out_dir is None else remove_trailing_slash(out_dir)
 
         try:
@@ -61,6 +83,17 @@ class HTMLDirectory:
             print_verbose(2, 'PDF-Filename: ' + self.src_pdf_filename)
 
     def parse_html_directory(self, html_dir, page_wildcard):
+
+        """
+        Parses the contents of a HTML Directory into a data structure.
+
+        Args:
+            html_dir (str): HTML Directory of current pdf.
+            page_wildcard (str): String used to filter pages in HTML Directory.
+
+        Returns:
+            None
+        """
 
         html_dir = remove_trailing_slash(html_dir)
 

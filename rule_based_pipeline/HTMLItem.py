@@ -151,7 +151,7 @@ class HTMLItem:
 
     def get_rect(self):
         """
-        Get the rectangular boundaries of the item.
+        Get the rectangular boundaries of the item .
 
         Returns:
             Rect: The rectangular boundaries.
@@ -299,7 +299,7 @@ class HTMLItem:
 
     def fix_overlapping_words(self):
         """
-        Fix overlapping words by adjusting their x1 coordinate.
+        Fix overlapping words (Bounding Box in HTML) by adjusting their x1 coordinate.
         """
         # assertion: all words are ordered by x ascending
         for i in range(len(self.words) - 1):
@@ -307,7 +307,7 @@ class HTMLItem:
 
     def recalc_geometry(self):
         """
-        Recalculate the geometry of the item based on its words' bounding boxes.
+        Recalculate the geometry of the item (Div Container in HTML) based on its words' bounding boxes.
         """
         self.pos_x = 9999999
         self.pos_y = 9999999
@@ -323,7 +323,7 @@ class HTMLItem:
 
     def rejoin_words(self):
         """
-        Rejoin words into a single text string.
+        Rejoin words (Boundin Boxes) in HTMLItem (Div Container) into a single text string.
         """
         self.txt = ''
         for w in self.words:
