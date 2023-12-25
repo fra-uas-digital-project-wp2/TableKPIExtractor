@@ -40,8 +40,8 @@ def parse_arguments():
     # new optional arguments (for Debugging mode): Optional
     parser.add_argument('--name_of_pdf', type=str, default=config_for_rb.global_name_of_pdf,
                         help='Filter Specific PDF')
-    parser.add_argument('--page_of_pdf', type=str, default=config_for_rb.global_page_of_pdf,
-                        help='Specific page of the PDF')
+    parser.add_argument('--page_of_pdf', type=str, default=config_for_rb.global_page_of_table_in_pdf,
+                        help='Specific page of the table in the PDF')
 
     # TODO: why we need this? --> @Marc
     args = parser.parse_args()
@@ -96,7 +96,7 @@ def print_configuration():
                   "Using config_for_rb.global_rendering_font_override=" + config_for_rb.global_rendering_font_override)
     # new optional arguments (for Debugging mode):
     print_verbose(1, "Using config_for_rb.global_name_of_pdf=" + config_for_rb.global_name_of_pdf)
-    print_verbose(1, "Using config_for_rb.global_page_of_pdf=" + config_for_rb.global_page_of_pdf)
+    print_verbose(1, "Using config_for_rb.global_page_of_table_in_pdf=" + config_for_rb.global_page_of_table_in_pdf)
 
 
 def analyze_and_save_results(pdf_name, kpis, info_file_contents):
