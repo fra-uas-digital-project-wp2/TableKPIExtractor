@@ -7,7 +7,7 @@
 
 
 # Change verbosity here. verbosity 6-8 are good values for debugging without too much output
-global_verbosity = 1
+global_verbosity = 8
 
 global_exec_folder = r"./"
 global_raw_pdf_folder = r"raw_pdf/"

@@ -271,26 +271,36 @@ class HTMLPage:
             right_aligned_words = right_aligned_words_down + right_aligned_words_up
 
             # It doesnt make sense to split for CENTER aligned words # New-27.06.2022
-
+            
+            # isnum_l : left adjacent HTMLWord (BBoxes) 
+            # isnum_ld : left alignet downwards HTMLWord (BBoxes) 
+            # isnum_lu : left alignet upwards HTMLWord (BBoxes) 
             isnum_l = isnum_l or isnum_ld or isnum_lu
             isnum_r = isnum_r or isnum_rd or isnum_ru
 
+
+            # Threshold minimum number of rows 
             threshold_rows_l = 1 if isnum and isnum_l else 2
             threshold_rows_r = 1 if isnum and isnum_r else 2
 
+            # Threshold space width two consecutive HTMLWord (BBoxes) 
             threshold_space_l = (1.2 if isnum and isnum_l else 1.5) * self.items[item_id].space_width
             threshold_space_r = (1.2 if isnum and isnum_r else 1.5) * self.items[item_id].space_width
 
-            # space between this and previous/next word
+            # Determine space (Pixel difference) between two adjacent HTMLWords (BBoxes)
             space_width_l = find_space_in_direction(all_words, k, -1)
             space_width_r = find_space_in_direction(all_words, k, 1)
 
+            # If no. left aligned HTMLWords greater Threshold and 
+            # Not first HTMLWord and
+            # Pixel delta to left adjacent HTMLWord greater threshold
             if len(left_aligned_words) > threshold_rows_l and word_id > 0 and space_width_l > threshold_space_l:
                 do_split_l.append(k)
 
             if len(right_aligned_words) > threshold_rows_r and word_id < num_words - 1 and space_width_r > threshold_space_r:
                 do_split_r.append(k)
 
+            # If Pixel delta to left adjacent HTMLWord greater 3 times of size HTMLItem (Div Container)
             if space_width_l > 3 * self.items[item_id].space_width and word_id > 0:
                 # two words are too far apart => split them in any case
                 do_split_l.append(k)
@@ -325,6 +335,7 @@ class HTMLPage:
         for ij in all_words:
             if (not ij[2]):
                 continue  # do not split this one
+            #TODO: Remove this code
             if self.items[ij[0]].words[ij[1]].rect.x0 - self.items[ij[0]].words[ij[1] - 1].rect.x1 < self.items[
                 item_id].space_width * 0:
                 continue  # words are too close to split
@@ -346,6 +357,14 @@ class HTMLPage:
             next_id += 1
 
     def get_txt_unsplit(self, idx):
+        """Gets text of adjacent HTMLItems.
+
+        Args:
+            idx (int): Index of HTMLItems on which to start.
+
+        Returns:
+            str: Text on adjacent HTMLItems.
+        """
         if self.items[idx].right_id == -1:
             return self.items[idx].txt
         return self.items[idx].txt + " " + self.get_txt_unsplit(self.items[idx].right_id)
@@ -361,6 +380,10 @@ class HTMLPage:
         print_verbose(5, 'Left distrib: ' + str(self.left_distrib))
 
     def find_paragraphs(self):
+        """Determines Paragraphs on a HTMLPage.
+           Iterares over all HTMLItems (Div Containers) that are category "CAT_RUNNING_TEXT" or "CAT_HEADLINE".
+           If the same x coordinate occurs multiple times (same column) they are classified as paragraph.
+        """
         self.paragraphs = []
 
         distrib = {}
@@ -411,8 +434,19 @@ class HTMLPage:
 
         return expl_int(0, idx)
 
-    def find_vertical_aligned_items(self, item, alignment, threshold, do_print=False):  # TODO: remove do_print
-        # returns indices of affected items
+    def find_vertical_aligned_items(self, item, alignment, threshold): 
+        """Determines Score of a vertical alignment option of HTMLItem (Div Container).
+           Score is derived by highest number of alignet items.
+
+        Args:
+            item (HTMLItem): HTMLItem (Div Container) object to be investigated.
+            alignment (Integer): 0 : Align_Default; 1 : ALIGN_LEFT; 2 : ALIGN_RIGHT; 3 : ALIGN_CENTER;
+            threshold (Float): Vertical alignment threshold.
+
+        Returns:
+            res (list): index of HTMLItems which are alignet.
+            score (float) : score of alignment option.
+        """
         res = []
 
         if (alignment != ALIGN_DEFAULT):
@@ -446,8 +480,6 @@ class HTMLPage:
                 cur_x += self.items[i].width * 0.5
 
             delta = abs(cur_x - pos_x)
-            if (do_print):
-                print_verbose(7, '---> delta for ' + str(self.items[i]) + ' to ' + str(pos_x) + ' is ' + str(delta))
             if (delta <= threshold_px):
                 cur_score = ((threshold_px - delta) / self.page_width) * (
                         ((1.0 - abs(cur_y - pos_y) / self.page_height)) ** 5.0)
@@ -460,7 +492,14 @@ class HTMLPage:
         return res, score
 
     def find_horizontal_aligned_items(self, item):
-        # returns indices of affected items
+        """Determines HTMLItems that are horizontally aligned with "item"
+
+        Args:
+            item (HTMLItem): HTMLItem which is investigated.
+
+        Returns:
+            List: Horizontally aligned HTMLItems
+        """
         res = []
 
         y0 = item.pos_y
@@ -474,11 +513,15 @@ class HTMLPage:
         return res
 
     def clear_all_temp_assignments(self):
+        """Removes all temporary assignments from HTMLItem (Div Container).
+        """
         for it in self.items:
             it.temp_assignment = 0
 
     def guess_all_alignments(self):
         """Esimates the vertical alignments HTMLItems (Div Containers) on the HTMLPage. 
+           For each HTMLItem the score of all alignment options is calculated.
+           Then the highest score of an alignment option is used as alignment of HTMLItem.
         """
         for it in self.items:
             dummy, score_left = self.find_vertical_aligned_items(it, ALIGN_LEFT, DEFAULT_VTHRESHOLD)
@@ -494,25 +537,31 @@ class HTMLPage:
                 it.alignment = ALIGN_CENTER
 
     def find_next_nonclassified_item(self):
+        """Searches HTMLItems (Div Container) that is not assigned a category.
+
+        Returns:
+            HTMLItem: HTMLItem without category.
+        """
         for it in self.items:
             if (not it.has_category()):
                 return it
         return None
 
     def identify_connected_txt_lines(self):
-        """_summary_
+        """Determines which HTMLItems (Div Containers) are connected to each other.
         """
 
         def insert_next_id(cur_id, next_id, items):
-            """_summary_
+            """Links two HTMLItems (Div Containers), by setting the "next_id" property in the
+               HTMLItem object.
 
             Args:
-                cur_id (_type_): _description_
-                next_id (_type_): _description_
-                items (_type_): _description_
+                cur_id (int): N id for items.
+                next_id (int): N+1 id for items.
+                items (list): All HTMLItems (Div Containers) on HTMLPage.
 
             Raises:
-                ValueError: _description_
+                ValueError: HTMLItems (Div Container) are not sorted from top to bottom.
             """
             if (items[next_id].pos_y <= items[cur_id].pos_y):
                 raise ValueError('Invalid item order:' + str(items[cur_id]) + ' --> ' + str(items[next_id]))
@@ -535,23 +584,25 @@ class HTMLPage:
         threshold = int(0.03 * self.page_width + 0.5)  # allow max 3% deviation to the left
         cur_threshold = 0
 
-        # Iterate over the left distribution. 
-        # Multiple cnts for a key (cur_x) are interpreted as a column
+        # For each x_pos, cnt of HTMLItems (Div Container) in HTMLPage
+        # Hence this dict can be interpreted as columns. 
         for cur_x, cnt in self.left_distrib.items():
             if cnt < 2:
                 # if we have less than 2 lines, we skip this "column"
                 continue
-                    
-            cur_lines = {}  # for each line in this column, we store its y position
+            
+            # For each line in this column, store its y position
+            cur_lines = {}  
             last_pos_y = -1
             for i in range(len(self.items)):
                 if cur_x <= self.items[i].pos_x <= cur_x + cur_threshold and self.items[i].pos_y > last_pos_y:
                     cur_lines[i] = self.items[i].pos_y
                     last_pos_y = self.items[i].pos_y + self.items[i].height * 0.9
 
+            # Sorted lines in a column
             cur_lines = sorted(cur_lines.items(), key=lambda kv: kv[1])
 
-            # get row_spacing
+            # Determine free pixel Values between lines of HTMLItems (Div Container).
             row_spacings = []
             for i in range(len(cur_lines) - 1):
                 cur_item_id, cur_y = cur_lines[i]
@@ -589,6 +640,8 @@ class HTMLPage:
                 self.items[self.items[i].next_id].prev_id = i
 
     def mark_regular_text(self):
+        """Assigns HTMLItems (Div Containers) the property "CAT_RUNNING_TEXT". 
+        """
         # mark connected text components
         for it in self.items:
             if (it.category != CAT_DEFAULT):
@@ -612,11 +665,14 @@ class HTMLPage:
                     next = self.items[next].next_id
 
     def mark_other_text_components(self):
+        """Assigns HTMLItems (Div Containers) one of multiple categories as property. 
+        """
 
         threshold = int(0.03 * self.page_width + 0.5)  # allow max 3% deviation to the left
 
-        for cur_x, cnt in self.left_distrib.items():
 
+        for cur_x, cnt in self.left_distrib.items():
+   
             cur_lines = {}  # for each line in this column, we store its y position
             cur_threshold = 0
             for i in range(len(self.items)):
@@ -760,6 +816,16 @@ class HTMLPage:
 
     def find_vnearest_taken_components(self,
                                        initial_item):  # search vertically, return nearest top and bottom component (if any)
+        """Determines HTMLItems above and below that aligned vertically and have a category assigned.
+           
+
+        Args:
+            initial_item (HTMLItem): HTMLITem to investigate.
+
+        Returns:
+            top (HTMLItem): First vertically aligned HTMLItem above which has a category.
+            bottom (HTMLItem): First vertically aligned HTMLItem below which has a category.
+        """
         FONT_RECT_TOLERANCE = 0.9  # be less restrictive, since the font rect's width is not always accurate
         left_min = initial_item.pos_x
         left_max = initial_item.pos_x + initial_item.width * FONT_RECT_TOLERANCE
@@ -778,6 +844,17 @@ class HTMLPage:
         return top, bottom
 
     def sort_out_non_vconnected_items(self, vitems, top_y, bottom_y):
+        """Removes HTMLItems from "vitems" that are not in the interval given
+           by top_y and bottom_y.
+
+        Args:
+            vitems (List): HTMLItems to be investigated.
+            top_y (float): Vertical upper bound.
+            bottom_y (float): Vertical lower bound.
+
+        Returns:
+            List: HTMLItems inside upper and lower bound.
+        """
         res = []
         for i in vitems:
             if (self.items[i].pos_y > top_y and self.items[i].pos_y < bottom_y):
@@ -786,6 +863,14 @@ class HTMLPage:
         return res
 
     def sort_out_taken_items(self, any_items):
+        """Removes HTMLItems (Div Containers) from list which already have assignment.
+
+        Args:
+            any_items (HTMLItem): HTMLItems (Div Containers).
+
+        Returns:
+            List : HTMLItems without assignment.
+        """
         res = []
         for i in any_items:
             if (not self.items[i].has_category_besides(CAT_FOOTER) and self.items[i].temp_assignment == 0):
@@ -794,6 +879,16 @@ class HTMLPage:
         return res
 
     def sort_out_non_vertical_aligned_items_by_bounding_box(self, initial_item, vitems):
+        """Removes HTMLItems (Div Conainers) from "vitems" list, which have bounding boxes that
+           are not aligned with bounding boxes of "initial_item".
+
+        Args:
+            initial_item (HTMLItem): HTMLItem.
+            vitems (List): HTMLItems.
+
+        Returns:
+            List: HTMLItems (Div Containers) aligned with "initial_item".
+        """
         res = []
 
         x0 = initial_item.pos_x
@@ -809,6 +904,15 @@ class HTMLPage:
         return res
 
     def sort_out_items_in_same_row(self, initial_item, vitems):
+        """Removes HTMLItems (Div Containers) of a column that are in the same row (height).
+
+        Args:
+            initial_item (HTMLItem): HTMLItem.
+            vitems (List): HTMLItems.
+
+        Returns:
+            List: HTMLItems (Div Containers) with a single HTMLItem per column and row.
+        """
         orig_pos_x = initial_item.get_aligned_pos_x()
         res = []
         for i in vitems:
@@ -829,9 +933,17 @@ class HTMLPage:
         return res
 
     def sort_out_non_connected_row_items(self, hitems, initial_item):
-        # in the same row, we sort out all items, that are not connected with initial_item
-        # 2 items are connected, iff between them, there are no taken items
-        # initial_item will always be included
+        """In the same row, all HTMLItems are sorted out, that are not connected with the innitial item.
+           2 HTMLItems are connected, if between them, there are no categorized items.
+           Initial item will always be included
+
+        Args:
+            hitems (List): Horizontally aligned HTMLItems
+            initial_item (_type_): Initial HTMLItem to be investigated.
+
+        Returns:
+            List: Horizontally aligned HTMLItems connected with "initial item".
+        """
         min_x = -1
         max_x = 9999999
         for i in hitems:
@@ -850,6 +962,15 @@ class HTMLPage:
         return res
 
     def discover_table_column(self, initial_item):
+        """Discovers a column of HTMLItems from "initial_item".
+
+        Args:
+            initial_item (HTMLItem): HTMLitem to be investigated.
+
+        Returns:
+            List: Vertically aligned and conneted HTMLItems with respect to
+                  "initial_item".
+        """
         print_verbose(7, 'discover_table_column for item : ' + str(initial_item))
 
         vitems, dummy = self.find_vertical_aligned_items(initial_item, ALIGN_DEFAULT, DEFAULT_VTHRESHOLD)
@@ -886,6 +1007,15 @@ class HTMLPage:
         return sub_tab
 
     def discover_table_row(self, initial_item):
+        """Discovers a row of HTMLItems from "initial_item".
+
+        Args:
+            initial_item (HTMLItem): HTMLItem to be investigated.
+
+        Returns:
+            List: Horrizontally aligned and conneted HTMLItems with respect to
+                  "initial_item".
+        """
         hitems = self.find_horizontal_aligned_items(initial_item)
         hitems = self.sort_out_non_connected_row_items(hitems, initial_item)
 
@@ -895,7 +1025,17 @@ class HTMLPage:
         return hitems
 
     def discover_subtables_recursively(self, initial_item,
-                                       step):  # step=0 => discover col; step=1 => discover row. each subtable is a column
+                                       step):  # 
+        """From "initial_item" discovers SubTables by investigating alignment, with other
+           HTMLItems.
+
+        Args:
+            initial_item (HTMLItem): HTMLItem (Div Container) without category.
+            step (int): step=0 => discover col; step=1 => discover row. each subtable is a column
+
+        Returns:
+            List: _description_
+        """
         print_verbose(5, "discover subtable rec, at item : " + str(initial_item) + " and step = " + str(step))
 
         if (initial_item.has_category() or (initial_item.temp_assignment != 0 and step == 0)):
@@ -926,6 +1066,14 @@ class HTMLPage:
         return []
 
     def discover_table(self, initial_item):
+        """Discovers HTMLTables in HTMLItems.
+
+        Args:
+            initial_item (HTMLItem): (Div Container) that is not assigned a category yet.
+
+        Returns:
+            HTMLTable: discovered HTMLTable object.
+        """
         print_verbose(2, "DISCOVER NEW TABLE AT " + str(initial_item))
 
         done = False
@@ -968,6 +1116,8 @@ class HTMLPage:
         return table
 
     def mark_all_tables(self):
+        """Marks and groups HTMLItems (Div Container) as HTMLTable
+        """
         while (True):
             next = self.find_next_nonclassified_item()
             if (next is None):
@@ -1003,8 +1153,16 @@ class HTMLPage:
             # pass
 
     def mark_all_footnotes(self):
+        """Marks HTMLItems footnotes.
+        """
 
         def apply_cat_unsplit(idx, cat):
+            """Applies a category on set of HTMLItems starting from index "idx".
+
+            Args:
+                idx (int): Index for HTMLItems.
+                cat (int): Category to be assigned to set of HTMLItems.
+            """
             self.items[idx].category = cat
             if (self.items[idx].right_id != -1):
                 apply_cat_unsplit(self.items[idx].right_id, cat)
@@ -1097,6 +1255,8 @@ class HTMLPage:
     # =====================================================================================================================
 
     def generate_clusters(self):
+        """Generates hierarchical cluser of HTMLItems with different distance modes.
+        """
         self.clusters = HTMLCluster.generate_clusters(self.items, CLUSTER_DISTANCE_MODE_EUCLIDIAN)
         self.clusters_text = HTMLCluster.generate_clusters(self.items, CLUSTER_DISTANCE_MODE_RAW_TEXT)
 
