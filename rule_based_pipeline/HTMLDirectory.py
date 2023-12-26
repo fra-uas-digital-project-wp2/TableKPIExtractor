@@ -116,6 +116,12 @@ class HTMLDirectory:
             self.htmlpages.append(htmlpage)
 
     def render_to_png(self, base_dir, out_dir):
+        """Converts HTMLPages into PNGs.
+
+        Args:
+            base_dir (str): Path to HTMLDirectory
+            out_dir (str): Path to save pngs of HTMLPages.
+        """
         for it in self.htmlpages:
             print_verbose(1, "Render to png : page = " + str(it.page_num))
             it.render_to_png(remove_trailing_slash(base_dir), remove_trailing_slash(out_dir))
@@ -125,6 +131,11 @@ class HTMLDirectory:
             print(it.repr_tables_only())
 
     def save_to_dir(self, out_dir):
+        """Serializes parsed HTMLDirectory and saves further objects in special files.
+
+        Args:
+            out_dir (str): Directory path to save data.
+        """
         for it in self.htmlpages:
             print_verbose(1, "Save to JSON and CSV: page = " + str(it.page_num))
             it.save_to_file(remove_trailing_slash(out_dir) + r'/jpage' + "{:05d}".format(it.page_num) + '.json')
@@ -132,6 +143,12 @@ class HTMLDirectory:
             it.save_all_footnotes_to_txt(out_dir)
 
     def load_from_dir(self, html_dir, page_wildcard):
+        """Loads HTMLDirectory (Report) from JSON files.
+
+        Args:
+            html_dir (str): Directory Path to HTMLDirectory.
+            page_wildcard (str): Wildcard determining for which JSON files to filter.
+        """
 
         html_dir = remove_trailing_slash(html_dir)
         pathname = html_dir + '/' + page_wildcard

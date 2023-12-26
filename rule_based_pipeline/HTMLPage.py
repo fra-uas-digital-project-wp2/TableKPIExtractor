@@ -1186,6 +1186,12 @@ class HTMLPage:
     # =====================================================================================================================
 
     def render_to_png(self, in_dir, out_dir):
+        """Converts the HTML Datastructure of a page into a png.
+
+        Args:
+            in_dir (str): Path to directory containing the HTMLPages
+            out_dir (_type_): Path to save the Created PNGs.
+        """
 
         base = Image.open(in_dir + r'/page' + str(self.page_num) + '.png').convert('RGBA').resize(
             (self.page_width, self.page_height))
@@ -1345,11 +1351,24 @@ class HTMLPage:
         self.items = new_items
 
     def save_all_tables_to_csv(self, outdir):
+        """Saves all HTMLTables as csv files into "outdir".
+
+        Args:
+            outdir (str): Directory path to save data.
+        """
         for i in range(len(self.tables)):
             self.tables[i].save_to_csv(
                 remove_trailing_slash(outdir) + r'/tab_' + str(self.page_num) + r'_' + str(i + 1) + r'.csv')
 
     def save_all_footnotes_to_txt(self, outdir):
+        """Saves all Footnotes as text into "outdir".
+
+        Args:
+            outdir (str): Directory path to save data.
+
+        Returns:
+            None: Only executed if "res" is empty.
+        """
         if len(self.footnotes_idx) == 0:
             return  # don't save if empty
         res = ""
@@ -1395,6 +1414,11 @@ class HTMLPage:
         return res
 
     def to_json(self):
+        """Encodes a HTMLPage object into a JSON Format.
+
+        Returns:
+            str: Encoded JSON data string.
+        """
         for t in self.tables:
             t.items = None
 
@@ -1419,6 +1443,11 @@ class HTMLPage:
         return data
 
     def save_to_file(self, json_file):
+        """_summary_
+
+        Args:
+            json_file (_type_): _description_
+        """
         data = self.to_json()
         f = open(json_file, "w")
         f.write(data)
@@ -1426,6 +1455,14 @@ class HTMLPage:
 
     @staticmethod
     def load_from_json(data):
+        """Load Object from JSON file.
+
+        Args:
+            data (str): Data string to decode
+
+        Returns:
+            HTMLPage: Decoded HTMLPage from JSON file.
+        """
         obj = jsonpickle.decode(data)
 
         for t in obj.tables:
@@ -1443,6 +1480,14 @@ class HTMLPage:
 
     @staticmethod
     def load_from_file(json_file):
+        """Loads a serialized HTMLPage object from a file.
+
+        Args:
+            json_file (str): Path to file to open.
+
+        Returns:
+            HTMLPage: Loaded HTMLPage object.
+        """
         f = open(json_file, "r")
         data = f.read()
         f.close()
