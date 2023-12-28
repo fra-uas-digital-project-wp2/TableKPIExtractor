@@ -22,6 +22,16 @@ class HTMLDirectory:
 
     @staticmethod
     def call_pdftohtml(infile, outdir):
+        """
+        System Call "pdftohtml.exe". Converts PDF to HTML
+
+        Args:
+            infile (str): Path to the PDF file.
+            outfile (str): Directory to store HTML files.
+
+        Returns:
+            None
+        """
         print_verbose(2, '-> call pdftohtml_mod ' + infile)
         os.system(
             config_for_rb.global_exec_folder + r'/pdftohtml_mod/pdftohtml_mod "' + infile + '" "' + remove_trailing_slash(
@@ -40,6 +50,18 @@ class HTMLDirectory:
 
     @staticmethod
     def convert_pdf_to_html(pdf_file, info_file_contents, out_dir=None):
+        """
+        Cleans target dir for PDF to HTML conversion.
+        Calls PDF to HTML function.
+
+        Args:
+            pdf_file (str): Path to the PDF file.
+            info_file_contents (dict): Information loaded from an info file.
+            out_dir (str): Directory to store HTML files.
+
+        Returns:
+            None
+        """
         out_dir = get_html_out_dir(pdf_file) if out_dir is None else remove_trailing_slash(out_dir)
 
         try:
@@ -62,6 +84,17 @@ class HTMLDirectory:
 
     def parse_html_directory(self, html_dir, page_wildcard):
 
+        """
+        Parses the contents of a HTML Directory into a data structure.
+
+        Args:
+            html_dir (str): HTML Directory of current pdf.
+            page_wildcard (str): String used to filter pages in HTML Directory.
+
+        Returns:
+            None
+        """
+
         html_dir = remove_trailing_slash(html_dir)
 
         pathname = html_dir + '/' + page_wildcard
@@ -83,6 +116,12 @@ class HTMLDirectory:
             self.htmlpages.append(htmlpage)
 
     def render_to_png(self, base_dir, out_dir):
+        """Converts HTMLPages into PNGs.
+
+        Args:
+            base_dir (str): Path to HTMLDirectory
+            out_dir (str): Path to save pngs of HTMLPages.
+        """
         for it in self.htmlpages:
             print_verbose(1, "Render to png : page = " + str(it.page_num))
             it.render_to_png(remove_trailing_slash(base_dir), remove_trailing_slash(out_dir))
@@ -92,6 +131,11 @@ class HTMLDirectory:
             print(it.repr_tables_only())
 
     def save_to_dir(self, out_dir):
+        """Serializes parsed HTMLDirectory and saves further objects in special files.
+
+        Args:
+            out_dir (str): Directory path to save data.
+        """
         for it in self.htmlpages:
             print_verbose(1, "Save to JSON and CSV: page = " + str(it.page_num))
             it.save_to_file(remove_trailing_slash(out_dir) + r'/jpage' + "{:05d}".format(it.page_num) + '.json')
@@ -99,6 +143,12 @@ class HTMLDirectory:
             it.save_all_footnotes_to_txt(out_dir)
 
     def load_from_dir(self, html_dir, page_wildcard):
+        """Loads HTMLDirectory (Report) from JSON files.
+
+        Args:
+            html_dir (str): Directory Path to HTMLDirectory.
+            page_wildcard (str): Wildcard determining for which JSON files to filter.
+        """
 
         html_dir = remove_trailing_slash(html_dir)
         pathname = html_dir + '/' + page_wildcard

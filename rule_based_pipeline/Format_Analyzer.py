@@ -57,6 +57,14 @@ class Format_Analyzer:
 
     @staticmethod
     def looks_weak_numeric(val):
+        """Returns True if at least on integer is in String.
+
+        Args:
+            val (str): String to be investigated.
+
+        Returns:
+            boolean: True if at least one integer.
+        """
         num_numbers = sum(c.isnumeric() for c in val)
         return num_numbers > 0
 
@@ -146,6 +154,14 @@ class Format_Analyzer:
 
     @staticmethod
     def looks_running_text(val):
+        """Determines if a string can be classified as a running text.
+
+        Args:
+            val (str): String to be investigated.
+
+        Returns:
+            Boolean: True if the string to be investigated looks like text.
+        """
         txt = Format_Analyzer.trim_whitespaces(val)
         num_full_stops = txt.count(".")
         num_comma = txt.count(",")

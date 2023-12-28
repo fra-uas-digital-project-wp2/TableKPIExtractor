@@ -15,10 +15,10 @@ class Rect:
         Initialize a Rect object.
 
         Parameters:
-            x0_ (float): The x-coordinate of the bottom-felt corner.
-            y0_ (float): The y-coordinate of the bottom-felt corner.
-            x1_ (float): The x-coordinate of the top-right corner.
-            x1_ (float): The y-coordinate of the top-right corner.
+            x0_ (float): The x-coordinate of the top-left corner.
+            y0_ (float): The y-coordinate of the top-left corner.
+            x1_ (float): The x-coordinate of the bottom-right corner.
+            y1_ (float): The y-coordinate of the bottom-right corner.
         """
         self.x0 = x0_
         self.x1 = x1_

@@ -227,10 +227,13 @@ class HTMLCluster:
     @staticmethod
     def generate_clusters(items, mode):
         """
-        Generate hierarchical clusters from a list of items.
+        Generate hierarchical / agglomerative clusters from a list of HTMLItems.
+        The HTMLItems are added to a "nodes" list.
+        The distance between all elements of nodes is calculated.
+        A cluster is generated through hierarchical clustering.
 
         Args:
-            items (list): List of items.
+            items (list): LHTMLItems.
             mode (int): Distance calculation mode.
 
         Returns:
@@ -263,7 +266,7 @@ class HTMLCluster:
 
         print_verbose(5, dmatrix)
 
-        # compute clusters
+        # Compute agglomerative cluster, from distance matrix
         sq = squareform(dmatrix)
         output_linkage = hcl.linkage(sq, method='average')
 
