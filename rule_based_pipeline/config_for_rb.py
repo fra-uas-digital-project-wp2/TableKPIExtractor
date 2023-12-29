@@ -13,12 +13,13 @@ global_exec_folder = r"./"
 global_raw_pdf_folder = r"raw_pdf/"
 global_working_folder = r"rule_based_pipeline_workdir/"
 global_output_folder = r"output_rule_based_pipeline/"
+global_expected_values_folder = r"expected_values/"
+global_input_folder = r"input/"
 
 # Filter PDFs and pages
 global_name_of_pdf = "*"
-global_page_of_pdf = "*"
+global_page_of_table_in_pdf = "*"
 
-global_kpi_spec_path = ""  # if set, then command line argument will be ignored; example: "kpispec.txt"
 global_rendering_font_override = r"default_font.otf"
 global_approx_font_name = r"default_font.otf"  # use this font as approximation
 global_max_identify_complex_items_timeout = 0.5  # seconds

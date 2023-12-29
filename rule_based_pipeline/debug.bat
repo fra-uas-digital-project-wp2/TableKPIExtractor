@@ -1,1 +1,0 @@
-python main.py --raw_pdf_folder "M:\PythonScripting\Magic_NLP\test_data\raw_test" --working_folder "M:\PythonScripting\Magic_NLP\test_data\work" --output_folder "M:\PythonScripting\Magic_NLP\test_data\output" --verbosity 1

@@ -4,8 +4,8 @@
 # Author : Ismail Demir (G124272)
 # Date   : 02.08.2020
 # ============================================================================================================================
-from DataImportExport import DataImportExport
 import csv
+from DataImportExport import DataImportExport
 from Format_Analyzer import Format_Analyzer
 from glob import glob
 from globals import print_verbose, save_txt_to_file
@@ -21,7 +21,6 @@ class TestData:
     Attributes:
         samples: A list to store instances of TestDataSample.
     """
-    samples = None
 
     def __init__(self):
         """
@@ -29,63 +28,56 @@ class TestData:
         """
         self.samples = []
 
-    def filter_kpis(self, by_kpi_id=None, by_source_file=None, by_has_fixed_source_file=False):
+    def filter_kpis(self, by_kpi_id=None, by_source_file=None):
         """
         Filters TestData samples based on specified criteria.
 
         Args:
-            by_kpi_id (list): List of KPI IDs to filter by.
-            by_source_file (list): List of source files to filter by.
-            by_has_fixed_source_file (bool): Flag to filter samples with fixed source files.
+            by_kpi_id (list, optional): List of KPI IDs to filter by.
+            by_source_file (list, optional): List of source files to filter by.
 
         Returns:
             None
         """
-        samples_new = []
-        for s in self.samples:
-            keep = True
+        # Create a new list to store filtered samples
+        filtered_samples = []
 
-            if by_kpi_id is not None and s.kpi_id not in by_kpi_id:
+        # Iterate through each TestData sample
+        for sample in self.samples:
+            keep = True  # Flag to determine whether to keep the sample or not
+
+            # Check if filtering by KPI ID and the sample's KPI ID is not in the specified list
+            if by_kpi_id is not None and sample.kpi_id not in by_kpi_id:
                 keep = False
 
-            if by_source_file is not None and s.src_file not in by_source_file:
+            # Check if filtering by source file and the sample's source file is not in the specified list
+            if by_source_file is not None and sample.src_file not in by_source_file:
                 keep = False
 
-            if by_has_fixed_source_file and s.src_file is None:
-                keep = False
-
+            # If all criteria are met, keep the sample by appending it to the filtered list
             if keep:
-                samples_new.append(s)
+                filtered_samples.append(sample)
 
-        self.samples = samples_new
+        # Update the TestData samples with the filtered list
+        self.samples = filtered_samples
 
-    def get_pdf_list(self):
+    def get_unique_list_of_pdf_files(self):
         """
-        Get a list of PDF files from TestData samples.
+        Get a list of unique PDF files values from TestDataSample objects.
 
         Returns:
-            list: A list of PDF file names.
+            list: A sorted list of unique PDF files values.
         """
-        result = [s.data_source_file for s in self.samples]
-        result = list(set(result))
-        result = sorted(result, key=lambda s: s.lower())
-        return result
+        # Extract PDF file names from TestData samples
+        pdf_files = [sample.src_file for sample in self.samples]
 
-    def fix_file_names(self, fix_list):
-        """
-        Fixes TestData sample file names based on the provided fix list.
+        # Remove duplicate entries by converting the list to a set and back to a list
+        unique_pdf_files = list(set(pdf_files))
 
-        Args:
-            fix_list (list): List of tuples containing old and new file names.
+        # Sort the list of unique PDF file names in a case-insensitive manner
+        sorted_pdf_files = sorted(unique_pdf_files, key=lambda sample: sample.lower())
 
-        Returns:
-            None
-        """
-        for i in range(len(self.samples)):
-            for f in fix_list:
-                if self.samples[i].data_source_file == f[0]:
-                    self.samples[i].fixed_source_file = f[1]
-                    break
+        return sorted_pdf_files
 
     def load_from_csv(self, src_file_path):
         """
@@ -98,28 +90,35 @@ class TestData:
             None
         """
 
+        # Initialize TestData samples list
         self.samples = []
 
-        with open(src_file_path, errors='ignore', encoding="ascii") as f:
-            data_lines = f.readlines()
+        # Read all lines from the CSV file
+        with open(src_file_path, errors='ignore', encoding="ascii") as file:
+            data_lines = file.readlines()
 
-        for i in range(len(data_lines)):
-            data_lines[i] = data_lines[i].replace('\n', '')
+        # Remove newline characters from each line
+        data_lines = [line.replace('\n', '') for line in data_lines]
 
+        # Extract raw data excluding the header
         raw_data = data_lines[1:]
 
+        # Process each line of raw data
         result_list_of_lists = []
-
         for input_string in raw_data:
+            # Use csv.reader to handle CSV format
             csv_reader = csv.reader(StringIO(input_string))
             result_list = next(csv_reader)
             result_list_of_lists.append(result_list)
 
+        # Create TestDataSample objects from processed data
         for result_list in result_list_of_lists:
+            # Convert year to integer, validating its format
             year = Format_Analyzer.to_int_number(result_list[8], 4)
             if not Format_Analyzer.looks_year(str(year)):
                 raise ValueError('Found invalid year "' + str(year) + '" at row ' + str(result_list))
 
+            # Create TestDataSample object and populate its attributes
             sample = TestDataSample()
             sample.kpi_id = result_list[0]
             sample.kpi_name = result_list[1]
@@ -135,6 +134,7 @@ class TestData:
             sample.unit = result_list[11]
             sample.match_type = result_list[12]
 
+            # Add the TestDataSample to the TestData samples list
             self.samples.append(sample)
 
     def save_to_csv(self, dst_file_path):
@@ -147,22 +147,8 @@ class TestData:
         Returns:
             None
         """
+        # Convert TestData samples to CSV format and save to file
         save_txt_to_file(TestDataSample.samples_to_csv(self.samples), dst_file_path)
-
-    def get_unique_list_of_pdf_files(self):
-        """
-        Get a list of unique fixed_source_file values from TestDataSample objects.
-
-        Returns:
-            list: A sorted list of unique fixed_source_file values.
-        """
-        fixed_files = [sample.src_file for sample in self.samples]
-
-        unique_fixed_files = list(set(fixed_files))
-
-        sorted_unique_fixed_files = sorted(unique_fixed_files, key=lambda sample: sample.lower())
-
-        return sorted_unique_fixed_files
 
     def generate_dummy_test_data(self, pdf_folder, pdf_filter='*'):
         """
