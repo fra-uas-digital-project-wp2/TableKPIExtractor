@@ -13,7 +13,7 @@ from globals import file_exists, get_html_out_dir, get_num_of_files, print_verbo
 from HTMLDirectory import HTMLDirectory
 from KPIResultSet import KPIResultSet
 import os
-from rule_based_pipeline.test import test_prepare_kpi_specs
+from test import test_prepare_kpi_specs
 from TestData import TestData
 import time
 
@@ -182,6 +182,7 @@ def analyze_pdf(pdf_file, kpis, info_file_contents, wildcard_restrict_page='*', 
 
 
 def convert_pdf_to_html(pdf_file, html_dir_path, force_pdf_convert=False, info_file_contents=None, do_wait=False):
+    
     """
     Convert PDF to HTML.
 
@@ -259,6 +260,10 @@ def analyze_pages(directory, guess_year, kpis, do_wait):
 
 
 def main():
+
+    # Record the start time for performance measurement
+    time_start = time.time()
+
     parse_arguments()
 
     # Fix global paths
@@ -293,9 +298,6 @@ def main():
     # Load information from the file info.json
     json_file_name = remove_trailing_slash(config_for_rb.global_working_folder) + '/info.json'
     info_file_contents = DataImportExport.load_path_files_from_json_file(json_file_name)
-
-    # Record the start time for performance measurement
-    time_start = time.time()
 
     # Iterate over each PDF in the list
     for pdf in pdfs:

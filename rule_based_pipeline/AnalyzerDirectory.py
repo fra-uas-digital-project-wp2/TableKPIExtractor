@@ -36,7 +36,7 @@ class AnalyzerDirectory:
         Initializes an AnalyzerDirectory.
 
         Args:
-            html_directory (HTMLDirectory): The HTML directory.
+            html_directory (HTMLDirectory): The HTMLDirectory (Report).
             default_year: The default year value.
         """
         self.html_directory = html_directory

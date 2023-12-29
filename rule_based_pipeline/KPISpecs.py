@@ -102,7 +102,7 @@ class KPISpecs:
 
         def match_nodes(self, txt_nodes):
             """
-            Check if nodes are matched by the regular expression.
+            Check if RegEx Match. Calculates score based on specified parameters and match.
 
             Args:
                 txt_nodes (list): List of text nodes.
@@ -338,6 +338,14 @@ class KPISpecs:
 
     # check if nodes are matched by this, and if yes return True together with score
     def match_nodes(self, desc_nodes):
+        """Matches a "desc_node" with the elements of the desc_regex_match_list 
+
+        Args:
+            desc_nodes (str): Desc to match
+
+        Returns:
+            Match (bool): Was pattern matched Score (int) : Score indicating performance if matched
+        """
         final_score = 0
         at_least_one_match = False
         bad_match = False

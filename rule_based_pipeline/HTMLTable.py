@@ -1008,7 +1008,12 @@ class HTMLTable:
         self.special_idx = sorted(tmp, key=lambda i: self.items[i].pos_y)
 
     def cleanup_table(self, page_width, paragraphs):
+        """HTMLTable is cleaned
 
+        Args:
+            page_width (int): Width of HTMLPage.
+            paragraphs (list): List of HTML Paragraphs.
+        """
         bak_items = deepcopy(self.items)
         bak_idx = deepcopy(self.idx)
 
@@ -1150,6 +1155,8 @@ class HTMLTable:
                     cnt_weak_numerics > 0 and num_items > 2 and density > 0.4 and config_for_rb.global_be_more_generous_with_good_tables)
 
     def categorize_as_table(self):
+        """Assigns a set of HTMLItems a table related category.
+        """
         print_verbose(7, "--> Categorize as new table: " + str(self))
         for i in self.idx:
             if (i != -1):
@@ -1162,12 +1169,20 @@ class HTMLTable:
                 self.items[i].category = CAT_TABLE_SPECIAL
 
     def categorize_as_misc(self):
+        """Assigns a set of HTMLItems the category "CAT_MISC".
+        """
         print_verbose(7, "--> Categorize as misc: " + str(self))
         for i in self.get_all_idx():
             if (i != -1):
                 self.items[i].category = CAT_MISC
 
     def init_by_cols(self, p_idx, p_items):
+        """Initializes HTMLTable by vertically aligned HTMLItems.
+
+        Args:
+            p_idx (list): _description_
+            p_items (list): HTMLItems vertically aligned.
+        """
 
         self.items = p_items
         self.idx = p_idx.copy()
@@ -1230,6 +1245,13 @@ class HTMLTable:
 
     @staticmethod
     def merge(tab1, tab2, page_width):  # note: tables must belong to same HTMLPage !
+        """Merges two Subtables (HTMLTables), into a single table.
+
+        Args:
+            tab1 (HTMLTable): HTMLTable to be merged.
+            tab2 (HTMLTable): HTMLTable to be merged.
+            page_width (integer): Width of HTMLPage.
+        """
 
         def cols_are_mergable(tab1, tab2, col1, col2):
             c1_x0 = 9999999

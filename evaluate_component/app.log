@@ -1,7 +1,0 @@
-root - ERROR - For output: kpiresults_tmp.csv no corresponding true output does exist!
-root - DEBUG - Total Accuracy: '0
-root - DEBUG - Scope 1: '0
-root - DEBUG - Scope 2: '0
-root - DEBUG - Scope 3: '0
-root - DEBUG - Comparisons between Expected and True: '0
-root - DEBUG - CSV File 'output_evaluate_component\total_accuracy.csv' has been successfully generated!
