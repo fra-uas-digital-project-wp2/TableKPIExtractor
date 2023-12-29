@@ -29,16 +29,15 @@ class HTMLDirectory:
     @staticmethod
     def call_pdftohtml(infile, outdir):
         """
-        Calls pdftohtml_mod command to convert a PDF file to HTML.
+        System Call "pdftohtml.exe". Converts PDF to HTML.
 
         Args:
-            infile (str): Path to the input PDF file.
-            outdir (str): Path to the output directory.
+            infile (str): Path to the PDF file.
+            outdir (str): Directory to store HTML files.
 
         Returns:
             None
         """
-
         print_verbose(1, '-> call pdftohtml_mod ' + infile)
 
         os.system(
@@ -67,12 +66,12 @@ class HTMLDirectory:
     @staticmethod
     def convert_pdf_to_html(pdf_file, info_file_contents, out_dir=None):
         """
-        Converts a PDF file to HTML.
+        Cleans target dir for PDF to HTML conversion and Converts a PDF file to HTML.
 
         Args:
-            pdf_file (str): Path to the input PDF file.
-            info_file_contents (dict): Dictionary containing information about PDF files.
-            out_dir (str, optional): Path to the output directory. If not provided, it's generated based on the PDF file.
+            pdf_file (str): Path to the PDF file.
+            info_file_contents (dict): Information loaded from an info file.
+            out_dir (str, optional): Directory to store HTML files. If not provided, it's generated based on the PDF file.
 
         Returns:
             None
@@ -107,11 +106,11 @@ class HTMLDirectory:
 
     def parse_html_directory(self, html_dir, page_wildcard):
         """
-        Parses HTML files in a directory.
+        Parses the contents of a HTML Directory into a data structure.
 
         Args:
-            html_dir (str): Path to the HTML directory.
-            page_wildcard (str): Wildcard for page HTML files.
+            html_dir (str): HTML Directory of current pdf.
+            page_wildcard (str): String used to filter pages in HTML Directory.
 
         Returns:
             None
@@ -135,11 +134,11 @@ class HTMLDirectory:
 
     def render_to_png(self, base_dir, out_dir):
         """
-        Renders HTML pages to PNG images.
+        Converts HTMLPages into PNGs.
 
         Args:
-            base_dir (str): Base directory for rendering.
-            out_dir (str): Output directory for PNG images.
+            base_dir (str): Path to HTMLDirectory
+            out_dir (str): Path to save pngs of HTMLPages.
 
         Returns:
             None
@@ -160,10 +159,10 @@ class HTMLDirectory:
 
     def save_to_dir(self, out_dir):
         """
-        Saves HTML pages to JSON and CSV files.
+        Serializes parsed HTMLDirectory and saves further objects in special JSON and CSV files.
 
         Args:
-            out_dir (str): Output directory.
+            out_dir (str): Output directory to save data.
 
         Returns:
             None
@@ -177,11 +176,11 @@ class HTMLDirectory:
 
     def load_from_dir(self, html_dir, page_wildcard):
         """
-        Loads HTML pages from JSON files in a directory.
+        Loads HTMLDirectory (Report) from JSON files.
 
         Args:
-            html_dir (str): Path to the HTML directory.
-            page_wildcard (str): Wildcard for page JSON files.
+            html_dir (str): Directory Path to HTMLDirectory.
+            page_wildcard (str): Wildcard determining for which JSON files to filter.
 
         Returns:
             None
