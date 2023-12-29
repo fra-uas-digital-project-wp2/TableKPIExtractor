@@ -5,7 +5,6 @@
 # Date   : 02.08.2020
 # ============================================================================================================================
 from ConsoleTable import ConsoleTable
-from Format_Analyzer import Format_Analyzer
 
 
 class TestDataSample:
@@ -79,40 +78,36 @@ class TestDataSample:
         return console_table.to_string(max_width, min_col_width)
 
     @staticmethod
-    def samples_to_csv(lst):
+    def samples_to_csv(samples):
         """
         Converts a list of TestDataSample instances to a CSV-formatted string.
 
         Args:
-            lst (list): List of TestDataSample instances.
+            samples (list): List of TestDataSample objects.
 
         Returns:
             str: CSV-formatted string representation of the TestDataSample instances.
         """
 
-        def escape(txt):
-            txt = txt.replace("\n", "")
-            txt = txt.replace("\r", "")
-            txt = txt.replace('"', '""')
-            return '"' + Format_Analyzer.trim_whitespaces(txt) + '"'
+        # Create header row for the CSV
+        header = [
+            "KPI_ID", "KPI_NAME", "SRC_FILE", "PAGE_NUM", "ITEM_IDS", "POS_X",
+            "POS_Y", "RAW_TXT", "YEAR", "VALUE", "SCORE", "UNIT", "MATCH_TYPE"
+        ]
 
-        result = ""
-        for k in lst:
-            result += escape(str(k.kpi_id)) + ";"
-            result += escape(str(k.kpi_name)) + ";"
-            result += escape(str(k.src_file)) + ";"
-            result += escape(str(k.page_num)) + ";"
-            result += escape(str(k.item_ids)) + ";"
-            result += escape(str(k.pos_x)) + ";"
-            result += escape(str(k.pos_y)) + ";"
-            result += escape(str(k.raw_txt)) + ";"
-            result += escape(str(k.year)) + ";"
-            result += escape(str(k.value)) + ";"
-            result += escape(str(k.score)) + ";"
-            result += escape(str(k.unit)) + ";"
-            result += escape(str(k.match_type)) + "\n"
+        # Create CSV rows from TestDataSample attributes
+        rows = [
+            [
+                str(sample.kpi_id), sample.kpi_name, sample.src_file, str(sample.page_num),
+                sample.item_ids, str(sample.pos_x), str(sample.pos_y), sample.raw_txt,
+                str(sample.year), str(sample.value), sample.score, sample.unit, sample.match_type
+            ]
+            for sample in samples
+        ]
 
-        return result
+        # Combine header and rows into a CSV-formatted string
+        csv_data = [";".join(header)] + [";".join(row) for row in rows]
+        return "\n".join(csv_data)
 
     def __repr__(self):
         """
