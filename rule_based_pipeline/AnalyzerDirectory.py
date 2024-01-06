@@ -8,7 +8,6 @@
 # ============================================================================================================================
 from AnalyzerPage import AnalyzerPage
 from config_for_rb import global_analyze_multiple_pages_at_one, global_ignore_all_years
-from globals import print_verbose
 from HTMLDirectory import HTMLDirectory
 from HTMLPage import HTMLPage
 from KPIMeasure import KPIMeasure
@@ -22,14 +21,12 @@ class AnalyzerDirectory:
         html_directory (HTMLDirectory): The HTML directory associated with the analyzer directory.
         analyzer_page (list): List of AnalyzerPage objects for each HTML page in the directory.
         default_year: The default year value.
+
     Methods:
         fix_src_name(kpi_measures): Fixes the source file name for a list of KPI measures.
         find_kpis(kpi_specs): Finds KPIs within the entire analyzer directory.
         find_multiple_kpis(kpi_specs_list): Finds multiple KPIs within the entire analyzer directory.
     """
-    html_directory = None
-    analyzer_page = None
-    default_year = None
 
     def __init__(self, html_directory, default_year):
         """
@@ -41,13 +38,17 @@ class AnalyzerDirectory:
         """
         self.html_directory = html_directory
         self.analyzer_page = []
-        for i in range(len(self.html_directory.htmlpages)):
-            p = html_directory.htmlpages[i]
-            self.analyzer_page.append(AnalyzerPage(p, default_year))
-            if global_analyze_multiple_pages_at_one and i < len(self.html_directory.htmlpages) - 1:
-                p_mult = HTMLPage.merge(p, html_directory.htmlpages[i + 1])
-                self.analyzer_page.append(AnalyzerPage(p_mult, default_year))
         self.default_year = default_year
+
+        # Create AnalyzerPage objects for each HTML page in the directory
+        for i in range(len(self.html_directory.htmlpages)):
+            page = html_directory.htmlpages[i]
+            self.analyzer_page.append(AnalyzerPage(page, default_year))
+
+            # Merge consecutive pages if specified
+            if global_analyze_multiple_pages_at_one and i < len(self.html_directory.htmlpages) - 1:
+                multiple_pages = HTMLPage.merge(page, html_directory.htmlpages[i + 1])
+                self.analyzer_page.append(AnalyzerPage(multiple_pages, default_year))
 
     def fix_src_name(self, kpi_measures):
         """
@@ -58,15 +59,16 @@ class AnalyzerDirectory:
         Returns:
             list: List of KPI measures with fixed source file names.
         """
-        print_verbose(3, "self.html_directory.src_pdf_filename=" + self.html_directory.src_pdf_filename)
-        res = []
-        for k in kpi_measures:
-            k.set_file_path(self.html_directory.src_pdf_filename)
-            res.append(k)
-        return res
+        result = []
+
+        # Iterate through each KPI measure and set the source file name
+        for kpi_measure in kpi_measures:
+            kpi_measure.set_file_path(self.html_directory.src_pdf_filename)
+            result.append(kpi_measure)
+
+        return result
 
     def find_kpis(self, kpi_specs):
-        # find all possible occurrences of kpi on all pages
         """
         Finds KPIs within the entire analyzer directory.
 
@@ -75,16 +77,21 @@ class AnalyzerDirectory:
         Returns:
             list: List of KPI measures found within the analyzer directory.
         """
-        res = []
-        for a in self.analyzer_page:
-            res.extend(a.find_kpis(kpi_specs))
+        result = []
 
+        # Iterate through each AnalyzerPage and find KPIs
+        for page in self.analyzer_page:
+            result.extend(page.find_kpis(kpi_specs))
+
+        # Remove all years if specified
         if global_ignore_all_years:
-            res = KPIMeasure.remove_all_years(res)
+            result = KPIMeasure.remove_all_years(result)
 
-        res = KPIMeasure.remove_duplicates(res)
-        res = KPIMeasure.remove_bad_scores(res, kpi_specs.minimum_score)
-        return res
+        # Remove duplicate KPI measures and those with scores below the minimum
+        result = KPIMeasure.remove_duplicates(result)
+        result = KPIMeasure.remove_bad_scores(result, kpi_specs.minimum_score)
+
+        return result
 
     def find_multiple_kpis(self, kpi_specs_list):
         """
@@ -96,12 +103,16 @@ class AnalyzerDirectory:
         Returns:
             list: List of KPI measures found within the analyzer directory.
         """
-        res = []
 
-        for k in kpi_specs_list:
-            res.extend(self.find_kpis(k))
+        result = []
 
-        res = KPIMeasure.remove_bad_years(res, self.default_year)
-        res = KPIMeasure.remove_duplicates(res)
-        res = self.fix_src_name(res)
-        return res
+        # Iterate through each KPI specification and find KPIs
+        for kpi_spec in kpi_specs_list:
+            result.extend(self.find_kpis(kpi_spec))
+
+        # Remove KPIs with bad years, duplicates, and fix source file names
+        result = KPIMeasure.remove_bad_years(result, self.default_year)
+        result = KPIMeasure.remove_duplicates(result)
+        result = self.fix_src_name(result)
+
+        return result
