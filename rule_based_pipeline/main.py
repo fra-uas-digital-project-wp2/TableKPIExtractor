@@ -13,6 +13,7 @@ from globals import file_exists, get_html_out_dir, get_num_of_files, print_verbo
 from HTMLDirectory import HTMLDirectory
 from KPIResultSet import KPIResultSet
 import os
+import shutil
 from test import test_prepare_kpi_specs
 from TestData import TestData
 import time
@@ -65,6 +66,9 @@ def fix_config_paths():
         path = os.path.dirname(os.path.realpath(__file__))
     path = remove_trailing_slash(path).replace('\\', '/')
     config_for_rb.global_exec_folder = path + r'/'
+    config_for_rb.global_raw_pdf_folder = path + r'/' + config_for_rb.global_raw_pdf_folder 
+    config_for_rb.global_output_folder = path + r'/' + config_for_rb.global_output_folder
+    config_for_rb.global_working_folder = path + r'/' + config_for_rb.global_working_folder
     config_for_rb.global_rendering_font_override = path + r'/' + config_for_rb.global_rendering_font_override
     config_for_rb.global_approx_font_name = path + r'/' + config_for_rb.global_approx_font_name
 
@@ -76,6 +80,8 @@ def make_directories():
     Returns:
         None
     """
+    if (not config_for_rb.global_debug_mode) and os.path.exists(config_for_rb.global_working_folder) and os.path.isdir(config_for_rb.global_working_folder):
+        shutil.rmtree(config_for_rb.global_working_folder)
     os.makedirs(config_for_rb.global_working_folder, exist_ok=True)
     os.makedirs(config_for_rb.global_output_folder, exist_ok=True)
 
@@ -166,12 +172,13 @@ def analyze_pdf(pdf_file, kpis, info_file_contents, wildcard_restrict_page='*', 
     os.makedirs(html_dir_path, exist_ok=True)
 
     convert_pdf_to_html(pdf_file, html_dir_path, force_pdf_convert, info_file_contents, do_wait)
-
+    
     if not assume_conversion_done:
         # parse and create json and png
-        convert_html_to_json_and_png(html_dir_path, force_parse_pdf, do_wait)
+        directory = convert_html_to_json_and_png(html_dir_path, force_parse_pdf, do_wait)
 
-    directory = load_json_files(html_dir_path, do_wait, wildcard_restrict_page)
+    if config_for_rb.global_debug_mode:
+        directory = load_json_files(html_dir_path, do_wait, wildcard_restrict_page)
 
     kpi_results = analyze_pages(directory, guess_year, kpis, do_wait)
 
@@ -200,7 +207,6 @@ def convert_pdf_to_html(pdf_file, html_dir_path, force_pdf_convert=False, info_f
     if force_pdf_convert or not file_exists(os.path.join(html_dir_path, 'index.html')):
         HTMLDirectory.convert_pdf_to_html(pdf_file, info_file_contents)
 
-
 def convert_html_to_json_and_png(html_dir_path, force_parse_pdf=False, do_wait=False):
     """
     Convert HTML to JSON and PNG.
@@ -211,15 +217,17 @@ def convert_html_to_json_and_png(html_dir_path, force_parse_pdf=False, do_wait=F
         do_wait (bool): If True, display a progress indicator.
 
     Returns:
-        None
+        html_directory : HTMLDirectory Object
     """
     print_big("Convert HTML to JSON and PNG", do_wait)
     html_directory = HTMLDirectory()
     if (force_parse_pdf or get_num_of_files(os.path.join(html_dir_path, 'jpage*.json')) != get_num_of_files(
             os.path.join(html_dir_path, 'page*.html'))):
         html_directory.parse_html_directory(html_dir_path, 'page*.html')  # ! page*
-        html_directory.render_to_png(html_dir_path, html_dir_path)
-        html_directory.save_to_dir(html_dir_path)
+        if config_for_rb.global_debug_mode:
+            html_directory.render_to_png(html_dir_path, html_dir_path)
+            html_directory.save_to_dir(html_dir_path)
+    return html_directory
 
 
 def load_json_files(html_dir_path, do_wait, wildcard_restrict_page='*'):
