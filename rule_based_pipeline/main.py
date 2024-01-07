@@ -65,6 +65,9 @@ def fix_config_paths():
         path = os.path.dirname(os.path.realpath(__file__))
     path = remove_trailing_slash(path).replace('\\', '/')
     config_for_rb.global_exec_folder = path + r'/'
+    config_for_rb.global_raw_pdf_folder = path + r'/' + config_for_rb.global_raw_pdf_folder 
+    config_for_rb.global_output_folder = path + r'/' + config_for_rb.global_output_folder
+    config_for_rb.global_working_folder = path + r'/' + config_for_rb.global_working_folder
     config_for_rb.global_rendering_font_override = path + r'/' + config_for_rb.global_rendering_font_override
     config_for_rb.global_approx_font_name = path + r'/' + config_for_rb.global_approx_font_name
 
