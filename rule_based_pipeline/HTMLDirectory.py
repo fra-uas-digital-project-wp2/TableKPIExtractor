@@ -10,6 +10,7 @@
 import os
 import glob
 import shutil
+import subprocess
 from HTMLPage import HTMLPage
 from globals import print_verbose, config_for_rb, remove_trailing_slash, get_html_out_dir
 
@@ -39,10 +40,18 @@ class HTMLDirectory:
             None
         """
         print_verbose(1, '-> call pdftohtml_mod ' + infile)
+        exe = remove_trailing_slash(config_for_rb.global_exec_folder)  + r'/pdftohtml_mod/pdftohtml_mod'
+        pdf = infile
+        out = remove_trailing_slash(outdir)
+        command = [exe,pdf,out]
+        print(command)
+        #command = ['"'+remove_trailing_slash(config_for_rb.global_exec_folder)  + r'/pdftohtml_mod/pdftohtml_mod'+'"','"./'+infile+'"', '"./'+remove_trailing_slash(outdir)+'"']
+        subprocess.run(command, check=True,shell=True)
+        #os.system(
+        #    config_for_rb.global_exec_folder + r'/pdftohtml_mod/pdftohtml_mod "' + infile + '" "' +
+        #    remove_trailing_slash(outdir) + '"')
 
-        os.system(
-            config_for_rb.global_exec_folder + r'/pdftohtml_mod/pdftohtml_mod "' + infile + '" "' +
-            remove_trailing_slash(outdir) + '"')
+
 
     @staticmethod
     def fix_strange_encryption(html_dir):
