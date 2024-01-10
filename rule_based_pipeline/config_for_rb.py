@@ -10,7 +10,8 @@
 global_verbosity = 1
 
 global_exec_folder = r"./rule_based_pipeline/"
-global_raw_pdf_folder = r"input/"
+global_raw_pdf_folder = r"raw_pdf/"
+global_input_folder = r"input/"
 global_working_folder = r"workdir/"
 global_output_folder = r"output/"
 global_expected_values_folder = r"expected_values/"
