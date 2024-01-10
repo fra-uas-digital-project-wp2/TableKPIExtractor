@@ -5,7 +5,7 @@
 # Date   : 10.09.2020
 # ============================================================================================================================
 from ConsoleTable import ConsoleTable
-from Format_Analyzer import Format_Analyzer
+from Format_Analyzer import FormatAnalyzer
 from globals import print_verbose
 
 
@@ -50,7 +50,7 @@ class TestEvaluation:
             Returns:
                 float: The extracted value or None if not applicable.
             """
-            return None if self.kpi_measure is None else Format_Analyzer.to_float_number(self.kpi_measure.value)
+            return None if self.kpi_measure is None else FormatAnalyzer.to_float_number(self.kpi_measure.value)
 
         def eval(self):
             """

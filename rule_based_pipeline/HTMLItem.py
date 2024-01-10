@@ -7,7 +7,7 @@
 # Note   : 1 HTMLItem consists of * HTMLWords
 # Note   : 1 HTMLPage consists of * HTMLItems
 # ============================================================================================================================
-from Format_Analyzer import Format_Analyzer
+from FormatAnalyzer import FormatAnalyzer
 from config_for_rb import global_verbosity
 from globals import ALIGN_LEFT, CAT_DEFAULT, ALIGN_RIGHT, ALIGN_CENTER
 from Rect import Rect
@@ -191,11 +191,11 @@ class HTMLItem:
         if self.prev_id == -1 and it.prev_id == -1:
             return False
         return (self.next_id == it.this_id or self.prev_id == it.this_id) \
-               and self.pos_x == it.pos_x \
-               and self.font_file == it.font_file \
-               and self.height == it.height \
-               and not Format_Analyzer.looks_numeric(self.txt) \
-               and not Format_Analyzer.looks_numeric(it.txt)
+            and self.pos_x == it.pos_x \
+            and self.font_file == it.font_file \
+            and self.height == it.height \
+            and not FormatAnalyzer.looks_numeric(self.txt) \
+            and not FormatAnalyzer.looks_numeric(it.txt)
 
     def is_weakly_mergable_after_reconnect(self, it):
         """
@@ -208,8 +208,8 @@ class HTMLItem:
             bool: True if weakly mergable, False otherwise.
         """
         return self.font_file == it.font_file \
-               and self.font_size == it.font_size \
-               and abs(self.get_initial_height() - it.get_initial_height()) < 0.1
+            and self.font_size == it.font_size \
+            and abs(self.get_initial_height() - it.get_initial_height()) < 0.1
 
     def get_font_characteristics(self):
         """

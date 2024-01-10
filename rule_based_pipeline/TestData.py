@@ -5,10 +5,12 @@
 # Date   : 02.08.2020
 # ============================================================================================================================
 import csv
-from DataImportExport import DataImportExport
-from Format_Analyzer import Format_Analyzer
+import jsonpickle
+
+from FormatAnalyzer import FormatAnalyzer
 from glob import glob
-from globals import print_verbose, save_txt_to_file
+from config_for_rb import global_working_folder
+from globals import print_verbose, save_txt_to_file, remove_trailing_slash
 from io import StringIO
 from TestDataSample import TestDataSample
 
@@ -114,8 +116,8 @@ class TestData:
         # Create TestDataSample objects from processed data
         for result_list in result_list_of_lists:
             # Convert year to integer, validating its format
-            year = Format_Analyzer.to_int_number(result_list[8], 4)
-            if not Format_Analyzer.looks_year(str(year)):
+            year = FormatAnalyzer.to_int_number(result_list[8], 4)
+            if not FormatAnalyzer.looks_year(str(year)):
                 raise ValueError('Found invalid year "' + str(year) + '" at row ' + str(result_list))
 
             # Create TestDataSample object and populate its attributes
@@ -129,7 +131,7 @@ class TestData:
             sample.pos_y = result_list[6]
             sample.raw_txt = result_list[7]
             sample.year = year
-            sample.value = Format_Analyzer.to_float_number(result_list[9])
+            sample.value = FormatAnalyzer.to_float_number(result_list[9])
             sample.score = result_list[10]
             sample.unit = result_list[11]
             sample.match_type = result_list[12]
@@ -176,7 +178,7 @@ class TestData:
                 ['raw_pdf/', 'filename', 'pdf']
             """
             result = [file_path]
-            result.extend(Format_Analyzer.extract_file_path(file_path))
+            result.extend(FormatAnalyzer.extract_file_path(file_path))
             return result
 
         # Use glob to get a list of PDF file paths in the given folder (*/raw_pdf)
@@ -191,7 +193,7 @@ class TestData:
             file_name = file_info[2] + '.' + file_info[3]
 
             # Check if the filename needs cleanup; print a warning and skip the file if necessary
-            if file_name != Format_Analyzer.cleanup_filename(file_name):
+            if file_name != FormatAnalyzer.cleanup_filename(file_name):
                 print_verbose(1, "Warning: Bad filename: '" + file_name + "' - this file will be skipped")
                 continue
 
@@ -203,7 +205,39 @@ class TestData:
             count += 1
 
         # Save paths of the pdf files to a JSON file named 'info.json' using DataImportExport
-        DataImportExport.save_path_files_to_json_file(file_paths)
+        self.save_path_files_to_json_file(file_paths)
+
+    @staticmethod
+    def save_path_files_to_json_file(file_paths):
+        """
+        Saves paths of the files to a JSON file named 'info.json'.
+
+        Args:
+            file_paths (list): A list of file paths.
+
+        Returns:
+            None
+        """
+        info_file_contents = {}
+
+        for file_info in file_paths:
+            # save paths of the files to info_file_contents:
+            # example: "raw_pdf/example.pdf": "raw_pdf/example.pdf"
+            info_file_contents[file_info[0]] = file_info[0]
+
+        # Set up jsonpickle options for encoding
+        jsonpickle.set_preferred_backend('json')
+        jsonpickle.set_encoder_options('json', sort_keys=True, indent=4)
+
+        # Encode the info_file_contents dictionary into JSON format
+        json_data = jsonpickle.encode(info_file_contents)
+
+        # Construct the file path for the 'info.json' file
+        info_file_path = remove_trailing_slash(global_working_folder) + '/info.json'
+
+        # Write the JSON data to the 'info.json' file
+        with open(info_file_path, "w") as info_file:
+            info_file.write(json_data)
 
     @staticmethod
     def dummy_data_sample_factory(count, file_name):

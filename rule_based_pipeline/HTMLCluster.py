@@ -7,9 +7,9 @@
 # Note   : 1 HTMLPage consists of 1 HTMLCluster (root-node)
 # Note   : 1 HTMLCluster contains * HTMLClusters (internal nodes), or consists of 1 HTMLItem (leaf node)
 # ============================================================================================================================
-from globals import hsv_to_rgba, dist, print_verbose
 import numpy
 import scipy.cluster.hierarchy as hcl
+from globals import hsv_to_rgba, dist, print_verbose
 from scipy.spatial.distance import squareform
 
 CLUSTER_DISTANCE_MODE_EUCLIDIAN = 0
@@ -55,28 +55,6 @@ class HTMLCluster:
             bool: True if the cluster is a leaf node, False otherwise.
         """
         return self.idx != -1
-
-    def set_idx(self, idx):
-        """
-        Set the index of the cluster (used when converting a leaf to an internal node).
-
-        Args:
-            idx (int): The new index.
-        """
-        if self.is_internal_node():
-            raise ValueError('Node ' + str(self) + ' is already an internal node')
-        self.idx = idx  # now it's a child node
-
-    def add_child(self, child):
-        """
-        Add a child to the cluster (used when converting an internal node to a leaf).
-
-        Args:
-            child: The child cluster or item.
-        """
-        if self.is_leaf():
-            raise ValueError('Node ' + str(self) + ' is already a leaf node')
-        self.children.append(child)
 
     def calc_flat_text(self):
         """
