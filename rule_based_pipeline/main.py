@@ -8,6 +8,7 @@ import argparse
 import config_for_rb
 import jsonpickle
 import os
+import shutil
 import time
 
 from AnalyzerDirectory import AnalyzerDirectory
@@ -61,6 +62,9 @@ def fix_config_paths():
         path = os.path.dirname(os.path.realpath(__file__))
     path = remove_trailing_slash(path).replace('\\', '/')
     config_for_rb.global_exec_folder = path + r'/'
+    config_for_rb.global_raw_pdf_folder = path + r'/' + config_for_rb.global_raw_pdf_folder
+    config_for_rb.global_output_folder = path + r'/' + config_for_rb.global_output_folder
+    config_for_rb.global_working_folder = path + r'/' + config_for_rb.global_working_folder
     config_for_rb.global_rendering_font_override = path + r'/' + config_for_rb.global_rendering_font_override
     config_for_rb.global_approx_font_name = path + r'/' + config_for_rb.global_approx_font_name
 
@@ -72,6 +76,9 @@ def make_directories():
     Returns:
         None
     """
+    if (not config_for_rb.global_debug_mode) and os.path.exists(config_for_rb.global_working_folder) and os.path.isdir(config_for_rb.global_working_folder):
+        shutil.rmtree(config_for_rb.global_working_folder)
+
     os.makedirs(config_for_rb.global_working_folder, exist_ok=True)
     os.makedirs(config_for_rb.global_output_folder, exist_ok=True)
 
@@ -162,9 +169,10 @@ def analyze_pdf(pdf_file, kpis, info_file_contents, wildcard_restrict_page='*', 
 
     if not assume_conversion_done:
         # parse and create json and png
-        convert_html_to_json_and_png(html_dir_path, force_parse_pdf, do_wait)
+        directory = convert_html_to_json_and_png(html_dir_path, force_parse_pdf, do_wait)
 
-    directory = load_json_files(html_dir_path, do_wait, wildcard_restrict_page)
+    if config_for_rb.global_debug_mode:
+        directory = load_json_files(html_dir_path, do_wait, wildcard_restrict_page)
 
     kpi_results = analyze_pages(directory, guess_year, kpis, do_wait)
 
@@ -203,7 +211,7 @@ def convert_html_to_json_and_png(html_dir_path, force_parse_pdf=False, do_wait=F
         do_wait (bool): If True, display a progress indicator.
 
     Returns:
-        None
+        html_directory : HTMLDirectory Object
     """
     print_big("Convert HTML to JSON and PNG", do_wait)
     html_directory = HTMLDirectory()
@@ -212,9 +220,11 @@ def convert_html_to_json_and_png(html_dir_path, force_parse_pdf=False, do_wait=F
 
         html_directory.parse_html_directory(html_dir_path, 'page*.html')
 
-        html_directory.render_to_png(html_dir_path, html_dir_path)
+        if config_for_rb.global_debug_mode:
+            html_directory.render_to_png(html_dir_path, html_dir_path)
+            html_directory.save_to_dir(html_dir_path)
 
-        html_directory.save_to_dir(html_dir_path)
+    return html_directory
 
 
 def load_json_files(html_dir_path, do_wait, wildcard_restrict_page='*'):

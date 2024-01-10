@@ -18,14 +18,16 @@ def load_test_data(test_data_file_path):
 
 
 def evaluation():
-    output = load_test_data(r'output_rule_based_pipeline/T_Rowe_Price_2021_EN.pdf.csv')
+    # Output
+    output = load_test_data(r'rule_based_pipeline/output/TEST_Deutsche Bank_2022_EN.pdf.csv')
 
-    output.filter_kpis(by_source_file=['T_Rowe_Price_2021_EN.pdf'])
+    # output.filter_kpis(by_source_file=['T_Rowe_Price_2021_EN.pdf'])
 
     print_big("Data-set", False)
     print(output)
 
-    kpi_results = KPIResultSet.load_from_csv(r'output_rule_based_pipeline/T_Rowe_Price_2021_EN.pdf.csv')
+    # True / Expected Values
+    kpi_results = KPIResultSet.load_from_csv(r'rule_based_pipeline/output/Deutsche Bank_2022_EN.pdf.csv')
     print_big("Kpi-Results", do_wait=False)
     print(kpi_results)
 

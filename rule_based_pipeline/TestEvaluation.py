@@ -74,7 +74,7 @@ class TestEvaluation:
             if self.kpi_measure is not None:
                 return TestEvaluation.EVAL_FALSE_POSITIVE
 
-            # No KPI measure and no test sample (True Negative)
+            # No KPI measure and no test sample (True Negative) // Unreasonable wont happen in this setup
             return TestEvaluation.EVAL_TRUE_NEGATIVE
 
         def eval_to_str(self):
@@ -218,6 +218,7 @@ class TestEvaluation:
 
         # Initialize TestEvaluation object to store evaluation results
         results = TestEvaluation()
+        kpi_measure_control = kpi_results.kpi_measures.copy()
 
         # Iterate through each KPI specification for evaluation
         for kpi_spec in kpi_specs:
@@ -235,18 +236,23 @@ class TestEvaluation:
                         cur_eval_sample = None
 
                         # Check if there are any matches in the KPI results
-                        for kpi_measure in kpi_results.kpi_measures:
+                        for kpi_measure in kpi_measure_control:
 
                             if str(kpi_measure.kpi_id) == str(kpi_spec.kpi_id) and kpi_measure.src_file == pdf_file_name and str(kpi_measure.year) == str(sample.year):
                                 # yes (Extracted KPI exists)
                                 cur_eval_sample = TestEvaluation.TestEvalSample(kpi_spec, kpi_measure, sample, kpi_measure.year, pdf_file_name)
+                                kpi_measure_control.remove(kpi_measure)
                                 break
 
-                        if cur_eval_sample is None:
+                        if cur_eval_sample is None: # add true negative here
                             # no (True KPI exists but not extracted)
                             cur_eval_sample = TestEvaluation.TestEvalSample(kpi_spec, None, sample, sample.year, pdf_file_name)
 
                         results.eval_samples.append(cur_eval_sample)
+                
+        for kpi_measure in kpi_measure_control:
+            cur_eval_sample = TestEvaluation.TestEvalSample(kpi_measure, kpi_measure, None, kpi_measure.year, kpi_measure.src_file)
+            results.eval_samples.append(cur_eval_sample)
 
         # Perform evaluations based on collected samples
         results.do_evaluations()
