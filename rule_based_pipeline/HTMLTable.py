@@ -9,7 +9,7 @@
 # ============================================================================================================================
 from ConsoleTable import ConsoleTable
 from copy import deepcopy
-from Format_Analyzer import Format_Analyzer
+from FormatAnalyzer import FormatAnalyzer
 from globals import *
 import math
 from Rect import Rect
@@ -127,27 +127,6 @@ class HTMLTable:
 
         return self.get_ix(r0, c0)
 
-    def count_regular_items_in_rect(self, rect):
-        res = 0
-        for it in self.items:
-            if (it.category in [CAT_HEADLINE, CAT_OTHER_TEXT, CAT_RUNNING_TEXT,
-                                CAT_FOOTER] and Rect.calc_intersection_area(it.get_rect(),
-                                                                            rect) / it.get_rect().get_area() > 0.1):
-                res += 1
-        return res
-
-    def unfold_idx_to_items(self, idx_list):
-        res = []
-        for i in idx_list:
-            res.append(self.items[i])
-        return res
-
-    def unfold_ix_to_idx(self, ix_list):
-        res = []
-        for i in ix_list:
-            res.append(self.idx[i])
-        return res
-
     def find_applying_special_item(self, r0):
         # precondition : special_idx must be sorted pos_y ascending
         ix = self.find_applying_special_item_ix(r0)
@@ -166,10 +145,10 @@ class HTMLTable:
             if self.has_item_at(i, c0):
                 txt = self.get_item(i, c0).txt
                 # print(txt)
-                if Format_Analyzer.looks_numeric(txt):
+                if FormatAnalyzer.looks_numeric(txt):
                     num_numbers += 1
                 # print('.. looks numeric')
-                elif Format_Analyzer.looks_words(txt):
+                elif FormatAnalyzer.looks_words(txt):
                     num_words += 1
                 # print('.. looks words')
         return num_words >= 5 and num_words > num_numbers * 0.3
@@ -364,7 +343,7 @@ class HTMLTable:
         return True
 
     def is_col_mergable(self, c0):  # return True iff col c0 and c0+1 can be merged
-        if (c0 < 0 or c0 >= self.num_cols - 1):
+        if c0 < 0 or c0 >= self.num_cols - 1:
             raise ValueError('Cols c0=' + str(c0) + ' and c0 out of range')
 
         for i in range(self.num_rows):
@@ -380,18 +359,16 @@ class HTMLTable:
         for j in range(self.num_cols):
             ix0 = self.get_ix(r0, j)
             ix1 = self.get_ix(r0 + 1, j)
-            if (self.idx[ix0] == -1):
+            if self.idx[ix0] == -1:
                 self.idx[ix0] = self.idx[ix1]
-            elif (self.idx[ix1] == -1):
+            elif self.idx[ix1] == -1:
                 # self.idx[ix0] = ix0
                 pass
             else:
                 if reconnect:
-                    # print("\n\n\n\nRECONNECT: "+str(self.items[self.idx[ix0]].this_id) + " <-> " + str(self.items[self.idx[ix1]].this_id))#zz
                     self.items[self.idx[ix0]].reconnect(self.items[self.idx[ix1]], self.items)
                 self.items[self.idx[ix0]].merge(self.items[self.idx[ix1]])
-            # if(reconnect):#zz
-            # print("After reconnect: "  + str(self.items))#zz
+
         self.delete_rows(r0 + 1, r0 + 2, False)
 
     def merge_cols(self, c0):  # merge cols c0 and c0+1
@@ -401,7 +378,7 @@ class HTMLTable:
         for i in range(self.num_rows):
             ix0 = self.get_ix(i, c0)
             ix1 = self.get_ix(i, c0 + 1)
-            if (self.idx[ix0] == -1):
+            if self.idx[ix0] == -1:
                 self.idx[ix0] = self.idx[ix1]
 
         self.delete_cols(c0 + 1, c0 + 2, False)
@@ -409,7 +386,7 @@ class HTMLTable:
     def merge_down_all_rows(self):
         # print_subset(0, self.items, self.idx)
         for i in range(self.num_rows - 1):
-            if (self.is_row_mergable(i)):
+            if self.is_row_mergable(i):
                 self.merge_rows(i)
                 self.merge_down_all_rows()
                 return
@@ -423,7 +400,7 @@ class HTMLTable:
 
     def is_empty_row(self, r):
         for j in range(self.num_cols):
-            if (self.has_item_at(r, j)):
+            if self.has_item_at(r, j):
                 return False
         return True
 
@@ -441,13 +418,13 @@ class HTMLTable:
             has_changed = False
             # rows
             for i in range(self.num_rows - 1, -1, -1):
-                if (self.is_empty_row(i)):
+                if self.is_empty_row(i):
                     print_verbose(7, "Delete empty row : " + str(i))
                     has_changed = True
                     self.delete_rows(i, i + 1, False)
             # cols
             for j in range(self.num_cols - 1, -1, -1):
-                if (self.is_empty_col(j)):
+                if self.is_empty_col(j):
                     print_verbose(7, "Delete empty column : " + str(j))
                     has_changed = True
                     self.delete_cols(j, j + 1, False)
@@ -502,7 +479,7 @@ class HTMLTable:
         last_delta_y = 9999999
 
         for i in range(self.num_rows):
-            if self.has_item_at(i, 0) and Format_Analyzer.looks_words(self.get_item(i, 0).txt):
+            if self.has_item_at(i, 0) and FormatAnalyzer.looks_words(self.get_item(i, 0).txt):
                 num_rows_with_left_txt += 1
             cur_numeric_values = 0
             cur_header_values = 0
@@ -513,9 +490,9 @@ class HTMLTable:
                     if cur_pos_y == 9999999:
                         cur_pos_y = self.get_item(i, j).pos_y
                     txt = self.get_item(i, j).txt
-                    if Format_Analyzer.looks_numeric(txt) and not Format_Analyzer.looks_year(txt):
+                    if FormatAnalyzer.looks_numeric(txt) and not FormatAnalyzer.looks_year(txt):
                         cur_numeric_values += 1
-                    elif ((Format_Analyzer.looks_words(txt) and txt[0].isupper()) or Format_Analyzer.looks_year(txt)):
+                    elif ((FormatAnalyzer.looks_words(txt) and txt[0].isupper()) or FormatAnalyzer.looks_year(txt)):
                         cur_header_values += 1
                     else:
                         cur_other_values += 1
@@ -543,7 +520,7 @@ class HTMLTable:
         if not self.has_non_empty_item_at(self.num_rows - 1, 0):
             return
 
-        if Format_Analyzer.looks_numeric(self.get_item(self.num_rows - 1, 0).txt):
+        if FormatAnalyzer.looks_numeric(self.get_item(self.num_rows - 1, 0).txt):
             return
 
         for j in range(1, self.num_cols):
@@ -583,17 +560,15 @@ class HTMLTable:
                     if it.category not in [CAT_HEADLINE, CAT_OTHER_TEXT, CAT_RUNNING_TEXT, CAT_FOOTER]:
                         continue
                     it_rect = it.get_rect()
-                    if (Rect.calc_intersection_area(cur_rect, it_rect) > 0):
+                    if Rect.calc_intersection_area(cur_rect, it_rect) > 0:
                         print_verbose(2, '----->> With ' + str(self.get_item(i, c0)) + ' the item ' + str(
                             it) + ' overlaps')
                         num_reg_text += 1
 
-            # num_reg_text = self.count_regular_items_in_rect(Rect( (min_x0 + max_x0)/2.0, self.table_rect.y0, min_x1, self.table_rect.y1) )
-
             return num_reg_text == 0
 
         for j in range(self.num_cols - 1):
-            if (not is_connected_col(j)):
+            if not is_connected_col(j):
                 print_verbose(5, "Throw away non-connected cols after /excl. :" + str(j))
                 print_verbose(5, "Current table: " + str(self))
                 self.delete_cols(j + 1, self.num_cols)
@@ -612,7 +587,7 @@ class HTMLTable:
                     res = i
             return res
 
-        if (self.num_cols == 0 or len(paragraphs) < 2):
+        if self.num_cols == 0 or len(paragraphs) < 2:
             return
 
         self.recalc_geometry()
@@ -687,19 +662,19 @@ class HTMLTable:
             j = 0
             while j < self.num_cols - 1:
                 if (self.has_item_at(i, j) and self.has_item_at(i, j + 1) and
-                        Format_Analyzer.looks_year(self.get_item(i, j).txt) and
-                        Format_Analyzer.looks_year(self.get_item(i, j + 1).txt) and
-                        abs(Format_Analyzer.to_year(self.get_item(i, j + 1).txt) - Format_Analyzer.to_year(
+                        FormatAnalyzer.looks_year(self.get_item(i, j).txt) and
+                        FormatAnalyzer.looks_year(self.get_item(i, j + 1).txt) and
+                        abs(FormatAnalyzer.to_year(self.get_item(i, j + 1).txt) - FormatAnalyzer.to_year(
                             self.get_item(i, j).txt)) == 1):
-                    dir = Format_Analyzer.to_year(self.get_item(i, j + 1).txt) - Format_Analyzer.to_year(
+                    dir = FormatAnalyzer.to_year(self.get_item(i, j + 1).txt) - FormatAnalyzer.to_year(
                         self.get_item(i, j).txt)
                     cur_year_cols = YearCols(i, j)
                     # find last year col
                     # print("Now at cell:"+str(i)+","+str(j))
                     for j1 in range(j + 1, self.num_cols):
-                        if (self.has_item_at(i, j1) and Format_Analyzer.looks_year(
-                                self.get_item(i, j1).txt) and Format_Analyzer.to_year(
-                                self.get_item(i, j1).txt) - Format_Analyzer.to_year(
+                        if (self.has_item_at(i, j1) and FormatAnalyzer.looks_year(
+                                self.get_item(i, j1).txt) and FormatAnalyzer.to_year(
+                                self.get_item(i, j1).txt) - FormatAnalyzer.to_year(
                                 self.get_item(i, j1 - 1).txt) == dir):
                             cur_year_cols.c1 = j1
                         else:
@@ -727,8 +702,8 @@ class HTMLTable:
         # find overlapping max
         max_overlap_yc = -1
         for k in range(len(year_cols)):
-            if (year_cols[k].c0 < year_cols[min_yc].c1):
-                if (max_overlap_yc == -1 or (year_cols[k].c1 > year_cols[max_overlap_yc].c1)):
+            if year_cols[k].c0 < year_cols[min_yc].c1:
+                if max_overlap_yc == -1 or (year_cols[k].c1 > year_cols[max_overlap_yc].c1):
                     max_overlap_yc = k
 
         print_verbose(6, "------->> max overlap:" + str(year_cols[max_overlap_yc]) + " at idx " + str(max_overlap_yc))
@@ -743,12 +718,12 @@ class HTMLTable:
         if can_throw_away:
             self.delete_cols(year_cols[max_overlap_yc].c1 + 1, self.num_cols)
 
-    def throw_away_duplicate_looking_cols(
-            self):  # throw away columns that are looking like duplicates, and indicating another table
+    def throw_away_duplicate_looking_cols(self):
+        # throw away columns that are looking like duplicates, and indicating another table
         def are_cols_similar(c0, c1):
             return self.col_looks_like_text_col(c0) and self.col_looks_like_text_col(c1) \
-                and Format_Analyzer.cnt_overlapping_items(self.get_all_cols_as_text(c0),
-                                                          self.get_all_cols_as_text(c1)) > 3
+                   and FormatAnalyzer.cnt_overlapping_items(self.get_all_cols_as_text(c0),
+                                                            self.get_all_cols_as_text(c1)) > 3
 
         if self.num_cols < 3:
             return
@@ -763,7 +738,7 @@ class HTMLTable:
         if self.num_rows == 0 or self.num_cols == 0:
             return
 
-        if not self.has_item_at(0, 0) or not Format_Analyzer.looks_words(self.get_item(0, 0).txt):
+        if not self.has_item_at(0, 0) or not FormatAnalyzer.looks_words(self.get_item(0, 0).txt):
             return
 
         for j in range(1, self.num_cols):
@@ -780,15 +755,15 @@ class HTMLTable:
             for i in range(self.num_rows):
                 if self.has_item_at(i, c0):
                     txt = self.get_item(i, c0).txt
-                    if Format_Analyzer.looks_numeric(txt):
+                    if FormatAnalyzer.looks_numeric(txt):
                         num_numbers += 1
-                    elif (Format_Analyzer.looks_words(txt)):
+                    elif FormatAnalyzer.looks_words(txt):
                         num_words += 1
             return num_numbers >= 3 and num_words < num_numbers * 0.4
 
         def is_only_item_in_row(r0, c0):
             for j in range(c0):
-                if (self.has_item_at(r0, j)):
+                if self.has_item_at(r0, j):
                     return False
             for j in range(c0 + 1, self.num_cols):
                 if self.has_item_at(r0, j):
@@ -804,27 +779,27 @@ class HTMLTable:
                 font_char = self.get_item(r0, j).get_font_characteristics()
                 for i in range(r0, self.num_rows):
                     r1 = i
-                    if (not self.has_item_at(i, j)):
+                    if not self.has_item_at(i, j):
                         r1 = i + 1
                         break  # empty line
-                    if (Format_Analyzer.looks_numeric(self.get_item(i, j).txt)):
+                    if FormatAnalyzer.looks_numeric(self.get_item(i, j).txt):
                         r1 = i + 1
                         break  # number
-                    if (self.get_item(i, j).get_font_characteristics() != font_char):
+                    if self.get_item(i, j).get_font_characteristics() != font_char:
                         break  # different font
 
                 # remove now special items (but not before first occurence)
                 for i in range(r1, self.num_rows):
-                    if (self.has_item_at(i, j)):
+                    if self.has_item_at(i, j):
                         txt = self.get_item(i, j).txt
-                        if (Format_Analyzer.looks_words(txt) or Format_Analyzer.looks_other_special_item(txt)):
+                        if FormatAnalyzer.looks_words(txt) or FormatAnalyzer.looks_other_special_item(txt):
                             cur_idx = self.get_idx(i, j)
                             self.idx[self.get_ix(i, j)] = -1
                             self.special_idx.append(cur_idx)
 
                 # remove even special items from headline, but only if there are no other headline items
-                if (self.has_item_at(r0, j) and is_only_item_in_row(r0, j) and (Format_Analyzer.looks_words(
-                        self.get_item(r0, j).txt) or Format_Analyzer.looks_other_special_item(
+                if (self.has_item_at(r0, j) and is_only_item_in_row(r0, j) and (FormatAnalyzer.looks_words(
+                        self.get_item(r0, j).txt) or FormatAnalyzer.looks_other_special_item(
                     self.get_item(r0, j).txt))):
                     cur_idx = self.get_idx(r0, j)
                     self.idx[self.get_ix(r0, j)] = -1
@@ -950,7 +925,7 @@ class HTMLTable:
         tmp_idx = self.idx.copy()
 
         for cur_idx in tmp_idx:
-            looks_numeric.append(Format_Analyzer.looks_numeric(self.items[cur_idx].txt))
+            looks_numeric.append(FormatAnalyzer.looks_numeric(self.items[cur_idx].txt))
 
         tmp_boundaries = calc_col_boundaries(tmp_idx)
 
@@ -1008,7 +983,8 @@ class HTMLTable:
         self.special_idx = sorted(tmp, key=lambda i: self.items[i].pos_y)
 
     def cleanup_table(self, page_width, paragraphs):
-        """HTMLTable is cleaned
+        """
+        HTMLTable is cleaned
 
         Args:
             page_width (int): Width of HTMLPage.
@@ -1130,7 +1106,7 @@ class HTMLTable:
 
         num_sp_items = 0
         for sp in self.special_idx:
-            if (self.items[sp].txt != ''):
+            if self.items[sp].txt != '':
                 num_sp_items += 1
 
         if num_sp_items > num_items * 0.33 and num_items > 50:
@@ -1140,44 +1116,46 @@ class HTMLTable:
         cnt_numerics = 0
         cnt_weak_numerics = 0
         for i in self.idx:
-            if (i != -1):
+            if i != -1:
                 txt = self.items[i].txt
-                if (Format_Analyzer.looks_numeric(txt) and not Format_Analyzer.looks_year(txt)):
+                if FormatAnalyzer.looks_numeric(txt) and not FormatAnalyzer.looks_year(txt):
                     cnt_numerics += 1
                     cnt_weak_numerics += 1
-                elif (Format_Analyzer.looks_weak_numeric(txt)):
+                elif FormatAnalyzer.looks_weak_numeric(txt):
                     cnt_weak_numerics += 1
 
         print_verbose(7, "----->> reached end of is_good_table")
         return (cnt_numerics > 3 and density > 0.6) or (cnt_numerics > 7 and density > 0.4) or cnt_numerics > 10 \
             or (cnt_weak_numerics > 3 and num_items > 5 and density > 0.4) \
-            or (
-                    cnt_weak_numerics > 0 and num_items > 2 and density > 0.4 and config_for_rb.global_be_more_generous_with_good_tables)
+            or (cnt_weak_numerics > 0 and num_items > 2 and density > 0.4 and config_for_rb.global_be_more_generous_with_good_tables)
 
     def categorize_as_table(self):
-        """Assigns a set of HTMLItems a table related category.
+        """
+        Assigns a set of HTMLItems a table related category.
         """
         print_verbose(7, "--> Categorize as new table: " + str(self))
         for i in self.idx:
-            if (i != -1):
+            if i != -1:
                 self.items[i].category = CAT_TABLE_DATA
         for i in self.headline_idx:
-            if (i != -1):
+            if i != -1:
                 self.items[i].category = CAT_TABLE_HEADLINE
         for i in self.special_idx:
-            if (i != -1):
+            if i != -1:
                 self.items[i].category = CAT_TABLE_SPECIAL
 
     def categorize_as_misc(self):
-        """Assigns a set of HTMLItems the category "CAT_MISC".
+        """
+        Assigns a set of HTMLItems the category "CAT_MISC".
         """
         print_verbose(7, "--> Categorize as misc: " + str(self))
         for i in self.get_all_idx():
-            if (i != -1):
+            if i != -1:
                 self.items[i].category = CAT_MISC
 
     def init_by_cols(self, p_idx, p_items):
-        """Initializes HTMLTable by vertically aligned HTMLItems.
+        """
+        Initializes HTMLTable by vertically aligned HTMLItems.
 
         Args:
             p_idx (list): _description_
@@ -1212,17 +1190,6 @@ class HTMLTable:
                     res = i
         return res
 
-    def find_left_marked_idx(self, mark):
-        res = -1
-        pos_x = 9999999
-        for i in range(len(self.idx)):
-            if (self.has_item_at_ix(i)):
-                cur_x = self.get_item_by_ix(i).pos_x
-                if (cur_x < pos_x and self.marks[i] == mark):
-                    pos_x = cur_x
-                    res = i
-        return res
-
     def find_marked_idx_at_y0(self, mark, id, y0, new_mark):
         res = []
         for i in range(len(self.idx)):
@@ -1236,9 +1203,9 @@ class HTMLTable:
         res = []
         for i in range(self.num_rows):
             ix = self.get_ix(i, col)
-            if (self.has_item_at_ix(ix) and self.marks[ix] == mark):
+            if self.has_item_at_ix(ix) and self.marks[ix] == mark:
                 r = self.get_item_by_ix(ix).get_rect()
-                if (r.y0 < y1 and r.y1 >= y0):
+                if r.y0 < y1 and r.y1 >= y0:
                     res.append((id, ix))
                     self.marks[ix] = new_mark
         return res
@@ -1346,9 +1313,9 @@ class HTMLTable:
                             id1, ix1 = list_idx[k + 1]
                             it = tab1.items[tab1.idx[ix]] if id == 1 else tab2.items[tab2.idx[ix]]
                             it1 = tab1.items[tab1.idx[ix1]] if id1 == 1 else tab2.items[tab2.idx[ix1]]
-                            if (not it.is_mergable(it1)):
+                            if not it.is_mergable(it1):
                                 # we found two items, that can't be merged => split row, and try again
-                                if (it.pos_y == it1.pos_y):
+                                if it.pos_y == it1.pos_y:
                                     # very strange case! should normally never occurence. bad can happen due to bad pdf formatting
                                     print_verbose(6, "------>>> Bad case! Must rearrange item")
                                     it1.pos_y += it1.height * 0.0001
@@ -1400,7 +1367,7 @@ class HTMLTable:
 
         threshold_px = DEFAULT_VTHRESHOLD * page_width
 
-        while (tab1.count_marks(0) > 0 or tab2.count_marks(0) > 0):
+        while tab1.count_marks(0) > 0 or tab2.count_marks(0) > 0:
             idx1 = tab1.find_top_marked_idx(0)
             idx2 = tab2.find_top_marked_idx(0)
             if (idx1 == -1 and idx2 == -1):
@@ -1470,9 +1437,9 @@ class HTMLTable:
 
         y0 = it0.pos_y
         y1 = it0.pos_y + it0.height
-        if (y1 < min_y0):
+        if y1 < min_y0:
             return min_y0 - y1 < 0.5 * max_height
-        if (y0 > max_y1):
+        if y0 > max_y1:
             return y0 - max_y1 < 0.5 * max_height
         return True
 
@@ -1481,12 +1448,12 @@ class HTMLTable:
         for idx in self.special_idx:
             ix = self.find_nearest_cell_ix(self.items[idx])
             r, c = self.get_row_and_col_by_ix(ix)
-            if (not (self.has_non_empty_item_at(r, c)) and self.is_compatible_with_existing_row(r, self.items[idx])):
+            if not (self.has_non_empty_item_at(r, c)) and self.is_compatible_with_existing_row(r, self.items[idx]):
                 # free cell
                 self.idx[ix] = idx
             else:
                 # no free cell. can we insert a new row?
-                if (self.is_row_insertion_possible(r, self.items[idx].pos_y)):
+                if self.is_row_insertion_possible(r, self.items[idx].pos_y):
                     self.insert_row(r)
                     self.idx[self.get_ix(r + 1, c)] = idx
                     self.recalc_geometry()
@@ -1499,16 +1466,16 @@ class HTMLTable:
         self.compactify()
 
     def is_non_overlapping_row_mergable(self, r0):  # return True iff row r0 and r0+1 can be merged
-        if (r0 < 0 or r0 >= self.num_rows - 1):
+        if r0 < 0 or r0 >= self.num_rows - 1:
             raise ValueError('Rows r0=' + str(r0) + ' and r0+1 out of range.')
 
         # only one row is allowed to contain numbers
         n0 = False
         n1 = False
         for j in range(self.num_cols):
-            if (self.has_item_at(r0, j) and Format_Analyzer.looks_numeric(self.get_item(r0, j).txt)):
+            if (self.has_item_at(r0, j) and FormatAnalyzer.looks_numeric(self.get_item(r0, j).txt)):
                 n0 = True
-            if (self.has_item_at(r0 + 1, j) and Format_Analyzer.looks_numeric(self.get_item(r0 + 1, j).txt)):
+            if (self.has_item_at(r0 + 1, j) and FormatAnalyzer.looks_numeric(self.get_item(r0 + 1, j).txt)):
                 n1 = True
 
         if (n0 and n1):
@@ -1523,12 +1490,12 @@ class HTMLTable:
         font_chars = ""
         for j in range(self.num_cols):
             both_filled = self.has_item_at(r0, j) and self.has_item_at(r0 + 1, j)
-            if (both_filled and not self.get_item(r0, j).is_weakly_mergable_after_reconnect(self.get_item(r0 + 1, j))):
+            if both_filled and not self.get_item(r0, j).is_weakly_mergable_after_reconnect(self.get_item(r0 + 1, j)):
                 print_verbose(8, '--->> is_non_overlapping_row_mergable: Rows r0=' + str(
                     r0) + ' and r0+1 are not mergable. Items:' \
                               + str(self.get_item(r0, j)) + ' and ' + str(self.get_item(r0 + 1, j)))
                 return False, 0
-            if (both_filled):
+            if both_filled:
                 has_mergable_candidates = True
                 font_chars = self.get_item(r0, j).get_font_characteristics()
                 if (self.get_item(r0, j).pos_y + self.get_item(r0, j).height * (3.0 if n0 else 2.1) < self.get_item(
@@ -1596,7 +1563,7 @@ class HTMLTable:
     def merge_non_overlapping_rows(self):
         print_verbose(7, "merge_non_overlapping_rows, Table=" + self.get_printed_repr())
         while True:
-            if (not self.merge_non_overlapping_rows_single()):
+            if not self.merge_non_overlapping_rows_single():
                 return
 
     def generate_sub_tables(self):  # generates sub-tables that are helpful for the AnalyzerTable, based on year-columns
@@ -1617,21 +1584,21 @@ class HTMLTable:
 
         for i in range(self.num_rows):
             j = 0
-            while (j < self.num_cols - 1):
-                if (self.has_item_at(i, j) and self.has_item_at(i, j + 1) and \
-                        Format_Analyzer.looks_year(self.get_item(i, j).txt) and \
-                        Format_Analyzer.looks_year(self.get_item(i, j + 1).txt) and \
-                        abs(Format_Analyzer.to_year(self.get_item(i, j + 1).txt) - Format_Analyzer.to_year(
+            while j < self.num_cols - 1:
+                if (self.has_item_at(i, j) and self.has_item_at(i, j + 1) and
+                        FormatAnalyzer.looks_year(self.get_item(i, j).txt) and
+                        FormatAnalyzer.looks_year(self.get_item(i, j + 1).txt) and
+                        abs(FormatAnalyzer.to_year(self.get_item(i, j + 1).txt) - FormatAnalyzer.to_year(
                             self.get_item(i, j).txt)) == 1):
-                    dir = Format_Analyzer.to_year(self.get_item(i, j + 1).txt) - Format_Analyzer.to_year(
+                    dir = FormatAnalyzer.to_year(self.get_item(i, j + 1).txt) - FormatAnalyzer.to_year(
                         self.get_item(i, j).txt)
                     cur_year_cols = YearCols(i, j)
                     # find last year col
                     # print("Now at cell:"+str(i)+","+str(j))
                     for j1 in range(j + 1, self.num_cols):
-                        if (self.has_item_at(i, j1) and \
-                                Format_Analyzer.looks_year(self.get_item(i, j1).txt) and \
-                                Format_Analyzer.to_year(self.get_item(i, j1).txt) - Format_Analyzer.to_year(
+                        if (self.has_item_at(i, j1) and
+                                FormatAnalyzer.looks_year(self.get_item(i, j1).txt) and
+                                FormatAnalyzer.to_year(self.get_item(i, j1).txt) - FormatAnalyzer.to_year(
                                     self.get_item(i, j1 - 1).txt) == dir):
                             cur_year_cols.c1 = j1
                         else:
@@ -1650,9 +1617,9 @@ class HTMLTable:
 
         res = []
         for y in yl:
-            if (y[0] - 1 > 0):
+            if y[0] - 1 > 0:
                 cur_tab = deepcopy(self)
-                if (y[1] + 1 < cur_tab.num_cols):
+                if y[1] + 1 < cur_tab.num_cols:
                     cur_tab.delete_cols(y[1] + 1, cur_tab.num_cols)
                 cur_tab.delete_cols(0, y[0] - 1)
                 print_verbose(6, "Found sub-table:\n" + str(cur_tab.get_printed_repr()))
@@ -1689,7 +1656,7 @@ class HTMLTable:
         # content
         for i in range(self.num_rows):
             # frame line
-            if (i > 0):
+            if i > 0:
                 res += '\u2560'
                 for j in range(self.num_cols):
                     res += '\u2550' * (COL_WIDTH - 1)
@@ -1699,7 +1666,7 @@ class HTMLTable:
             # content line
             res += '\u2551'
             for j in range(self.num_cols):
-                if (self.has_item_at(i, j)):
+                if self.has_item_at(i, j):
                     txt = self.get_item(i, j).txt.replace('\n', ' ')
                     res += str(txt)[:(COL_WIDTH - 1)].ljust(COL_WIDTH - 1, ' ')
                 else:
@@ -1708,7 +1675,7 @@ class HTMLTable:
 
             # special items
             sp_ix = self.find_applying_special_item_ix(i)
-            if (sp_ix is not None and special_printed[sp_ix] == False):
+            if sp_ix is not None and special_printed[sp_ix] == False:
                 special_printed[sp_ix] = True
                 res += ' * ' + self.items[self.special_idx[sp_ix]].txt[:COL_WIDTH]
 

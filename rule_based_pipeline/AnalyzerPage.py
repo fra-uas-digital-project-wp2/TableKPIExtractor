@@ -1,6 +1,6 @@
 # ============================================================================================================================
 # PDF_Analyzer
-# File   : AnalyzerTable.py
+# File   : AnalyzerPage.py
 # Author : Ismail Demir (G124272)
 # Date   : 12.06.2020
 #
@@ -26,11 +26,6 @@ class AnalyzerPage:
     Methods:
         find_kpis(kpi_specs): Finds KPIs within the analyzer page.
     """
-    html_page = None
-    analyzer_table = None
-    analyzer_cluster = None
-    default_year = None
-
     def __init__(self, html_page, default_year):
         """
         Initializes an AnalyzerPage.
@@ -40,15 +35,17 @@ class AnalyzerPage:
             default_year: The default year value.
         """
         self.html_page = html_page
+
         self.analyzer_table = []
-        for t in self.html_page.tables:
-            self.analyzer_table.append(AnalyzerTable(t, self.html_page, default_year))
-            sub_tabs = t.generate_sub_tables()
-            for s in sub_tabs:
-                self.analyzer_table.append(AnalyzerTable(s, self.html_page, default_year))
+        for table in self.html_page.tables:
+            self.analyzer_table.append(AnalyzerTable(table, self.html_page, default_year))
+            sub_tabs = table.generate_sub_tables()
+            for sub_tab in sub_tabs:
+                self.analyzer_table.append(AnalyzerTable(sub_tab, self.html_page, default_year))
 
         self.analyzer_cluster = []
         self.analyzer_cluster.append(AnalyzerCluster(html_page.clusters_text, html_page, default_year))
+
         self.default_year = default_year
 
     def find_kpis(self, kpi_specs):
@@ -62,27 +59,19 @@ class AnalyzerPage:
         """
         print_verbose(1, " ==>>>> FIND KPIS '" + kpi_specs.kpi_name + "' ON PAGE: " + str(
             self.html_page.page_num) + " <<<<<=====")
-        print_verbose(9, self.html_page)
 
-        res = []
+        result = []
         # 1. Tables
-        for a in self.analyzer_table:
-            res.extend(a.find_kpis(kpi_specs))
+        for table in self.analyzer_table:
+            result.extend(table.find_kpis(kpi_specs))
 
-        # 2. Figures and Text (used for CDP reports)
-        # for an in self.analyzer_cluster:
-        # res.extend(a.find_kpis(kpi_specs))
+        # 2. Remove duplicates
+        result = KPIMeasure.remove_duplicates(result)
 
-        # 3. Regular text
-        # TODO
-
-        # 4. Remove duplicates
-        res = KPIMeasure.remove_duplicates(res)
-
-        # 5. Adjust coordinates
-        for k in res:
+        # 3. Adjust coordinates
+        for k in result:
             px, py = self.html_page.transform_coords(k.pos_x, k.pos_y)
             k.pos_x = px
             k.pos_y = py
 
-        return res
+        return result

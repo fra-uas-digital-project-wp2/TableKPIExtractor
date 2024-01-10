@@ -15,11 +15,10 @@ global_working_folder = r"workdir/"
 global_output_folder = r"output/"
 global_expected_values_folder = r"expected_values/"
 
-
 # Filter PDFs and pages
 global_name_of_pdf = "*"
 global_page_of_table_in_pdf = "*"
-global_debug_mode = False # default: False. If true, detected tables are printed and HTMLDirectory is serialized.
+global_debug_mode = False  # default: False. If true, detected tables are printed and HTMLDirectory is serialized.
 
 global_rendering_font_override = r"default_font.otf"
 global_approx_font_name = r"default_font.otf"  # use this font as approximation

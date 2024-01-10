@@ -8,7 +8,9 @@ from globals import dist
 
 
 class Rect:
-    """A Class representing a rectangle with various geometric operations."""
+    """
+    A Class representing a rectangle with various geometric operations.
+    """
 
     def __init__(self, x0_=0, y0_=0, x1_=0, y1_=0):
         """
@@ -86,9 +88,6 @@ class Rect:
     @staticmethod
     def distance(r1, r2):
         return Rect.raw_rect_distance(r1.x0, r1.y0, r1.x1, r1.y1, r2.x0, r2.y0, r2.x1, r2.y1)
-
-    def get_coordinates(self):
-        return self.x0, self.y0
 
     def __repr__(self):
         """

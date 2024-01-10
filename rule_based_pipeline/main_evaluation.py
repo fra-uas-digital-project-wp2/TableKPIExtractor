@@ -7,27 +7,34 @@
 from TestEvaluation import TestEvaluation
 from KPIResultSet import KPIResultSet
 from globals import print_big
-from test import load_test_data, test_prepare_kpi_specs
+from PreparationOfKPISpecs import prepare_kpi_specs
+from TestData import TestData
+
+
+def load_test_data(test_data_file_path):
+    test_data = TestData()
+    test_data.load_from_csv(test_data_file_path)
+    return test_data
 
 
 def evaluation():
-    # Output 
-    test_data = load_test_data(r'rule_based_pipeline/output/TEST_Deutsche Bank_2022_EN.pdf.csv')
+    # Output
+    output = load_test_data(r'rule_based_pipeline/output/TEST_Deutsche Bank_2022_EN.pdf.csv')
 
-    #test_data.filter_kpis(by_source_file=['T_Rowe_Price_2021_EN.pdf'])
+    # output.filter_kpis(by_source_file=['T_Rowe_Price_2021_EN.pdf'])
 
     print_big("Data-set", False)
-    print(test_data)
+    print(output)
 
-    # True / Expected Values 
+    # True / Expected Values
     kpi_results = KPIResultSet.load_from_csv(r'rule_based_pipeline/output/Deutsche Bank_2022_EN.pdf.csv')
     print_big("Kpi-Results", do_wait=False)
     print(kpi_results)
 
-    kpis = test_prepare_kpi_specs()
+    kpis = prepare_kpi_specs()
 
     print_big("Kpi-Evaluation", do_wait=False)
-    test_eval = TestEvaluation.generate_evaluation(kpis, kpi_results, test_data)
+    test_eval = TestEvaluation.generate_evaluation(kpis, kpi_results, output)
     print(test_eval)
 
 

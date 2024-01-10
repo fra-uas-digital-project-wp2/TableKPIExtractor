@@ -7,9 +7,9 @@
 # Note   : 1 HTMLItem consists of * HTMLWords
 # Note   : 1 HTMLPage consists of * HTMLItems
 # ============================================================================================================================
-from Format_Analyzer import Format_Analyzer
-from globals import *
-from PIL import ImageFont
+from FormatAnalyzer import FormatAnalyzer
+from config_for_rb import global_verbosity
+from globals import ALIGN_LEFT, CAT_DEFAULT, ALIGN_RIGHT, ALIGN_CENTER
 from Rect import Rect
 
 
@@ -79,15 +79,6 @@ class HTMLItem:
         self.rendering_color = (0, 0, 0, 255)  # black by default
         self.page_num = -1
 
-    def is_connected(self):
-        """
-        Check if the item is connected to other items.
-
-        Returns:
-            bool: True if connected, False otherwise.
-        """
-        return self.next_id != -1 or self.prev_id != -1
-
     def get_depth(self):
         """
         Get the depth of the item.
@@ -119,15 +110,6 @@ class HTMLItem:
             return self.pos_x + self.width * 0.5
         return None  # not yet implemented
 
-    def is_text_component(self):
-        """
-        Check if the item is a text component.
-
-        Returns:
-            bool: True if a text component, False otherwise.
-        """
-        return self.category in [CAT_HEADLINE, CAT_OTHER_TEXT, CAT_RUNNING_TEXT, CAT_FOOTER]
-
     def has_category(self):
         """
         Check if the item has a category.
@@ -151,7 +133,7 @@ class HTMLItem:
 
     def get_rect(self):
         """
-        Get the rectangular boundaries of the item .
+        Get the rectangular boundaries of the item.
 
         Returns:
             Rect: The rectangular boundaries.
@@ -159,19 +141,19 @@ class HTMLItem:
         return Rect(self.pos_x, self.pos_y, self.pos_x + self.width, self.pos_y + self.height)
 
     @staticmethod
-    def find_item_by_id(items, id):
+    def find_item_by_id(items, item_id):
         """
         Find an item in a list by its identifier.
 
         Args:
             items (list): List of HTMLItem objects.
-            id (int): The identifier to search for.
+            item_id (int): The identifier to search for.
 
         Returns:
             HTMLItem: The found item or None if not found.
         """
         for it in items:
-            if it.this_id == id:
+            if it.this_id == item_id:
                 return it
         return None  # not found. should never happen
 
@@ -212,8 +194,8 @@ class HTMLItem:
             and self.pos_x == it.pos_x \
             and self.font_file == it.font_file \
             and self.height == it.height \
-            and not Format_Analyzer.looks_numeric(self.txt) \
-            and not Format_Analyzer.looks_numeric(it.txt)
+            and not FormatAnalyzer.looks_numeric(self.txt) \
+            and not FormatAnalyzer.looks_numeric(it.txt)
 
     def is_weakly_mergable_after_reconnect(self, it):
         """
@@ -248,18 +230,6 @@ class HTMLItem:
         if self.initial_height is not None:
             return self.initial_height
         return self.height
-
-    def recalc_width(self):
-        """
-        Recalculate the width of the item based on its text content and font properties.
-        """
-        span_font = ImageFont.truetype(self.font_file, self.font_size)
-        size = span_font.getsize(self.txt)
-        self.width = size[0]
-        if self.width == 0:
-            # approximate
-            size = span_font.getsize('x' * len(self.txt))
-            self.width = size[0]
 
     def merge(self, it):
         """
@@ -300,6 +270,9 @@ class HTMLItem:
     def fix_overlapping_words(self):
         """
         Fix overlapping words (Bounding Box in HTML) by adjusting their x1 coordinate.
+
+        Returns:
+            None
         """
         # assertion: all words are ordered by x ascending
         for i in range(len(self.words) - 1):
@@ -308,6 +281,9 @@ class HTMLItem:
     def recalc_geometry(self):
         """
         Recalculate the geometry of the item (Div Container in HTML) based on its words' bounding boxes.
+
+        Returns:
+            None
         """
         self.pos_x = 9999999
         self.pos_y = 9999999
@@ -324,6 +300,9 @@ class HTMLItem:
     def rejoin_words(self):
         """
         Rejoin words (Boundin Boxes) in HTMLItem (Div Container) into a single text string.
+
+        Returns:
+            None
         """
         self.txt = ''
         for w in self.words:
@@ -407,14 +386,10 @@ class HTMLItem:
         Returns:
             str: The string representation.
         """
-        return "<HTMLItem: line_num=" + str(self.line_num) + ", pos_x=" + str(self.pos_x) + ", pos_y=" + str(
-            self.pos_y) + ", is_bold=" + str(self.is_bold) + ", width=" + str(self.width) \
-            + ", height=" + str(self.height) + ", init_height=" + str(self.get_initial_height()) \
-            + ", align=" + (
-                "L" if self.alignment == ALIGN_LEFT else "R" if self.alignment == ALIGN_RIGHT else "C") + ", brightness=" + str(
-                self.brightness) \
-            + (", cat=" + str(self.category) + ", tmp_ass=" + str(
-                self.temp_assignment) if config_for_rb.global_verbosity >= 8 else "") \
-            + ", depth=" + str(self.get_depth()) + ",font_size=" + str(
-                self.font_size) + ", txt='" + self.txt + "', id=" + str(self.this_id) + ", pid=" + str(
-                self.prev_id) + ", nid=" + str(self.next_id) + ">"
+        return "<HTMLItem: line_num=" + str(self.line_num) + ", pos_x=" + str(self.pos_x) + ", pos_y=" + \
+               str(self.pos_y) + ", is_bold=" + str(self.is_bold) + ", width=" + str(self.width) + ", height=" + \
+               str(self.height) + ", init_height=" + str(self.get_initial_height()) + ", align=" + \
+               ("L" if self.alignment == ALIGN_LEFT else "R" if self.alignment == ALIGN_RIGHT else "C") + ", brightness=" + \
+               str(self.brightness) + (", cat=" + str(self.category) + ", tmp_ass=" + str(self.temp_assignment) if global_verbosity >= 8 else "") + \
+               ", depth=" + str(self.get_depth()) + ",font_size=" + str(self.font_size) + ", txt='" + self.txt + "', id=" + \
+               str(self.this_id) + ", pid=" + str(self.prev_id) + ", nid=" + str(self.next_id) + ">"

@@ -6,9 +6,8 @@
 #
 # Note   : 1 AnalyzerPage refers to * AnalyzerTable (one for each HTMLTable on that page)
 # ============================================================================================================================
-from Format_Analyzer import Format_Analyzer
-from globals import *
-from HTMLItem import HTMLItem
+from FormatAnalyzer import FormatAnalyzer
+from globals import print_verbose, ALIGN_LEFT
 from KPIMeasure import KPIMeasure
 from Rect import Rect
 
@@ -17,6 +16,15 @@ HIERARCHY_DIR_LEFT = 1
 
 DIR_UPWARDS = -1
 DIR_DOWNWARDS = 1
+
+# Text categories
+CAT_HEADLINE = 2
+CAT_OTHER_TEXT = 3
+CAT_TABLE_DATA = 4
+CAT_TABLE_HEADLINE = 5
+CAT_TABLE_SPECIAL = 6  # e.g., annotations
+CAT_MISC = 7  # probably belongs to figures
+CAT_FOOTER = 8  # bugfix 26.07.2022
 
 
 class AnalyzerTable:
@@ -60,9 +68,6 @@ class AnalyzerTable:
     def get_item(self, i, j):
         return self.htmltable.get_item(i, j)
 
-    def get_item_by_ix(self, ix):
-        return self.htmltable.get_item_by_ix(ix)
-
     def find_next_non_empty_cell_return_row_only(self, i, j, dir):
         while 0 < i < self.get_num_rows() - 1:
             i += dir
@@ -78,8 +83,8 @@ class AnalyzerTable:
             return 999999999
         it = self.get_item(i, j)
         if dir == HIERARCHY_DIR_UP:
-            return it.get_depth() + ((int)(it.pos_x / ident_threshold) * 10000 if it.alignment == ALIGN_LEFT else 0)
-        return it.get_depth() + ((int)(it.pos_y / ident_threshold) * 10000 if it.alignment == ALIGN_LEFT else 0)
+            return it.get_depth() + (int(it.pos_x / ident_threshold) * 10000 if it.alignment == ALIGN_LEFT else 0)
+        return it.get_depth() + (int(it.pos_y / ident_threshold) * 10000 if it.alignment == ALIGN_LEFT else 0)
 
     def find_next_parent_cell(self, r0, c0, dir):  # row=r0, col=c0
         # print("------------>> find_next_parent_cell: "+ str(r0) + ',' + str(c0) )
@@ -122,7 +127,7 @@ class AnalyzerTable:
                 for j in range(self.get_num_cols()):
                     if j == c0:
                         continue
-                    if self.has_item_at(r, j) and Format_Analyzer.looks_weak_numeric(self.get_item(r, j).txt):
+                    if self.has_item_at(r, j) and FormatAnalyzer.looks_weak_numeric(self.get_item(r, j).txt):
                         has_num_values = True
                         break
                 if has_num_values:
@@ -189,7 +194,7 @@ class AnalyzerTable:
             if not self.has_item_at(r, c0):
                 continue  # empty
             txt = self.get_item(r, c0).txt
-            if Format_Analyzer.looks_weak_non_numeric(txt):
+            if FormatAnalyzer.looks_weak_non_numeric(txt):
                 res.append(txt)
             else:
                 if break_at_number:
@@ -209,65 +214,19 @@ class AnalyzerTable:
             res.append(self.items[h_idx].txt)
         return res
 
-    def get_first_non_empty_row(self, r0,
-                                c0):  # typically, set r0 = 0 to search from top. If no such row found, then "num_rows" is returned
-        r = r0
-        while r < self.get_num_rows():
-            if self.has_item_at(r, c0):
-                break
-            r += 1
-        return r
-
-    def get_multi_row_headline(self, r0, c0, include_special_items):
-        # get first non-empty row
-        r = self.get_first_non_empty_row(r0, c0)
-        if r == self.get_num_rows() or not Format_Analyzer.looks_weak_words(self.get_item(r, c0)):
-            return ''
-
-        res = ''
-        # special items?
-        if include_special_items:
-            rect = self.get_item(r, c0).get_rect()
-            rect.y0 = 0
-            sp_idx = self.htmltable.find_special_item_idx_in_rect(rect)
-            res += HTMLItem.concat_txt(self.htmlpage.unfold_idx_to_items(sp_idx))
-
-        # start at r,c0
-        font = self.get_item(r, c0).get_font_characteristics()
-        max_row_spacing = self.get_item(r, c0).font_size * 1.5
-        res += self.get_item(r, c0).txt
-        last_y1 = self.get_item(r, c0).get_rect().y1
-
-        while r < self.get_num_rows() - 1:
-            r += 1
-            if not self.has_item_at(r, c0):
-                continue
-            cur_font = self.get_item(r, c0).get_font_characteristics()
-            if cur_font != font:
-                break  # different font => break here
-            cur_rect = self.get_item(r, c0).get_rect()
-            if cur_rect.y0 > last_y1 + max_row_spacing:
-                break  # rows are too far apart => break here
-            txt = self.get_item(r, c0).txt
-            if not Format_Analyzer.looks_weak_words(txt):
-                break  # not a text anymore => break here
-            res += ' ' + txt
-
-        return res
-
-    def row_looks_like_year_line(self,
-                                 r0):  # at least one column is a year? if yes, an dict with year -> row_num, col_num is returned. If not, None
+    def row_looks_like_year_line(self, r0):
+        # at least one column is a year? if yes, an dict with year -> row_num, col_num is returned. If not, None
         num_years = 0
         res = {}
         for j in range(self.get_num_cols()):
             if self.has_item_at(r0, j):
                 txt = self.get_item(r0, j).txt
-                if Format_Analyzer.looks_year(txt):
+                if FormatAnalyzer.looks_year(txt):
                     num_years += 1
-                    y = Format_Analyzer.to_year(self.get_item(r0, j).txt)
+                    y = FormatAnalyzer.to_year(self.get_item(r0, j).txt)
                     if y not in res:
                         res[y] = (r0, j)
-                elif Format_Analyzer.looks_numeric(txt):
+                elif FormatAnalyzer.looks_numeric(txt):
                     # some other number occurred => this is probably not a line of years
                     return None
 
@@ -345,24 +304,24 @@ class AnalyzerTable:
 
         def contains_items(r):  # check if dict d contains some items at all
             for j in range(self.get_num_cols()):
-                if (self.has_item_at(r, j) and Format_Analyzer.looks_numeric(self.get_item(r, j).txt)):
+                if self.has_item_at(r, j) and FormatAnalyzer.looks_numeric(self.get_item(r, j).txt):
                     return True
             return False
 
         def advance_row(init_depth, r1):
             r = r1 + 1
-            while (r < self.get_num_rows()):
-                if (not self.has_item_at(r, 0)):
+            while r < self.get_num_rows():
+                if not self.has_item_at(r, 0):
                     return r
-                if (self.get_depth(r, 0, HIERARCHY_DIR_UP) <= init_depth):
+                if self.get_depth(r, 0, HIERARCHY_DIR_UP) <= init_depth:
                     break  # another left item was found at same depth => stop process
                 r += 1
             return self.get_num_rows()  # nothing found
 
         r = r0
         init_depth = self.get_depth(r0, 0, HIERARCHY_DIR_UP)
-        while (r < self.get_num_rows()):
-            if (contains_items(r)):
+        while r < self.get_num_rows():
+            if contains_items(r):
                 # we found the applicable items
                 return r
             # advance to next row
@@ -373,7 +332,7 @@ class AnalyzerTable:
         # returns the applicable item that contains the corresponding unit
         sp_item = self.htmltable.find_applying_special_item(r0)
         print_verbose(7, '....unit_item->sp_item=' + str(sp_item))
-        if (sp_item is not None and kpispecs.match_unit(sp_item.txt)):
+        if sp_item is not None and kpispecs.match_unit(sp_item.txt):
             return sp_item.txt
 
         # look for other unit items
@@ -386,12 +345,12 @@ class AnalyzerTable:
         for i in items_idx:
             txt = self.htmlpage.explode_item(i)
             print_verbose(10, '.......trying instead: ' + txt)
-            if (kpispecs.match_unit(txt)):
+            if kpispecs.match_unit(txt):
                 print_verbose(10, '...........===> match!')
-                if (match_idx == -1 or self.items[i].pos_y > self.items[match_idx].pos_y):
+                if match_idx == -1 or self.items[i].pos_y > self.items[match_idx].pos_y:
                     print_verbose(10, '...........===> better then previous match. new match_idx=' + str(i))
                     match_idx = i
-        if (match_idx != -1):
+        if match_idx != -1:
             return self.htmlpage.explode_item(match_idx)
 
         return None
@@ -407,20 +366,20 @@ class AnalyzerTable:
             cur_x, cur_y = it.get_rect().get_center()
             dist_x = abs(cur_x - base_pos_x)
             dist_y = abs(cur_y - base_pos_y)
-            if (cur_x > base_pos_x):
+            if cur_x > base_pos_x:
                 dist_x *= 3.0  # prefer items to the left
             dist_1 = min(dist_x, dist_y)
             dist_2 = max(dist_x, dist_y) / 3.0  # prefer ortoghonally aligned items
             cur_dist = (dist_1 * dist_1 + dist_2 * dist_2) ** 0.5
-            if (cur_dist < best_dist):
+            if cur_dist < best_dist:
                 for w in it.words:
                     cur_year = None
-                    if (not aggressive_year_pattern):
-                        if (Format_Analyzer.looks_year(w.txt)):
-                            cur_year = Format_Analyzer.to_year(w.txt)  # by Lei
+                    if not aggressive_year_pattern:
+                        if FormatAnalyzer.looks_year(w.txt):
+                            cur_year = FormatAnalyzer.to_year(w.txt)  # by Lei
                         # cur_year = int(w.txt)
                     else:
-                        cur_year = Format_Analyzer.looks_year_extended(w.txt)
+                        cur_year = FormatAnalyzer.looks_year_extended(w.txt)
                     print_verbose(11, '..................... Analyzing possible year string: "' + w.txt + '" => ' + str(
                         cur_year))
 
@@ -438,7 +397,7 @@ class AnalyzerTable:
         #
         #  ==> Result: 2019: 123 ; 2018: 456; 2017: 789
 
-        if (self.year_rows is None or len(self.year_rows) == 0):
+        if self.year_rows is None or len(self.year_rows) == 0:
             return []  # invalid table for this search
 
         # base score from headlines:
@@ -455,7 +414,7 @@ class AnalyzerTable:
         h_score *= 0.5  # decay factor for headline
         print_verbose(5, 'Headline: ' + str(h_txt_nodes) + ', score=' + str(h_score))
 
-        if (h_score < 0):
+        if h_score < 0:
             return []  # headline contains something that must be excluded
 
         # normal score from acutal items:
@@ -470,13 +429,13 @@ class AnalyzerTable:
             print_verbose(5, 'Looking at row i=' + str(i) + ', txt_nodes=' + str(txt_nodes))
             txt_match, score = kpispecs.match_nodes(txt_nodes)
             print_verbose(5, '---> score=' + str(score))
-            if (not txt_match):
+            if not txt_match:
                 print_verbose(5, '---> No match')
                 continue  # no match
             value_row, value_items = self.find_applicable_items_for_table_with_years(i)
-            if (value_items is None):
+            if value_items is None:
                 print_verbose(5, '---> No values found')
-                if (self.has_item_at(i, 0)):
+                if self.has_item_at(i, 0):
                     previous_txt_node_with_no_values = self.get_item(i, 0).txt
                 else:
                     previous_txt_node_with_no_values = ''
@@ -484,16 +443,16 @@ class AnalyzerTable:
             missmatch_value = False
             print_verbose(6, '-------> value_row / value_items= ' + str(value_row) + ' / ' + str(value_items))
             for y, it in value_items.items():
-                if (it is None):
+                if it is None:
                     continue
-                if (not kpispecs.match_value(it.txt)):
+                if not kpispecs.match_value(it.txt):
                     missmatch_value = True
                     break
-            if (missmatch_value):
+            if missmatch_value:
                 print_verbose(5, '---> Value missmatch')
                 continue  # value missmatch
             txt_unit = self.find_applicable_unit_item(kpispecs, value_row)
-            if (txt_unit is None):
+            if txt_unit is None:
                 print_verbose(5, '---> Unit not matched')
                 continue  # unit not matched
 
@@ -501,24 +460,24 @@ class AnalyzerTable:
             multiplier = 1.0
 
             for y, it in value_items.items():
-                if (it is None):
+                if it is None:
                     continue
                 multiplier *= 1.2
 
-            if (multiplier > 1.0):
+            if multiplier > 1.0:
                 multiplier /= 1.2  # we counted one item too much, so divide once
 
             for y, it in value_items.items():
-                if (it is None):
+                if it is None:
                     continue
 
                 anywhere_match, anywhere_match_score = kpispecs.match_anywhere_on_page(self.htmlpage, it.this_id)
-                if (not anywhere_match):
+                if not anywhere_match:
                     print_verbose(5, '---> anywhere-match was not matched on this page. No other match possible.')
                     return []
 
                 total_score = score + h_score + anywhere_match_score + bonus
-                if (total_score < kpispecs.minimum_score):
+                if total_score < kpispecs.minimum_score:
                     print_verbose(5, '---> Total score ' + str(total_score) + ' is less than min. score ' + str(
                         kpispecs.minimum_score))
                     continue
@@ -575,7 +534,7 @@ class AnalyzerTable:
         # find possible fixed left columns
         fixed_left_cols = [0]
         for j in range(1, self.get_num_cols()):
-            if (self.htmltable.col_looks_like_text_col(j)):
+            if self.htmltable.col_looks_like_text_col(j):
                 fixed_left_cols.append(j)
 
         print_verbose(6, 'fixed_left_cols=' + str(fixed_left_cols))
@@ -585,7 +544,7 @@ class AnalyzerTable:
             for i in range(self.get_num_rows()):
                 txt_nodes_row = self.get_txt_nodes(i, fixed_left_column, HIERARCHY_DIR_UP, True)
                 font_size_row_node = None
-                if (self.has_item_at(i, fixed_left_column)):
+                if self.has_item_at(i, fixed_left_column):
                     font_size_row_node = self.get_item(i, fixed_left_column).font_size
 
                 print_verbose(5, 'Looking at row i=' + str(i) + ', txt_nodes_row=' + str(
@@ -593,7 +552,7 @@ class AnalyzerTable:
 
                 value_row = self.find_applicable_row_with_items_for_any_left_oriented_table(i)
 
-                if (value_row is None):
+                if value_row is None:
                     print_verbose(5, '---> No values found')
                     continue  # no values found
 
@@ -601,7 +560,7 @@ class AnalyzerTable:
 
                 print_verbose(6, '-------> txt_unit=' + str(txt_unit))
 
-                if (txt_unit is None):
+                if txt_unit is None:
                     print_verbose(5, '---> Unit not matched')
                     continue  # unit not matched
 
@@ -637,29 +596,29 @@ class AnalyzerTable:
                     # find the best year match
                     kpi_year = -1
                     bad_year_match = False
-                    if (years is not None):
+                    if years is not None:
                         min_diff = 9999999
                         for y, cell in years.items():
                             cur_diff = abs(cell[1] - j)
-                            if (cur_diff < min_diff):
+                            if cur_diff < min_diff:
                                 min_diff = cur_diff
-                                kpi_year = Format_Analyzer.to_year(self.get_item(cell[0], cell[1]).txt)  # by Lei
-                            if (cell[0] == i and cell[1] == j):
+                                kpi_year = FormatAnalyzer.to_year(self.get_item(cell[0], cell[1]).txt)  # by Lei
+                            if cell[0] == i and cell[1] == j:
                                 # we matched the year as value itself => must be wrong
                                 bad_year_match = True
 
-                    if (bad_year_match):
+                    if bad_year_match:
                         print_verbose(5, '-----> Bad year match: year is same as value')
                         continue
 
                     # if still no year found, then search more
-                    if (kpi_year == -1):
+                    if kpi_year == -1:
                         print_verbose(7, '......---> no year found. searching more agressively')
                         search_rect = self.htmltable.table_rect
                         search_rect.y1 = it.pos_y
                         next_non_empty_row = self.find_next_non_empty_cell_return_row_only(value_row, j, DIR_DOWNWARDS)
                         max_add = 999999  # we also want to to look a LITTLE bit downwards, in case of two-line-description cells that refer to this cell
-                        if (next_non_empty_row != -1):
+                        if next_non_empty_row != -1:
                             max_add = (self.get_item(next_non_empty_row, j).pos_y - (it.pos_y + it.height)) * 0.8
 
                         search_rect.y1 += min(it.height * 1.0, max_add)
@@ -668,12 +627,12 @@ class AnalyzerTable:
                         base_pos_x, base_pos_y = it.get_rect().get_center()
                         kpi_year = self.search_year_agressive(search_rect, self.default_year - 10, self.default_year,
                                                               base_pos_x, base_pos_y, aggressive_year_pattern=False)
-                        if (kpi_year == -1):
+                        if kpi_year == -1:
                             print_verbose(7, '........---> still no year found. searching even more agressively')
                             kpi_year = self.search_year_agressive(search_rect, self.default_year - 10,
                                                                   self.default_year, base_pos_x, base_pos_y,
                                                                   aggressive_year_pattern=True)
-                        if (kpi_year == -1):
+                        if kpi_year == -1:
                             print_verbose(7, '........---> still no year found. searching even MORE agressively')
                             search_rect.y0 = 0
                             search_rect.x0 = 0
@@ -685,13 +644,13 @@ class AnalyzerTable:
                             kpi_year) if kpi_year != -1 else '..........-> still nothing found. give up.')
 
                     anywhere_match, anywhere_match_score = kpispecs.match_anywhere_on_page(self.htmlpage, it.this_id)
-                    if (not anywhere_match):
+                    if not anywhere_match:
                         print_verbose(5, '---> anywhere-match was not matched on this page. No other match possible.')
                         return []
 
                     total_score = score + h_score + anywhere_match_score + bonus
 
-                    if (total_score < kpispecs.minimum_score):
+                    if total_score < kpispecs.minimum_score:
                         print_verbose(5, '---> Total score ' + str(total_score) + ' is less than min. score ' + str(
                             kpispecs.minimum_score))
                         continue
@@ -720,8 +679,8 @@ class AnalyzerTable:
         row_years_taken = {}
         for kpi in res:
             row = kpi.tmp
-            if (row in row_multiplier):
-                if (kpi.year not in row_years_taken[row]):
+            if row in row_multiplier:
+                if kpi.year not in row_years_taken[row]:
                     row_multiplier[row] *= 1.2
                     row_years_taken[row].append(kpi.year)
             else:
@@ -747,7 +706,7 @@ class AnalyzerTable:
 
         res = KPIMeasure.remove_duplicates(res)
 
-        if (len(res) > 0):
+        if len(res) > 0:
             print_verbose(2, "Found KPIs on Page " + str(self.htmlpage.page_num) + ",  Table : \n" + str(
                 self.htmltable.get_printed_repr()) + "\n" + str(res) + "\n================================")
 
