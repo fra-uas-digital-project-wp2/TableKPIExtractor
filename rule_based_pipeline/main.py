@@ -18,9 +18,33 @@ from HTMLDirectory import HTMLDirectory
 from KPIResultSet import KPIResultSet
 from PreparationOfKPISpecs import prepare_kpi_specs
 from TestData import TestData
+import time
+import multiprocessing as mp
+import sys
+import logging
+from logging.handlers import RotatingFileHandler
+
+
 
 # Constants Variables
 DEFAULT_YEAR = 2022
+
+def create_logger():
+    logger = logging.getLogger('my_logger')
+    logger.setLevel(logging.DEBUG)
+
+
+    # Create a RotatingFileHandler with a max file size of 1MB and a maximum of 5 backup files
+    file_handler = RotatingFileHandler('app.log', maxBytes=1024*1024, backupCount=5,encoding="utf-8")
+    file_handler.setLevel(logging.DEBUG)
+
+    # Create a formatter
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(formatter)
+
+    # Add the handler to the logger
+    logger.addHandler(file_handler)
+    return logger
 
 
 def parse_arguments():
@@ -98,6 +122,67 @@ def print_configuration():
     print_verbose(1,
                   "Using config_for_rb.global_rendering_font_override=" + config_for_rb.global_rendering_font_override)
 
+
+def analyze_all_pdfs(pdfs, kpis, info_file_contents,overall_kpi_results):
+    if config_for_rb.global_debug_mode:
+        single_process_analysis(pdfs, kpis, info_file_contents,overall_kpi_results)
+    else:
+        multi_process_analysis(pdfs, kpis, info_file_contents,overall_kpi_results)
+
+def single_process_analysis(pdfs, kpis, info_file_contents,overall_kpi_results): 
+    for pdf in pdfs:
+        # Analyze the current PDF
+        kpi_results = analyze_and_save_results(pdf, kpis, info_file_contents)
+        overall_kpi_results.extend(kpi_results)
+
+def multi_process_analysis(pdfs, kpis, info_file_contents,overall_kpi_results):
+    cores = mp.cpu_count()
+    queue = mp.Queue()
+    for pdf in pdfs:
+        queue.put(pdf)
+    
+    paths = []
+    paths.append(config_for_rb.global_exec_folder)
+    paths.append(config_for_rb.global_raw_pdf_folder)
+    paths.append(config_for_rb.global_output_folder)
+    paths.append(config_for_rb.global_working_folder)
+    paths.append(config_for_rb.global_rendering_font_override)
+    paths.append(config_for_rb.global_approx_font_name)
+
+    processes = []
+    for _ in range(cores):
+        p = mp.Process(target=mp_task,args = (queue,kpis, info_file_contents,overall_kpi_results,paths))
+        processes.append(p)
+        p.deamon = True
+        p.start()
+
+    print(processes)
+
+    for p in processes:
+        print(f"Parent process ID: {os.getpid()}")
+        print(f"Child process ID: {p.pid}")
+        p.join()
+    print("All processes have finished.")
+
+def mp_task(queue,kpis, info_file_contents,overall_kpi_results,paths):
+    # Additional exception handling if needed
+    config_for_rb.global_exec_folder = paths[0]
+    config_for_rb.global_raw_pdf_folder = paths[1]
+    config_for_rb.global_output_folder = paths[2] 
+    config_for_rb.global_working_folder = paths[3] 
+    config_for_rb.global_rendering_font_override = paths[4] 
+    config_for_rb.global_approx_font_name = paths[5]
+
+    while not queue.empty(): 
+        try:
+            pdf = queue.get(block=False)
+            print(f"PDF = '{pdf}'")
+            kpi_results = analyze_and_save_results(pdf, kpis, info_file_contents)
+            overall_kpi_results.extend(kpi_results)
+        except Exception as e:
+            print(f"The following exception occurred '{e}'!")
+            break
+    sys.exit()
 
 def analyze_and_save_results(pdf_name, kpis, info_file_contents):
     """
@@ -280,9 +365,12 @@ def load_all_path_files_from_info_json_file(json_file):
     return json_data
 
 
+
 def main():
+    logger = create_logger()
     # Record the start time for performance measurement
     time_start = time.time()
+    logger.info(f"Start Time: '{time_start}'")
 
     parse_arguments()
 
@@ -320,13 +408,12 @@ def main():
     info_file_contents = load_all_path_files_from_info_json_file(json_file_name)
 
     # Iterate over each PDF in the list
-    for pdf in pdfs:
-        # Analyze the current PDF
-        kpi_results = analyze_and_save_results(pdf, kpis, info_file_contents)
-        overall_kpi_results.extend(kpi_results)
+    analyze_all_pdfs(pdfs, kpis, info_file_contents,overall_kpi_results)
+
 
     # Record the finish time for performance measurement
     time_finish = time.time()
+    logger.info(f"End Time: '{time_finish}'")
 
     # Print the final overall result
     print_big("FINAL OVERALL-RESULT", do_wait=False)
@@ -339,7 +426,8 @@ def main():
     total_time = time_finish - time_start
     print_verbose(1, "Total run-time: " + str(total_time) + " sec ( " + str(
         total_time / max(len(pdfs), 1)) + " sec per PDF)")
-
+    logger.info("Total run-time: " + str(total_time) + " sec ( " + str(
+        total_time / max(len(pdfs), 1)) + " sec per PDF)")
 
 # Entry point of the program
 if __name__ == "__main__":

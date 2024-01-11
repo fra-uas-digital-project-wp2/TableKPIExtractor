@@ -13,7 +13,6 @@ from globals import config_for_rb, get_html_out_dir, print_verbose, remove_trail
 from os import system
 from shutil import rmtree
 
-
 class HTMLDirectory:
     """
     Represents a directory containing HTML pages related to a PDF file.
@@ -40,13 +39,17 @@ class HTMLDirectory:
         """
         # Print a verbose message indicating the call to pdftohtml_mod
         print_verbose(1, '-> call pdftohtml_mod ' + infile)
+        exe = remove_trailing_slash(config_for_rb.global_exec_folder)  + r'/pdftohtml_mod/pdftohtml_mod'
+        pdf = infile
+        out = remove_trailing_slash(outdir)
+        command = [exe,pdf,out]
+        print(command)
+        #command = ['"'+remove_trailing_slash(config_for_rb.global_exec_folder)  + r'/pdftohtml_mod/pdftohtml_mod'+'"','"./'+infile+'"', '"./'+remove_trailing_slash(outdir)+'"']
+        subprocess.run(command, check=True,shell=True)
+        #os.system(
+        #    config_for_rb.global_exec_folder + r'/pdftohtml_mod/pdftohtml_mod "' + infile + '" "' +
+        #    remove_trailing_slash(outdir) + '"')
 
-        # Construct the path to pdftohtml_mod executable
-        pdftohtml_mod = config_for_rb.global_exec_folder + r'/pdftohtml_mod/pdftohtml_mod "'
-        print(pdftohtml_mod)
-
-        # Execute the system command to convert PDF to HTML
-        system(pdftohtml_mod + infile + '" "' + remove_trailing_slash(outdir) + '"')
 
     @staticmethod
     def convert_pdf_to_html(pdf_file, info_file_contents, out_dir=None):
