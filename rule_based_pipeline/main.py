@@ -145,9 +145,17 @@ def multi_process_analysis(pdfs, kpis, info_file_contents,overall_kpi_results):
     for pdf in pdfs:
         queue.put(pdf)
     
+    paths = []
+    paths.append(config_for_rb.global_exec_folder)
+    paths.append(config_for_rb.global_raw_pdf_folder)
+    paths.append(config_for_rb.global_output_folder)
+    paths.append(config_for_rb.global_working_folder)
+    paths.append(config_for_rb.global_rendering_font_override)
+    paths.append(config_for_rb.global_approx_font_name)
+
     processes = []
     for _ in range(cores):
-        p = mp.Process(target=mp_task,args = (queue,kpis, info_file_contents,overall_kpi_results))
+        p = mp.Process(target=mp_task,args = (queue,kpis, info_file_contents,overall_kpi_results,paths))
         processes.append(p)
         p.deamon = True
         p.start()
@@ -160,8 +168,16 @@ def multi_process_analysis(pdfs, kpis, info_file_contents,overall_kpi_results):
         p.join()
     print("All processes have finished.")
 
-def mp_task(queue,kpis, info_file_contents,overall_kpi_results):
+def mp_task(queue,kpis, info_file_contents,overall_kpi_results,paths):
     # Additional exception handling if needed
+
+    config_for_rb.global_exec_folder = paths[0]
+    config_for_rb.global_raw_pdf_folder = paths[1]
+    config_for_rb.global_output_folder = paths[2] 
+    config_for_rb.global_working_folder = paths[3] 
+    config_for_rb.global_rendering_font_override = paths[4] 
+    config_for_rb.global_approx_font_name = paths[5]
+
     while not queue.empty(): 
         try:
             pdf = queue.get(block=False)
@@ -346,7 +362,7 @@ def main():
     parse_arguments()
 
     # Fix global paths
-    #fix_config_paths()
+    fix_config_paths()
 
     # make directories if not exist
     make_directories()
