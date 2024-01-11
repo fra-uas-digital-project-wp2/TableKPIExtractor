@@ -4,9 +4,9 @@
 # Author : Ismail Demir (G124272)
 # Date   : 23.06.2020
 # ============================================================================================================================
-from Format_Analyzer import Format_Analyzer
-from globals import print_verbose
 import re
+from FormatAnalyzer import FormatAnalyzer
+from globals import print_verbose
 from Rect import Rect
 
 # Matching modes:
@@ -14,13 +14,11 @@ MATCHING_MUST_INCLUDE = 0  # no match, if not included
 MATCHING_MUST_INCLUDE_EACH_NODE = 4  # must be included in each node, otherwise no match. Note: this is even more strict than MATCHING_MUST_INCLUDE
 
 MATCHING_MAY_INCLUDE = 1  # should be included, but inclusion is not necessary, although AT LEAST ONE such item must be included. can also have a negative score
-MATCHING_CAN_INCLUDE = 2  # should be included, but inclusion is not necessary. can also have a negative score
 MATCHING_MUST_EXCLUDE = 3  # no match, if included
 
 # Distance modes
 DISTANCE_EUCLIDIAN = 0  # euclidian distance
 DISTANCE_MOD_EUCLID = 1  # euclidian distance, but with modification such that orthogonal aligned objects are given a smaller distance (thus preferring table-like alignments)
-DISTANCE_MOD_EUCLID_UP_LEFT = 2  # like 1, but we prefer looking upwards and to the left, which conforms to the typical structure of a table
 DISTANCE_MOD_EUCLID_UP_ONLY = 3  # like 1, but we strictly enforce only looking upwards (else, score=0)
 
 # Percentage Matching
@@ -119,7 +117,7 @@ class KPISpecs:
             if self.allow_matching_against_concat_txt:
                 concat_txt = ' '.join(txt_nodes)
                 if self.match_single_node(concat_txt):
-                    concat_final_score = self.score * (self.letter_decay ** max(len(Format_Analyzer.cleanup_text(concat_txt)) - self.letter_decay_disregard, 0))
+                    concat_final_score = self.score * (self.letter_decay ** max(len(FormatAnalyzer.cleanup_text(concat_txt)) - self.letter_decay_disregard, 0))
                     concat_match = True
 
             for i, txt_node in enumerate(txt_nodes):
@@ -127,7 +125,7 @@ class KPISpecs:
                     if self.matching_mode == MATCHING_MUST_EXCLUDE:
                         return False, -1  # we matched something that must not be included
                     matched = True
-                    final_score += self.score * (self.score_decay ** i) * (self.multi_match_decay ** num_hits) * (self.letter_decay ** max(len(Format_Analyzer.cleanup_text(txt_node)) - self.letter_decay_disregard, 0))
+                    final_score += self.score * (self.score_decay ** i) * (self.multi_match_decay ** num_hits) * (self.letter_decay ** max(len(FormatAnalyzer.cleanup_text(txt_node)) - self.letter_decay_disregard, 0))
                     num_hits += 1
                 else:
                     if self.matching_mode == MATCHING_MUST_INCLUDE_EACH_NODE and not concat_match:
@@ -284,7 +282,7 @@ class KPISpecs:
                     dist_exp = dist / (0.1 * page_diag)
 
                     score_base = self.score * (self.score_decay ** dist_exp) * (self.letter_decay ** max(
-                        len(Format_Analyzer.cleanup_text(txt)) - self.letter_decay_disregard, 0))
+                        len(FormatAnalyzer.cleanup_text(txt)) - self.letter_decay_disregard, 0))
 
                     matches.append((i, txt, score_base))
 
@@ -333,9 +331,6 @@ class KPISpecs:
         self.minimum_score = 0
         self.minimum_score_desc_regex = 0
 
-    def has_unit(self):
-        return len(self.unit_regex_match_list) > 0
-
     # check if nodes are matched by this, and if yes return True together with score
     def match_nodes(self, desc_nodes):
         """Matches a "desc_node" with the elements of the desc_regex_match_list 
@@ -381,18 +376,18 @@ class KPISpecs:
 
     # check if extracted value is a match
     def match_value(self, val_str):
-        if self.value_must_be_numeric and (val_str == '' or not Format_Analyzer.looks_numeric(val_str)):
+        if self.value_must_be_numeric and (val_str == '' or not FormatAnalyzer.looks_numeric(val_str)):
             return False
 
         if self.value_percentage_match == VALUE_PERCENTAGE_MUST:
-            if not Format_Analyzer.looks_percentage(val_str):
+            if not FormatAnalyzer.looks_percentage(val_str):
                 return False
 
         if self.value_percentage_match == VALUE_PERCENTAGE_MUST_NOT:
-            if Format_Analyzer.looks_percentage(val_str):
+            if FormatAnalyzer.looks_percentage(val_str):
                 return False
 
-        if self.value_must_be_year and not Format_Analyzer.looks_year(val_str):
+        if self.value_must_be_year and not FormatAnalyzer.looks_year(val_str):
             return False  # this is not a year!
 
         for v in self.value_regex_match_list:

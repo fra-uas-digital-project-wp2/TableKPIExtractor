@@ -4,23 +4,26 @@
 # Author : Ismail Demir (G124272)
 # Date   : 12.06.2020
 # ============================================================================================================================
-from AnalyzerDirectory import AnalyzerDirectory
 import argparse
 import config_for_rb
-from DataImportExport import DataImportExport
-from Format_Analyzer import Format_Analyzer
+import jsonpickle
+import os
+import shutil
+import time
+
+from AnalyzerDirectory import AnalyzerDirectory
+from FormatAnalyzer import FormatAnalyzer
 from globals import file_exists, get_html_out_dir, get_num_of_files, print_verbose, print_big, remove_trailing_slash
 from HTMLDirectory import HTMLDirectory
 from KPIResultSet import KPIResultSet
-import os
-import shutil
-from test import test_prepare_kpi_specs
+from PreparationOfKPISpecs import prepare_kpi_specs
 from TestData import TestData
 import time
 import multiprocessing as mp
 import sys
 import logging
 from logging.handlers import RotatingFileHandler
+
 
 
 # Constants Variables
@@ -60,11 +63,6 @@ def parse_arguments():
                         help='Folder where output is stored')
     parser.add_argument('--verbosity', type=int, default=config_for_rb.global_verbosity,
                         help='Verbosity level (0=shut up)')
-    # new optional arguments (for Debugging mode): Optional
-    parser.add_argument('--name_of_pdf', type=str, default=config_for_rb.global_name_of_pdf,
-                        help='Filter Specific PDF')
-    parser.add_argument('--page_of_pdf', type=str, default=config_for_rb.global_page_of_table_in_pdf,
-                        help='Specific page of the table in the PDF')
 
     # TODO: why we need this? --> @Marc
     args = parser.parse_args()
@@ -88,7 +86,7 @@ def fix_config_paths():
         path = os.path.dirname(os.path.realpath(__file__))
     path = remove_trailing_slash(path).replace('\\', '/')
     config_for_rb.global_exec_folder = path + r'/'
-    config_for_rb.global_raw_pdf_folder = path + r'/' + config_for_rb.global_raw_pdf_folder 
+    config_for_rb.global_raw_pdf_folder = path + r'/' + config_for_rb.global_raw_pdf_folder
     config_for_rb.global_output_folder = path + r'/' + config_for_rb.global_output_folder
     config_for_rb.global_working_folder = path + r'/' + config_for_rb.global_working_folder
     config_for_rb.global_rendering_font_override = path + r'/' + config_for_rb.global_rendering_font_override
@@ -104,6 +102,7 @@ def make_directories():
     """
     if (not config_for_rb.global_debug_mode) and os.path.exists(config_for_rb.global_working_folder) and os.path.isdir(config_for_rb.global_working_folder):
         shutil.rmtree(config_for_rb.global_working_folder)
+
     os.makedirs(config_for_rb.global_working_folder, exist_ok=True)
     os.makedirs(config_for_rb.global_output_folder, exist_ok=True)
 
@@ -122,9 +121,6 @@ def print_configuration():
     print_verbose(1, "Using config_for_rb.global_verbosity=" + str(config_for_rb.global_verbosity))
     print_verbose(1,
                   "Using config_for_rb.global_rendering_font_override=" + config_for_rb.global_rendering_font_override)
-    # new optional arguments (for Debugging mode):
-    print_verbose(1, "Using config_for_rb.global_name_of_pdf=" + config_for_rb.global_name_of_pdf)
-    print_verbose(1, "Using config_for_rb.global_page_of_table_in_pdf=" + config_for_rb.global_page_of_table_in_pdf)
 
 
 def analyze_all_pdfs(pdfs, kpis, info_file_contents,overall_kpi_results):
@@ -248,14 +244,14 @@ def analyze_pdf(pdf_file, kpis, info_file_contents, wildcard_restrict_page='*', 
     """
     print_verbose(1, "Analyzing PDF: " + str(pdf_file))
 
-    guess_year = Format_Analyzer.extract_year_from_text(pdf_file)
+    guess_year = FormatAnalyzer.extract_year_from_text(pdf_file)
     guess_year = guess_year if guess_year is not None else DEFAULT_YEAR
 
     html_dir_path = get_html_out_dir(pdf_file)
     os.makedirs(html_dir_path, exist_ok=True)
 
     convert_pdf_to_html(pdf_file, html_dir_path, force_pdf_convert, info_file_contents, do_wait)
-    
+
     if not assume_conversion_done:
         # parse and create json and png
         directory = convert_html_to_json_and_png(html_dir_path, force_parse_pdf, do_wait)
@@ -272,7 +268,6 @@ def analyze_pdf(pdf_file, kpis, info_file_contents, wildcard_restrict_page='*', 
 
 
 def convert_pdf_to_html(pdf_file, html_dir_path, force_pdf_convert=False, info_file_contents=None, do_wait=False):
-    
     """
     Convert PDF to HTML.
 
@@ -290,6 +285,7 @@ def convert_pdf_to_html(pdf_file, html_dir_path, force_pdf_convert=False, info_f
     if force_pdf_convert or not file_exists(os.path.join(html_dir_path, 'index.html')):
         HTMLDirectory.convert_pdf_to_html(pdf_file, info_file_contents)
 
+
 def convert_html_to_json_and_png(html_dir_path, force_parse_pdf=False, do_wait=False):
     """
     Convert HTML to JSON and PNG.
@@ -306,10 +302,13 @@ def convert_html_to_json_and_png(html_dir_path, force_parse_pdf=False, do_wait=F
     html_directory = HTMLDirectory()
     if (force_parse_pdf or get_num_of_files(os.path.join(html_dir_path, 'jpage*.json')) != get_num_of_files(
             os.path.join(html_dir_path, 'page*.html'))):
-        html_directory.parse_html_directory(html_dir_path, 'page*.html')  # ! page*
+
+        html_directory.parse_html_directory(html_dir_path, 'page*.html')
+
         if config_for_rb.global_debug_mode:
             html_directory.render_to_png(html_dir_path, html_dir_path)
             html_directory.save_to_dir(html_dir_path)
+
     return html_directory
 
 
@@ -350,10 +349,25 @@ def analyze_pages(directory, guess_year, kpis, do_wait):
     return kpi_results
 
 
+def load_all_path_files_from_info_json_file(json_file):
+    """
+    Load the paths of the files from a JSON file info.json.
+
+    Args:
+        json_file (str): Path to the JSON file.
+
+    Returns:
+        json_data (str): The loaded json data.
+    """
+    with open(json_file, "r") as file:
+        data = file.read()
+    json_data = jsonpickle.decode(data)
+    return json_data
+
+
+
 def main():
-
     logger = create_logger()
-
     # Record the start time for performance measurement
     time_start = time.time()
     logger.info(f"Start Time: '{time_start}'")
@@ -384,14 +398,14 @@ def main():
     print_verbose(1, 'Related (fixed) PDFs: ' + str(pdfs) + ', in total : ' + str(len(pdfs)))
 
     # Prepare KPI specifications
-    kpis = test_prepare_kpi_specs()
+    kpis = prepare_kpi_specs()
 
     # Initialize overall KPI results
     overall_kpi_results = KPIResultSet()
 
     # Load information from the file info.json
     json_file_name = remove_trailing_slash(config_for_rb.global_working_folder) + '/info.json'
-    info_file_contents = DataImportExport.load_path_files_from_json_file(json_file_name)
+    info_file_contents = load_all_path_files_from_info_json_file(json_file_name)
 
     # Iterate over each PDF in the list
     analyze_all_pdfs(pdfs, kpis, info_file_contents,overall_kpi_results)

@@ -7,13 +7,11 @@
 # Note   : 1 HTMLDirectory consistens of * HTMLPages
 # Note   : 1 HTMLDirectory corresponds to 1 PDF-File
 # ============================================================================================================================
-import os
-import glob
-import shutil
-import subprocess
 from HTMLPage import HTMLPage
-from globals import print_verbose, config_for_rb, remove_trailing_slash, get_html_out_dir
-
+from glob import glob
+from globals import config_for_rb, get_html_out_dir, print_verbose, remove_trailing_slash
+from os import system
+from shutil import rmtree
 
 class HTMLDirectory:
     """
@@ -39,6 +37,7 @@ class HTMLDirectory:
         Returns:
             None
         """
+        # Print a verbose message indicating the call to pdftohtml_mod
         print_verbose(1, '-> call pdftohtml_mod ' + infile)
         exe = remove_trailing_slash(config_for_rb.global_exec_folder)  + r'/pdftohtml_mod/pdftohtml_mod'
         pdf = infile
@@ -52,30 +51,10 @@ class HTMLDirectory:
         #    remove_trailing_slash(outdir) + '"')
 
 
-
-    @staticmethod
-    def fix_strange_encryption(html_dir):
-        """
-        Fixes strange encryption in HTML files.
-
-        Args:
-            html_dir (str): Path to the directory containing HTML files.
-
-        Returns:
-            None
-        """
-        html_dir = remove_trailing_slash(html_dir)
-        pathname = html_dir + '/page*.html'
-        print_verbose(2, "Fixing strange encryption = " + str(pathname))
-
-        for f in glob.glob(pathname):
-            print_verbose(3, "---> " + str(f))
-            HTMLPage.fix_strange_encryption(f)
-
     @staticmethod
     def convert_pdf_to_html(pdf_file, info_file_contents, out_dir=None):
         """
-        Cleans target dir for PDF to HTML conversion and Converts a PDF file to HTML.
+        Cleans the target directory for PDF to HTML conversion and converts a PDF file to HTML.
 
         Args:
             pdf_file (str): Path to the PDF file.
@@ -85,17 +64,19 @@ class HTMLDirectory:
         Returns:
             None
         """
+        # Determine the output directory for HTML files
         out_dir = get_html_out_dir(pdf_file) if out_dir is None else remove_trailing_slash(out_dir)
 
         try:
-            shutil.rmtree(out_dir)
+            # Remove the existing output directory if it exists
+            rmtree(out_dir)
         except OSError:
             pass
+
+        # Call the pdftohtml function to convert the PDF to HTML
         HTMLDirectory.call_pdftohtml(pdf_file, out_dir)
 
-        # Fix strange encryption
-        # HTMLDirectory.fix_strange_encryption(out_dir) # TODO: Uncomment if needed.
-
+        # Write the information from the info file to the info.txt file in the working directory
         with open(out_dir + '/info.txt', 'w') as file:
             file.write(info_file_contents[pdf_file])
 
@@ -109,36 +90,44 @@ class HTMLDirectory:
         Returns:
             None
         """
+        # Open the info.txt file in the specified HTML directory "/html"
         with open(remove_trailing_slash(html_dir) + '/info.txt') as file:
+            # Read the contents of the file and set it as the PDF filename
             self.src_pdf_filename = file.read()
-            print_verbose(2, 'PDF-Filename: ' + self.src_pdf_filename)
 
     def parse_html_directory(self, html_dir, page_wildcard):
         """
-        Parses the contents of a HTML Directory into a data structure.
+        Parses the contents of an HTML Directory into a data structure.
 
         Args:
-            html_dir (str): HTML Directory of current pdf.
-            page_wildcard (str): String used to filter pages in HTML Directory.
+            html_dir (str): HTML Directory of the current PDF.
+            page_wildcard (str): String used to filter pages in the HTML Directory.
 
         Returns:
             None
         """
+        # Ensure the HTML directory path does not have a trailing slash
         html_dir = remove_trailing_slash(html_dir)
+
+        # Construct the pathname using the HTML directory and page wildcard
         pathname = html_dir + '/' + page_wildcard
         print_verbose(1, "PARSING DIR = " + str(pathname))
 
+        # Read the PDF filename from the info.txt file in the HTML directory
         self.read_pdf_filename(html_dir)
 
-        for file in glob.glob(pathname):
+        # Iterate through HTML files in the specified directory
+        for file in glob(pathname):
             print_verbose(1, "ANALYZING HTML-FILE = " + str(file))
 
+            # Parse the HTML file and create an HTMLPage object
             htmlpage = HTMLPage.parse_html_file(html_dir, file)
 
             print_verbose(1, "Discovered tables: ")
             print_verbose(1, htmlpage.repr_tables_only())
             print_verbose(1, "Done with page = " + str(htmlpage.page_num))
 
+            # Append the HTMLPage object to the list of HTML pages
             self.htmlpages.append(htmlpage)
 
     def render_to_png(self, base_dir, out_dir):
@@ -152,19 +141,11 @@ class HTMLDirectory:
         Returns:
             None
         """
+        # Iterate through each HTMLPage in the HTMLDirectory
         for it in self.htmlpages:
             print_verbose(1, "Render to png : page = " + str(it.page_num))
+            # Render the HTMLPage to PNG and save it to the specified output directory
             it.render_to_png(remove_trailing_slash(base_dir), remove_trailing_slash(out_dir))
-
-    def print_all_tables(self):
-        """
-        Prints tables in all HTML pages.
-
-        Returns:
-            None
-        """
-        for it in self.htmlpages:
-            print(it.repr_tables_only())
 
     def save_to_dir(self, out_dir):
         """
@@ -176,11 +157,18 @@ class HTMLDirectory:
         Returns:
             None
         """
+        # Iterate over HTML pages in the directory
         for it in self.htmlpages:
+            # Print information about saving each HTML page to JSON and CSV
             print_verbose(1, "Save to JSON and CSV: page = " + str(it.page_num))
-            it.save_to_file(
-                remove_trailing_slash(out_dir) + r'/jpage' + "{:05d}".format(it.page_num) + '.json')
+
+            # Save HTMLPage to a JSON file
+            it.save_to_file(remove_trailing_slash(out_dir) + r'/jpage' + "{:05d}".format(it.page_num) + '.json')
+
+            # Save all tables from the HTMLPage to a CSV file
             it.save_all_tables_to_csv(out_dir)
+
+            # Save all footnotes from the HTMLPage to a text file
             it.save_all_footnotes_to_txt(out_dir)
 
     def load_from_dir(self, html_dir, page_wildcard):
@@ -194,12 +182,20 @@ class HTMLDirectory:
         Returns:
             None
         """
+        # Remove trailing slash from HTML directory path
         html_dir = remove_trailing_slash(html_dir)
+
+        # Create the full path using the provided wildcard
         pathname = html_dir + '/' + page_wildcard
 
+        # Read the PDF filename from the info.txt file in the HTML directory
         self.read_pdf_filename(html_dir)
 
-        for file in glob.glob(pathname):
+        # Iterate over JSON files that match the wildcard
+        for file in glob(pathname):
+            # Print information about loading each JSON file
             print_verbose(1, "LOADING JSON-FILE = " + str(file))
+
+            # Load HTMLPage from the JSON file and append it to the list of HTML pages
             htmlpage = HTMLPage.load_from_file(file)
             self.htmlpages.append(htmlpage)

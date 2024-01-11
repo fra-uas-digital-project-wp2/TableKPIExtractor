@@ -4,7 +4,7 @@
 # Author : Ismail Demir (G124272)
 # Date   : 19.06.2020
 # ============================================================================================================================
-from Format_Analyzer import Format_Analyzer
+from FormatAnalyzer import FormatAnalyzer
 from globals import remove_trailing_slash
 
 
@@ -46,8 +46,8 @@ class KPIMeasure:
 
     def set_file_path(self, file_path):
         fp = file_path.replace('\\', '/')
-        self.src_file = Format_Analyzer.extract_file_name(fp)
-        self.src_path = remove_trailing_slash(Format_Analyzer.extract_file_path(fp)[0])
+        self.src_file = FormatAnalyzer.extract_file_name(fp)
+        self.src_path = remove_trailing_slash(FormatAnalyzer.extract_file_path(fp)[0])
         self.company_name = self.src_path[self.src_path.rfind('/') + 1:]
 
     def __repr__(self):

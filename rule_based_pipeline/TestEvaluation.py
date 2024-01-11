@@ -5,7 +5,7 @@
 # Date   : 10.09.2020
 # ============================================================================================================================
 from ConsoleTable import ConsoleTable
-from Format_Analyzer import Format_Analyzer
+from FormatAnalyzer import FormatAnalyzer
 from globals import print_verbose
 
 
@@ -50,7 +50,7 @@ class TestEvaluation:
             Returns:
                 float: The extracted value or None if not applicable.
             """
-            return None if self.kpi_measure is None else Format_Analyzer.to_float_number(self.kpi_measure.value)
+            return None if self.kpi_measure is None else FormatAnalyzer.to_float_number(self.kpi_measure.value)
 
         def eval(self):
             """
@@ -74,7 +74,7 @@ class TestEvaluation:
             if self.kpi_measure is not None:
                 return TestEvaluation.EVAL_FALSE_POSITIVE
 
-            # No KPI measure and no test sample (True Negative) // Unreasonable wont happen in this setup
+            # No KPI measure and no test sample (True Negative) // Unreasonable won't happen in this setup
             return TestEvaluation.EVAL_TRUE_NEGATIVE
 
         def eval_to_str(self):
@@ -244,12 +244,12 @@ class TestEvaluation:
                                 kpi_measure_control.remove(kpi_measure)
                                 break
 
-                        if cur_eval_sample is None: # add true negative here
+                        if cur_eval_sample is None:  # add true negative here
                             # no (True KPI exists but not extracted)
                             cur_eval_sample = TestEvaluation.TestEvalSample(kpi_spec, None, sample, sample.year, pdf_file_name)
 
                         results.eval_samples.append(cur_eval_sample)
-                
+
         for kpi_measure in kpi_measure_control:
             cur_eval_sample = TestEvaluation.TestEvalSample(kpi_measure, kpi_measure, None, kpi_measure.year, kpi_measure.src_file)
             results.eval_samples.append(cur_eval_sample)
