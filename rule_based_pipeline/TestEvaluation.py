@@ -5,6 +5,7 @@
 # Date   : 10.09.2020
 # ============================================================================================================================
 from ConsoleTable import ConsoleTable
+from FormatAnalyzer import FormatAnalyzer
 
 
 class TestEvaluation:
@@ -19,11 +20,12 @@ class TestEvaluation:
             Represents a sample for evaluating KPIs.
 
             Args:
-                kpi_spec (KPI): The KPI specification.
-                kpi_measure (KPIMeasure): The extracted KPI measure.
-                test_sample (TestDataSample): The corresponding test data sample.
-                year (int): The year associated with the sample.
+                kpi_id (KPI): The KPI specification.
+                kpi_name (KPIMeasure): The extracted KPI measure.
                 pdf_file_name (str): The name of the PDF file.
+                year (int): The year associated with the sample.
+                actual_value (TestDataSample): The corresponding test data sample.
+                expected_value (TestDataSample): The corresponding test data sample.
             """
             self.kpi_id = kpi_id
             self.kpi_name = kpi_name
@@ -31,24 +33,6 @@ class TestEvaluation:
             self.year = year
             self.actual_value = actual_value
             self.expected_value = expected_value
-
-        # def get_true_value(self):
-        #     """
-        #     Get the true value from the test sample.
-        #
-        #     Returns:
-        #         float: The true value or None if not applicable.
-        #     """
-        #     return None if self.test_sample is None else self.test_sample.value
-        #
-        # def get_extracted_value(self):
-        #     """
-        #     Get the extracted value from the KPI measure.
-        #
-        #     Returns:
-        #         float: The extracted value or None if not applicable.
-        #     """
-        #     return None if self.kpi_measure is None else FormatAnalyzer.to_float_number(self.kpi_measure.value)
 
         def eval(self):
             """
@@ -114,7 +98,6 @@ class TestEvaluation:
         Updates the evaluation metrics including true positives, false positives,
         true negatives, false negatives, precision, and recall.
         """
-
         # Initialize evaluation counters
         self.num_true_positive = 0
         self.num_false_positive = 0
@@ -156,7 +139,6 @@ class TestEvaluation:
         Returns:
             str: Formatted string representation of the evaluation results.
         """
-
         # Initialize ConsoleTable for formatting
         console_table = ConsoleTable(7)
 
@@ -198,63 +180,70 @@ class TestEvaluation:
         return self.to_string(120, 5, ConsoleTable.FORMAT_CSV)
 
     @staticmethod
-    def generate_evaluation(expected_values, actual_values):
+    def generate_evaluation(pdf_file_name, expected_values, actual_values):
         """
-        Generate evaluation results for a set of KPI specifications, KPI results, and test data.
+        Generate evaluation results for a set of KPI results, and test data.
 
         Args:
+            pdf_file_name (str): The name of the PDF file.
             expected_values (KPIResultSet): Results of the KPI analysis.
-            actual_values (TestData): Test data for evaluation.
-
+            actual_values (TestData): Test data for evaluation
         Returns:
             TestEvaluation: Evaluation results.
         """
-
-        # Get unique PDF file names from the test data
-        exists = False
-        pdf_file_name = actual_values.get_unique_list_of_pdf_files()
-
         # Initialize TestEvaluation object to store evaluation results
         results = TestEvaluation()
-        # print(len(kpi_measure_control))
-        # print(kpi_measure_control[0])
-        # for kpi in kpi_measure_control:
-        #     print(kpi)
-        #     print(kpi.kpi_id)
-        #     print(kpi.year)
-        #     print(kpi.value)
-        #     kpi_measure_control.remove(kpi)
-        #     print(len(kpi_measure_control))
-        # print("kpi_measure_control-----------------------------------------------")
 
-        for actual_value in actual_values.samples:
+        # Iterate through each actual value
+        for sample in actual_values.samples:
+            # Initialize actual variables
+            actual_kpi_id = int(sample.kpi_id)
+            actual_kpi_name = sample.kpi_name
+            actual_year = int(sample.year)
+            actual_value = sample.value
+            actual_value_exists_in_expected_values = False
 
-            for expected_value in expected_values.kpi_measures:
-                if str(actual_value.kpi_id) == str(expected_value.kpi_id) and str(actual_value.year) == str(expected_value.year):
-                    print("Yes kpi_id and year")
-                    # yes (Extracted KPI exists)
-                    expected_values.kpi_measures.remove(expected_value)
-                    cur_eval_sample = TestEvaluation.TestEvalSample(actual_value.kpi_id, actual_value.kpi_name, pdf_file_name, actual_value.year, actual_value.value, expected_value.value)
+            # Iterate through each expected value
+            for expected_value_measure in expected_values.kpi_measures:
+                # Initialize expected variables
+                expected_kpi_id = int(expected_value_measure.kpi_id)
+                expected_year = int(expected_value_measure.year)
+                expected_value = FormatAnalyzer.to_float_number(expected_value_measure.value)
+
+                # Check if the KPI ID and year match between actual and expected values
+                if actual_kpi_id == expected_kpi_id and actual_year == expected_year:
+                    # Remove Matched Value from Expected Values:
+                    expected_values.kpi_measures.remove(expected_value_measure)
+
+                    # Match (Extracted KPI exists)
+                    cur_eval_sample = TestEvaluation.TestEvalSample(actual_kpi_id, actual_kpi_name, pdf_file_name,
+                                                                    actual_year, actual_value, expected_value)
                     results.eval_samples.append(cur_eval_sample)
-                    exists = True
 
-                    if str(actual_value.raw_txt) == str(expected_value.value):
-                        print("Yes value --- EVAL_TRUE_POSITIVE ")
-                    else:
-                        print("No value --- EVAL_FALSE_POSITIVE ")
+                    # Set flag Match Existence and break
+                    actual_value_exists_in_expected_values = True
                     break
 
-                exists = False
-            if not exists:
-                print("EVAL_FALSE_POSITIVE")
-                cur_eval_sample = TestEvaluation.TestEvalSample(actual_value.kpi_id, actual_value.kpi_name,pdf_file_name, actual_value.year,actual_value.value, None)
+            # If no match found for the current actual value, add it as False Negative
+            if not actual_value_exists_in_expected_values:
+                cur_eval_sample = TestEvaluation.TestEvalSample(actual_kpi_id, actual_kpi_name, pdf_file_name,
+                                                                actual_year, actual_value, None)
                 results.eval_samples.append(cur_eval_sample)
 
+        # Add any remaining expected values as False Positive
         if len(expected_values.kpi_measures) > 0:
-            for left_values in expected_values.kpi_measures:
-                print("EVAL_FALSE_POSITIVE")
-                cur_eval_sample = TestEvaluation.TestEvalSample(left_values.kpi_id, left_values.kpi_name,pdf_file_name, left_values.year,None, left_values)
+            for remaining_kpi_measure in expected_values.kpi_measures:
+                # Initialize remaining variables
+                kpi_id = int(remaining_kpi_measure.kpi_id)
+                kpi_name = remaining_kpi_measure.kpi_name
+                year = int(remaining_kpi_measure.year)
+                value = FormatAnalyzer.to_float_number(remaining_kpi_measure.value)
+
+                cur_eval_sample = TestEvaluation.TestEvalSample(kpi_id, kpi_name, pdf_file_name, year, None, value)
                 results.eval_samples.append(cur_eval_sample)
 
+        # Perform evaluations based on collected samples
         results.do_evaluations()
+
+        # Return the final evaluation results
         return results
