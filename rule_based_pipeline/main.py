@@ -99,6 +99,69 @@ def print_configuration():
                   "Using config_for_rb.global_rendering_font_override=" + config_for_rb.global_rendering_font_override)
 
 
+def analyze_all_pdfs(pdfs, kpis, info_file_contents,overall_kpi_results):
+    if config_for_rb.global_debug_mode:
+        single_process_analysis(pdfs, kpis, info_file_contents,overall_kpi_results)
+    else:
+        multi_process_analysis(pdfs, kpis, info_file_contents,overall_kpi_results)
+
+def single_process_analysis(pdfs, kpis, info_file_contents,overall_kpi_results): 
+    for pdf in pdfs:
+        # Analyze the current PDF
+        kpi_results = analyze_and_save_results(pdf, kpis, info_file_contents)
+        overall_kpi_results.extend(kpi_results)
+
+def multi_process_analysis(pdfs, kpis, info_file_contents,overall_kpi_results):
+    cores = mp.cpu_count()
+    queue = mp.Queue()
+    for pdf in pdfs:
+        queue.put(pdf)
+    
+    paths = []
+    paths.append(config_for_rb.global_exec_folder)
+    paths.append(config_for_rb.global_raw_pdf_folder)
+    paths.append(config_for_rb.global_output_folder)
+    paths.append(config_for_rb.global_working_folder)
+    paths.append(config_for_rb.global_rendering_font_override)
+    paths.append(config_for_rb.global_approx_font_name)
+
+    processes = []
+    for _ in range(cores):
+        p = mp.Process(target=mp_task,args = (queue,kpis, info_file_contents,overall_kpi_results,paths))
+        processes.append(p)
+        p.deamon = True
+        p.start()
+
+    print(processes)
+
+    for p in processes:
+        print(f"Parent process ID: {os.getpid()}")
+        print(f"Child process ID: {p.pid}")
+        p.join()
+    print("All processes have finished.")
+
+def mp_task(queue,kpis, info_file_contents,overall_kpi_results,paths):
+    # Additional exception handling if needed
+
+    config_for_rb.global_exec_folder = paths[0]
+    config_for_rb.global_raw_pdf_folder = paths[1]
+    config_for_rb.global_output_folder = paths[2] 
+    config_for_rb.global_working_folder = paths[3] 
+    config_for_rb.global_rendering_font_override = paths[4] 
+    config_for_rb.global_approx_font_name = paths[5]
+
+    while not queue.empty(): 
+        try:
+            pdf = queue.get(block=False)
+            print(f"PDF = '{pdf}'")
+            kpi_results = analyze_and_save_results(pdf, kpis, info_file_contents)
+            overall_kpi_results.extend(kpi_results)
+        except Exception as e:
+            print(f"The following exception occurred '{e}'!")
+            break
+    sys.exit()
+
+
 def analyze_and_save_results(pdf_name, kpis, info_file_contents):
     """
     Analyze the specified PDF, save the results, and print verbose information.
