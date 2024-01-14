@@ -31,7 +31,6 @@ CAT_FOOTNOTE = 9  # new categories for finding footnotes
 DEFAULT_VTHRESHOLD = 15.0 / 609.0  # 609px is sample page width
 DEFAULT_SPECIAL_ITEM_MAX_DIST = 15.0 / 609.0  # 609px is sample page width
 DEFAULT_HTHROWAWAY_DIST = 0.3
-DEFAULT_SPECIAL_ITEM_CUTOFF_DIST = 15.0 / 609.9  # 609px is sample page width
 DEFAULT_FLYSPECK_HEIGHT = 3.0 / 841.0  # 841.0 is sample page height
 
 # Rendering options
@@ -79,7 +78,7 @@ def get_num_of_files(pattern):
 
 
 def remove_trailing_slash(s):
-    if (s.endswith('/') or s.endswith('\\')):
+    if s.endswith('/') or s.endswith('\\'):
         s = s[:-1]
     return s
 

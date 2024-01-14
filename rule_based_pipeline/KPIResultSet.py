@@ -4,9 +4,9 @@
 # Author : Ismail Demir (G124272)
 # Date   : 12.06.2020
 # ============================================================================================================================
-from ConsoleTable import ConsoleTable
 import csv
 import jsonpickle
+from ConsoleTable import ConsoleTable
 from KPIMeasure import KPIMeasure
 
 

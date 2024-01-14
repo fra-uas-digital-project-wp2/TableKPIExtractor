@@ -21,16 +21,10 @@ class TestDataSample:
         pos_y (float): The y position for items.
         raw_txt (str): The row of text.
         year (int): The year ...
-        value (int): ...
-        score (int): ...
+        value (int): The value
+        score (int): The score
         unit (str): ...
         match_type (str): ...
-
-    Methods:
-        __init__: Initializes an instance of the TestDataSample class.
-        __repr__: Returns a string representation of the TestDataSample instance.
-        samples_to_string: Converts a list of TestDataSample instances to a formatted string.
-        samples_to_csv: Converts a list of TestDataSample instances to a CSV-formatted string.
     """
 
     def __init__(self):

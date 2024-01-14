@@ -10,19 +10,19 @@
 # Note   : 1 HTMLDirectory consistens of * HTMLPages
 # ============================================================================================================================
 import copy
-from Format_Analyzer import Format_Analyzer
-from globals import *
 import jsonpickle
 import html
+import re
+import shutil
+import statistics
+from FormatAnalyzer import FormatAnalyzer
+from globals import *
 from HTMLCluster import HTMLCluster, CLUSTER_DISTANCE_MODE_EUCLIDIAN, CLUSTER_DISTANCE_MODE_RAW_TEXT
 from HTMLItem import HTMLItem
 from HTMLTable import HTMLTable
 from HTMLWord import HTMLWord
 from PIL import ImageDraw, Image, ImageFont
-import re
 from Rect import Rect
-import shutil
-import statistics
 
 
 class HTMLPage:
@@ -67,12 +67,12 @@ class HTMLPage:
         def get_max_id(p):
             res = -1
             for it in p.items:
-                if (it.this_id > res):
+                if it.this_id > res:
                     res = it.this_id
             return res
 
         def transform_id(id, offset):
-            if (id == -1):
+            if id == -1:
                 return -1
             return id + offset
 
@@ -133,23 +133,15 @@ class HTMLPage:
             start_y = self.page_start_y0[i]
             end_y = self.page_start_y0[i + 1] if i < len(self.page_start_y0) - 1 else self.page_height
             res_y = (y - start_y) / (end_y - start_y)
-            if (res_y < 1):
+            if res_y < 1:
                 break
         return res_x, res_y
-
-    def find_idx_of_item_by_txt(self, txt):
-        res = -1
-        for i in range(len(self.items)):
-            if (self.items[i].txt == txt):
-                if (res != -1):
-                    raise ValueError('Text "' + txt + '" occurs more than once in this page.')
-                res = i
-        return res
 
     def detect_split_items(self):
         """Splits HTMLItems (Div Containers) into multiple containers if
            HTMLWords are to far apart.
         """
+
         def find_aligned_words_in_direction(all_words, k0, use_alignment, dir):
             """Checks HTMLWord (BBox) k0 is aligned with HTMLWords in all_words.
 
@@ -164,7 +156,7 @@ class HTMLPage:
                 bool: is k numeric
 
             """
-            SPLIT_DETECTION_THRESHOLD = 1.0 / 609.0  
+            SPLIT_DETECTION_THRESHOLD = 1.0 / 609.0
 
             threshold = SPLIT_DETECTION_THRESHOLD * self.page_width
 
@@ -177,25 +169,25 @@ class HTMLPage:
             k = k0 + dir
             res = []
             is_numeric = False
-            while (0 <= k and k < k_max):
+            while 0 <= k < k_max:
                 item_id = all_words[k][0]
                 word_id = all_words[k][1]
                 x0 = self.items[item_id].words[word_id].rect.x0
                 x1 = self.items[item_id].words[word_id].rect.x1
 
-                if (use_alignment == ALIGN_LEFT and abs(x0 - x0_0) < threshold):
+                if use_alignment == ALIGN_LEFT and abs(x0 - x0_0) < threshold:
                     # we found a left-aligned word
                     res.append(k)
-                    is_numeric = is_numeric or Format_Analyzer.looks_weak_numeric(
+                    is_numeric = is_numeric or FormatAnalyzer.looks_weak_numeric(
                         self.items[item_id].words[word_id].txt)
-                elif (use_alignment == ALIGN_RIGHT and abs(x1 - x1_0) < threshold):
+                elif use_alignment == ALIGN_RIGHT and abs(x1 - x1_0) < threshold:
                     # we found a right-aligned word
                     res.append(k)
-                    is_numeric = is_numeric or Format_Analyzer.looks_weak_numeric(
+                    is_numeric = is_numeric or FormatAnalyzer.looks_weak_numeric(
                         self.items[item_id].words[word_id].txt)
                 # elif(x0 < x1_0 and x1 > x0_0):
-                elif ((x0 < x0_0 and x1 > x0_0 and use_alignment == ALIGN_LEFT) or (
-                        x0 < x1_0 and x1 > x1_0 and use_alignment == ALIGN_RIGHT)):
+                elif ((x0 < x0_0 < x1 and use_alignment == ALIGN_LEFT) or (
+                        x0 < x1_0 < x1 and use_alignment == ALIGN_RIGHT)):
                     break  # another word is in the way, but not correctly aligned
 
                 k += dir
@@ -218,10 +210,10 @@ class HTMLPage:
             item_id = all_words[k0][0]
             word_id = all_words[k0][1]
             num_words = len(self.items[item_id].words)
-            if (dir == -1):
+            if dir == -1:
                 return self.items[item_id].words[word_id].rect.x0 - self.items[item_id].words[
                     word_id - 1].rect.x1 if word_id > 0 else 9999999
-            elif (dir == 1):
+            elif dir == 1:
                 return self.items[item_id].words[word_id + 1].rect.x0 - self.items[item_id].words[
                     word_id].rect.x1 if word_id < num_words - 1 else 9999999
             raise ValueError('Invalid dir')
@@ -252,10 +244,10 @@ class HTMLPage:
 
             # Check if HTMLWord (BBox) and left and right adjacent have at least one 
             # number in text.
-            isnum = Format_Analyzer.looks_weak_numeric(self.items[item_id].words[word_id].txt)
-            isnum_l = Format_Analyzer.looks_weak_numeric(
+            isnum = FormatAnalyzer.looks_weak_numeric(self.items[item_id].words[word_id].txt)
+            isnum_l = FormatAnalyzer.looks_weak_numeric(
                 self.items[item_id].words[word_id - 1].txt) if word_id > 0 else False
-            isnum_r = Format_Analyzer.looks_weak_numeric(
+            isnum_r = FormatAnalyzer.looks_weak_numeric(
                 self.items[item_id].words[word_id + 1].txt) if word_id < num_words - 1 else False
 
             # left-aligned words:
@@ -270,16 +262,15 @@ class HTMLPage:
             right_aligned_words_up, isnum_ru = find_aligned_words_in_direction(all_words, k, ALIGN_RIGHT, -1)
             right_aligned_words = right_aligned_words_down + right_aligned_words_up
 
-            # It doesnt make sense to split for CENTER aligned words # New-27.06.2022
-            
+            # It doesn't make sense to split for CENTER aligned words # New-27.06.2022
+
             # isnum_l : left adjacent HTMLWord (BBoxes) 
             # isnum_ld : left alignet downwards HTMLWord (BBoxes) 
             # isnum_lu : left alignet upwards HTMLWord (BBoxes) 
             isnum_l = isnum_l or isnum_ld or isnum_lu
             isnum_r = isnum_r or isnum_rd or isnum_ru
 
-
-            # Threshold minimum number of rows 
+            # Threshold minimum number of rows
             threshold_rows_l = 1 if isnum and isnum_l else 2
             threshold_rows_r = 1 if isnum and isnum_r else 2
 
@@ -324,7 +315,7 @@ class HTMLPage:
             item_id = all_words[k][0]
             word_id = all_words[k][1]
             num_words = len(self.items[item_id].words)
-            if (word_id < num_words - 1):
+            if word_id < num_words - 1:
                 kr = word_map[(item_id, word_id + 1)]
                 all_words[kr] = (all_words[kr][0], all_words[kr][1], True)
 
@@ -333,17 +324,17 @@ class HTMLPage:
         next_id = len(self.items)
 
         for ij in all_words:
-            if (not ij[2]):
+            if not ij[2]:
                 continue  # do not split this one
-            #TODO: Remove this code
+            # TODO: Remove this code
             if self.items[ij[0]].words[ij[1]].rect.x0 - self.items[ij[0]].words[ij[1] - 1].rect.x1 < self.items[
                 item_id].space_width * 0:
                 continue  # words are too close to split
 
             if (self.items[ij[0]].words[ij[1]].rect.x0 - self.items[ij[0]].words[ij[1] - 1].rect.x1 < self.items[
                 item_id].space_width * 1.5 and
-                    not Format_Analyzer.looks_weak_numeric(self.items[ij[0]].words[ij[1]].txt) and
-                    not Format_Analyzer.looks_weak_numeric(self.items[ij[0]].words[ij[1] - 1].txt)):
+                    not FormatAnalyzer.looks_weak_numeric(self.items[ij[0]].words[ij[1]].txt) and
+                    not FormatAnalyzer.looks_weak_numeric(self.items[ij[0]].words[ij[1] - 1].txt)):
                 continue  # words are too close to split
 
             print_verbose(3, '---> Split item ' + str(self.items[ij[0]]) + ' at word ' + \
@@ -388,23 +379,15 @@ class HTMLPage:
 
         distrib = {}
         for it in self.items:
-            if (it.category == CAT_RUNNING_TEXT or it.category == CAT_HEADLINE):
+            if it.category == CAT_RUNNING_TEXT or it.category == CAT_HEADLINE:
                 cur_x = it.pos_x
                 distrib[cur_x] = distrib.get(cur_x, 0) + 1
 
         for pos_x, frequency in distrib.items():
-            if (frequency > 5):
+            if frequency > 5:
                 self.paragraphs.append(pos_x)
 
         self.paragraphs.sort()
-
-    def find_items_within_rect_all_categories(self, rect):  # returns list of indices
-        res = []
-        for i in range(len(self.items)):
-            if Rect.calc_intersection_area(self.items[i].get_rect(), rect) > self.items[
-                i].get_rect().get_area() * 0.3:  # 0.5?
-                res.append(i)
-        return res
 
     def find_items_within_rect(self, rect, categories):  # returns list of indices
         res = []
@@ -434,9 +417,10 @@ class HTMLPage:
 
         return expl_int(0, idx)
 
-    def find_vertical_aligned_items(self, item, alignment, threshold): 
-        """Determines Score of a vertical alignment option of HTMLItem (Div Container).
-           Score is derived by highest number of alignet items.
+    def find_vertical_aligned_items(self, item, alignment, threshold):
+        """
+        Determines Score of a vertical alignment option of HTMLItem (Div Container).
+        Score is derived by highest number of alignet items.
 
         Args:
             item (HTMLItem): HTMLItem (Div Container) object to be investigated.
@@ -449,7 +433,7 @@ class HTMLPage:
         """
         res = []
 
-        if (alignment != ALIGN_DEFAULT):
+        if alignment != ALIGN_DEFAULT:
             this_align = alignment
         else:
             this_align = item.alignment
@@ -460,30 +444,30 @@ class HTMLPage:
 
         score = 0.0
 
-        if (this_align == ALIGN_RIGHT):
+        if this_align == ALIGN_RIGHT:
             pos_x += item.width
         # New-27.06.2022:
-        if (this_align == ALIGN_CENTER):
+        if this_align == ALIGN_CENTER:
             pos_x += item.width * 0.5
 
         for i in range(len(self.items)):
-            if (alignment != ALIGN_DEFAULT):
+            if alignment != ALIGN_DEFAULT:
                 cur_align = alignment
             else:
                 cur_align = self.items[i].alignment
             cur_x = self.items[i].pos_x
             cur_y = self.items[i].pos_y
 
-            if (cur_align == ALIGN_RIGHT):
+            if cur_align == ALIGN_RIGHT:
                 cur_x += self.items[i].width
-            if (cur_align == ALIGN_CENTER):
+            if cur_align == ALIGN_CENTER:
                 cur_x += self.items[i].width * 0.5
 
             delta = abs(cur_x - pos_x)
-            if (delta <= threshold_px):
+            if delta <= threshold_px:
                 cur_score = ((threshold_px - delta) / self.page_width) * (
-                        ((1.0 - abs(cur_y - pos_y) / self.page_height)) ** 5.0)
-                if (cur_score < 0.003):
+                        (1.0 - abs(cur_y - pos_y) / self.page_height) ** 5.0)
+                if cur_score < 0.003:
                     cur_score = 0
                 print_verbose(9, "VALIGN->" + str(self.items[i]) + " has SCORE: " + str(cur_score))
                 score += cur_score
@@ -492,7 +476,8 @@ class HTMLPage:
         return res, score
 
     def find_horizontal_aligned_items(self, item):
-        """Determines HTMLItems that are horizontally aligned with "item"
+        """
+        Determines HTMLItems that are horizontally aligned with "item"
 
         Args:
             item (HTMLItem): HTMLItem which is investigated.
@@ -507,53 +492,56 @@ class HTMLPage:
 
         for i in range(len(self.items)):
             it = self.items[i]
-            if (it.pos_y < y1 and it.pos_y + it.height > y0):
+            if it.pos_y < y1 and it.pos_y + it.height > y0:
                 res.append(i)
 
         return res
 
     def clear_all_temp_assignments(self):
-        """Removes all temporary assignments from HTMLItem (Div Container).
+        """
+        Removes all temporary assignments from HTMLItem (Div Container).
         """
         for it in self.items:
             it.temp_assignment = 0
 
     def guess_all_alignments(self):
-        """Esimates the vertical alignments HTMLItems (Div Containers) on the HTMLPage. 
-           For each HTMLItem the score of all alignment options is calculated.
-           Then the highest score of an alignment option is used as alignment of HTMLItem.
+        """
+        Esimates the vertical alignments HTMLItems (Div Containers) on the HTMLPage.
+        For each HTMLItem the score of all alignment options is calculated.
+        Then the highest score of an alignment option is used as alignment of HTMLItem.
         """
         for it in self.items:
             dummy, score_left = self.find_vertical_aligned_items(it, ALIGN_LEFT, DEFAULT_VTHRESHOLD)
             dummy, score_right = self.find_vertical_aligned_items(it, ALIGN_RIGHT, DEFAULT_VTHRESHOLD)
-            dummy, score_center = self.find_vertical_aligned_items(it, ALIGN_CENTER,
-                                                                   DEFAULT_VTHRESHOLD)  # New-27.06.2022
-            # it.alignment = ALIGN_LEFT if score_left >= score_right else ALIGN_RIGHT
-            if (score_left >= score_right and score_left >= score_center):
+            dummy, score_center = self.find_vertical_aligned_items(it, ALIGN_CENTER, DEFAULT_VTHRESHOLD)
+
+            if score_left >= score_right and score_left >= score_center:
                 it.alignment = ALIGN_LEFT
-            elif (score_right >= score_left and score_right >= score_center):
+            elif score_right >= score_left and score_right >= score_center:
                 it.alignment = ALIGN_RIGHT
             else:
                 it.alignment = ALIGN_CENTER
 
     def find_next_nonclassified_item(self):
-        """Searches HTMLItems (Div Container) that is not assigned a category.
+        """
+        Searches HTMLItems (Div Container) that is not assigned a category.
 
         Returns:
             HTMLItem: HTMLItem without category.
         """
         for it in self.items:
-            if (not it.has_category()):
+            if not it.has_category():
                 return it
         return None
 
     def identify_connected_txt_lines(self):
-        """Determines which HTMLItems (Div Containers) are connected to each other.
+        """
+        Determines which HTMLItems (Div Containers) are connected to each other.
         """
 
         def insert_next_id(cur_id, next_id, items):
-            """Links two HTMLItems (Div Containers), by setting the "next_id" property in the
-               HTMLItem object.
+            """
+            Links two HTMLItems (Div Containers), by setting the "next_id" property in the HTMLItem object.
 
             Args:
                 cur_id (int): N id for items.
@@ -563,24 +551,24 @@ class HTMLPage:
             Raises:
                 ValueError: HTMLItems (Div Container) are not sorted from top to bottom.
             """
-            if (items[next_id].pos_y <= items[cur_id].pos_y):
+            if items[next_id].pos_y <= items[cur_id].pos_y:
                 raise ValueError('Invalid item order:' + str(items[cur_id]) + ' --> ' + str(items[next_id]))
 
-            if (items[cur_id].next_id == -1):
+            if items[cur_id].next_id == -1:
                 items[cur_id].next_id = next_id
-            elif (items[cur_id].next_id == next_id):
+            elif items[cur_id].next_id == next_id:
                 return
             else:
                 old_next_id = items[cur_id].next_id
-                if (items[next_id].pos_y < items[old_next_id].pos_y):
+                if items[next_id].pos_y < items[old_next_id].pos_y:
                     items[cur_id].next_id = next_id
                     insert_next_id(next_id, old_next_id, items)
-                elif (items[next_id].pos_y < items[old_next_id].pos_y):
+                elif items[next_id].pos_y < items[old_next_id].pos_y:
                     insert_next_id(old_next_id, next_id, items)
                 else:
-                    # sometimes this can happen, but then we dont update anything in order to avoid cycles
+                    # sometimes this can happen, but then we don't update anything in order to avoid cycles
                     pass
-        
+
         threshold = int(0.03 * self.page_width + 0.5)  # allow max 3% deviation to the left
         cur_threshold = 0
 
@@ -590,9 +578,9 @@ class HTMLPage:
             if cnt < 2:
                 # if we have less than 2 lines, we skip this "column"
                 continue
-            
+
             # For each line in this column, store its y position
-            cur_lines = {}  
+            cur_lines = {}
             last_pos_y = -1
             for i in range(len(self.items)):
                 if cur_x <= self.items[i].pos_x <= cur_x + cur_threshold and self.items[i].pos_y > last_pos_y:
@@ -611,7 +599,7 @@ class HTMLPage:
                 cur_spacing = next_y - (cur_y + cur_item.height)
                 row_spacings.append(cur_spacing)
 
-            if (len(row_spacings) == 0):
+            if len(row_spacings) == 0:
                 continue
 
             max_allowed_spacing = statistics.median(row_spacings) * 1.1
@@ -631,33 +619,32 @@ class HTMLPage:
 
                 cur_threshold = threshold
                 insert_next_id(cur_item_id, next_item_id, self.items)
-            # self.items[cur_item_id].next_id = next_item_id
-            # self.items[next_item_id].prev_id = cur_item_id
 
         # update all prev_ids
         for i in range(len(self.items)):
-            if (self.items[i].next_id != -1):
+            if self.items[i].next_id != -1:
                 self.items[self.items[i].next_id].prev_id = i
 
     def mark_regular_text(self):
-        """Assigns HTMLItems (Div Containers) the property "CAT_RUNNING_TEXT". 
+        """
+        Assigns HTMLItems (Div Containers) the property "CAT_RUNNING_TEXT".
         """
         # mark connected text components
         for it in self.items:
-            if (it.category != CAT_DEFAULT):
+            if it.category != CAT_DEFAULT:
                 continue  # already taken
-            if (it.prev_id != -1):
+            if it.prev_id != -1:
                 continue  # has previous item => we look at that
 
-            txt = Format_Analyzer.trim_whitespaces(it.txt)
+            txt = FormatAnalyzer.trim_whitespaces(it.txt)
 
             next = it.next_id
             while (next != -1):
                 # print(self.items[next], self.items[next].next_id)
-                txt += ' ' + Format_Analyzer.trim_whitespaces(self.items[next].txt)
+                txt += ' ' + FormatAnalyzer.trim_whitespaces(self.items[next].txt)
                 next = self.items[next].next_id
 
-            if (Format_Analyzer.looks_running_text(txt)):
+            if (FormatAnalyzer.looks_running_text(txt)):
                 it.category = CAT_RUNNING_TEXT
                 next = it.next_id
                 while (next != -1):
@@ -665,18 +652,18 @@ class HTMLPage:
                     next = self.items[next].next_id
 
     def mark_other_text_components(self):
-        """Assigns HTMLItems (Div Containers) one of multiple categories as property. 
+        """
+        Assigns HTMLItems (Div Containers) one of multiple categories as property.
         """
 
         threshold = int(0.03 * self.page_width + 0.5)  # allow max 3% deviation to the left
 
-
         for cur_x, cnt in self.left_distrib.items():
-   
+
             cur_lines = {}  # for each line in this column, we store its y position
             cur_threshold = 0
             for i in range(len(self.items)):
-                if (self.items[i].pos_x >= cur_x and self.items[i].pos_x <= cur_x + cur_threshold):
+                if cur_x <= self.items[i].pos_x <= cur_x + cur_threshold:
                     cur_threshold = threshold
                     cur_lines[i] = self.items[i].pos_y
 
@@ -684,38 +671,38 @@ class HTMLPage:
 
             for i in range(len(cur_lines)):
                 cur_item_id, cur_y = cur_lines[i]
-                if (self.items[cur_item_id].category != CAT_DEFAULT):
+                if self.items[cur_item_id].category != CAT_DEFAULT:
                     continue  # already taken
                 prev_item_id = -1
                 prev_y = -1
                 next_item_id = -1
                 next_y = -1
-                if (i > 0):
+                if i > 0:
                     prev_item_id, prev_y = cur_lines[i - 1]
-                if (i < len(cur_lines) - 1):
+                if i < len(cur_lines) - 1:
                     next_item_id, next_y = cur_lines[i + 1]
 
                 # between to running texts (paragraphs):
-                if (prev_item_id != -1 and next_item_id != -1):
+                if prev_item_id != -1 and next_item_id != -1:
                     y_threshold = 2 * max(self.items[cur_item_id].height, self.items[prev_item_id].height,
                                           self.items[next_item_id].height)
 
                     if (self.items[prev_item_id].category == CAT_RUNNING_TEXT and self.items[
                         next_item_id].category == CAT_RUNNING_TEXT and
                             abs(cur_y - prev_y) < y_threshold and abs(cur_y - next_y) < y_threshold):
-                        if (self.items[cur_item_id].height > self.items[next_item_id].height):
+                        if self.items[cur_item_id].height > self.items[next_item_id].height:
                             self.items[cur_item_id].category = CAT_HEADLINE
                         else:
                             print_verbose(10, "---->>> found CAT_OTHER_TEXT/1 for item " + str(cur_item_id))
                             self.items[cur_item_id].category = CAT_OTHER_TEXT
 
                 # single (head-)lines at the beginning
-                if ((prev_item_id == -1 or self.items[cur_item_id].prev_id == -1) and next_item_id != -1):
+                if (prev_item_id == -1 or self.items[cur_item_id].prev_id == -1) and next_item_id != -1:
                     y_threshold = 2 * max(self.items[cur_item_id].height, self.items[next_item_id].height)
 
                     if (self.items[next_item_id].category == CAT_RUNNING_TEXT and
                             abs(cur_y - next_y) < y_threshold):
-                        if (self.items[cur_item_id].height > self.items[next_item_id].height):
+                        if self.items[cur_item_id].height > self.items[next_item_id].height:
                             self.items[cur_item_id].category = CAT_HEADLINE
                         else:
                             print_verbose(10, "---->>> found CAT_OTHER_TEXT/2 for item " + str(cur_item_id))
@@ -724,20 +711,20 @@ class HTMLPage:
             # multiple rows spanning headlines at the beginning
             for i in range(len(cur_lines) - 1):
                 cur_item_id, cur_y = cur_lines[i]
-                if (self.items[cur_item_id].category != CAT_DEFAULT):
+                if self.items[cur_item_id].category != CAT_DEFAULT:
                     continue  # already taken
 
-                if (self.items[cur_item_id].next_id != -1 or self.items[cur_item_id].prev_id == -1):
+                if self.items[cur_item_id].next_id != -1 or self.items[cur_item_id].prev_id == -1:
                     continue  # we are only interested at items that mark end of a block
 
-                if (not Format_Analyzer.looks_words(self.items[cur_item_id].txt)):
+                if not FormatAnalyzer.looks_words(self.items[cur_item_id].txt):
                     continue  # only text
 
                 print_verbose(9,
                               "--> mark_other_text_components \ multi-rows headline: " + str(self.items[cur_item_id]))
                 next_item_id, next_y = cur_lines[i + 1]
 
-                if (self.items[next_item_id].category != CAT_RUNNING_TEXT):
+                if self.items[next_item_id].category != CAT_RUNNING_TEXT:
                     continue  # only when followed by normal paragraph
 
                 if (self.items[cur_item_id].font_size <= self.items[next_item_id].font_size and
@@ -755,14 +742,14 @@ class HTMLPage:
                     # count number of affected lines
                     iter_item_id = cur_item_id
                     num_affected = 1
-                    while (iter_item_id != -1):
+                    while iter_item_id != -1:
                         iter_item_id = self.items[iter_item_id].prev_id
                         num_affected += 1
-                    if (num_affected <= 3):  # more than 3 lines would be too much for a headline
+                    if num_affected <= 3:  # more than 3 lines would be too much for a headline
                         # match!
                         print_verbose(9, "------->> MATCH!")
                         iter_item_id = cur_item_id
-                        while (iter_item_id != -1):
+                        while iter_item_id != -1:
                             self.items[iter_item_id].category = CAT_HEADLINE
                             iter_item_id = self.items[iter_item_id].prev_id
 
@@ -774,7 +761,7 @@ class HTMLPage:
         for i in range(len(self.items)):
             if (self.items[i].pos_y < pgnum_threshold):
                 continue
-            if (Format_Analyzer.looks_pagenum(self.items[i].txt)):
+            if (FormatAnalyzer.looks_pagenum(self.items[i].txt)):
                 cur_y = self.items[i].pos_y
                 if (cur_y > pgnum_pos_y):
                     pgnum_pos_y = cur_y
@@ -814,10 +801,10 @@ class HTMLPage:
     # Utilities for Table Extraction
     # =====================================================================================================================
 
-    def find_vnearest_taken_components(self,
-                                       initial_item):  # search vertically, return nearest top and bottom component (if any)
-        """Determines HTMLItems above and below that aligned vertically and have a category assigned.
-           
+    def find_vnearest_taken_components(self, initial_item):
+        # search vertically, return nearest top and bottom component (if any)
+        """
+        Determines HTMLItems above and below that aligned vertically and have a category assigned.
 
         Args:
             initial_item (HTMLItem): HTMLITem to investigate.
@@ -844,8 +831,8 @@ class HTMLPage:
         return top, bottom
 
     def sort_out_non_vconnected_items(self, vitems, top_y, bottom_y):
-        """Removes HTMLItems from "vitems" that are not in the interval given
-           by top_y and bottom_y.
+        """
+        Removes HTMLItems from "vitems" that are not in the interval given by top_y and bottom_y.
 
         Args:
             vitems (List): HTMLItems to be investigated.
@@ -857,13 +844,14 @@ class HTMLPage:
         """
         res = []
         for i in vitems:
-            if (self.items[i].pos_y > top_y and self.items[i].pos_y < bottom_y):
+            if top_y < self.items[i].pos_y < bottom_y:
                 res.append(i)
 
         return res
 
     def sort_out_taken_items(self, any_items):
-        """Removes HTMLItems (Div Containers) from list which already have assignment.
+        """
+        Removes HTMLItems (Div Containers) from list which already have assignment.
 
         Args:
             any_items (HTMLItem): HTMLItems (Div Containers).
@@ -873,14 +861,15 @@ class HTMLPage:
         """
         res = []
         for i in any_items:
-            if (not self.items[i].has_category_besides(CAT_FOOTER) and self.items[i].temp_assignment == 0):
+            if not self.items[i].has_category_besides(CAT_FOOTER) and self.items[i].temp_assignment == 0:
                 res.append(i)
 
         return res
 
     def sort_out_non_vertical_aligned_items_by_bounding_box(self, initial_item, vitems):
-        """Removes HTMLItems (Div Conainers) from "vitems" list, which have bounding boxes that
-           are not aligned with bounding boxes of "initial_item".
+        """
+        Removes HTMLItems (Div Conainers) from "vitems" list, which have bounding boxes that are not aligned
+        with bounding boxes of "initial_item".
 
         Args:
             initial_item (HTMLItem): HTMLItem.
@@ -898,13 +887,14 @@ class HTMLPage:
             cur_x0 = self.items[i].pos_x
             cur_x1 = self.items[i].pos_x + self.items[i].width
 
-            if (cur_x0 < x1 and cur_x1 > x0):
+            if cur_x0 < x1 and cur_x1 > x0:
                 res.append(i)
 
         return res
 
     def sort_out_items_in_same_row(self, initial_item, vitems):
-        """Removes HTMLItems (Div Containers) of a column that are in the same row (height).
+        """
+        Removes HTMLItems (Div Containers) of a column that are in the same row (height).
 
         Args:
             initial_item (HTMLItem): HTMLItem.
@@ -919,23 +909,24 @@ class HTMLPage:
             it_delta = abs(self.items[i].get_aligned_pos_x() - orig_pos_x)
             better_item_in_same_row = False
             for j in vitems:
-                if (i == j):
+                if i == j:
                     continue
                 if (self.items[j].pos_y + self.items[j].height >= self.items[i].pos_y and self.items[j].pos_y <=
                         self.items[i].pos_y + self.items[i].height):
                     jt_delta = abs(self.items[j].get_aligned_pos_x() - orig_pos_x)
-                    if (jt_delta < it_delta):
+                    if jt_delta < it_delta:
                         better_item_in_same_row = True
                         break
-            if (not better_item_in_same_row):
+            if not better_item_in_same_row:
                 res.append(i)
 
         return res
 
     def sort_out_non_connected_row_items(self, hitems, initial_item):
-        """In the same row, all HTMLItems are sorted out, that are not connected with the innitial item.
-           2 HTMLItems are connected, if between them, there are no categorized items.
-           Initial item will always be included
+        """
+        In the same row, all HTMLItems are sorted out, that are not connected with the innitial item.
+        2 HTMLItems are connected, if between them, there are no categorized items.
+        Initial item will always be included
 
         Args:
             hitems (List): Horizontally aligned HTMLItems
@@ -947,29 +938,29 @@ class HTMLPage:
         min_x = -1
         max_x = 9999999
         for i in hitems:
-            if (self.items[i].has_category_besides(CAT_FOOTER) or self.items[i].temp_assignment != 0):
+            if self.items[i].has_category_besides(CAT_FOOTER) or self.items[i].temp_assignment != 0:
                 cur_x = self.items[i].pos_x
-                if (cur_x < initial_item.pos_x):
+                if cur_x < initial_item.pos_x:
                     min_x = max(min_x, cur_x)
-                if (cur_x > initial_item.pos_x):
+                if cur_x > initial_item.pos_x:
                     max_x = min(max_x, cur_x)
 
         res = []
         for i in hitems:
-            if (self.items[i].pos_x > min_x and self.items[i].pos_x < max_x):
+            if min_x < self.items[i].pos_x < max_x:
                 res.append(i)
 
         return res
 
     def discover_table_column(self, initial_item):
-        """Discovers a column of HTMLItems from "initial_item".
+        """
+        Discovers a column of HTMLItems from "initial_item".
 
         Args:
             initial_item (HTMLItem): HTMLitem to be investigated.
 
         Returns:
-            List: Vertically aligned and conneted HTMLItems with respect to
-                  "initial_item".
+            List: Vertically aligned and conneted HTMLItems with respect to "initial_item".
         """
         print_verbose(7, 'discover_table_column for item : ' + str(initial_item))
 
@@ -991,7 +982,7 @@ class HTMLPage:
                                                     9999999 if bottom is None else bottom.pos_y)
 
         # make sure, that initial_item is always included
-        if (initial_item.this_id not in vitems):
+        if initial_item.this_id not in vitems:
             vitems.append(initial_item.this_id)
 
         print_verbose(7, '---> top: ' + str(top) + ', and bottom:' + str(bottom))
@@ -999,7 +990,7 @@ class HTMLPage:
         print_subset(7, self.items, vitems)
 
         sub_tab = HTMLTable()
-        if (len(vitems) > 0):
+        if len(vitems) > 0:
             sub_tab.init_by_cols(vitems, self.items)
             sub_tab.set_temp_assignment()
             print_verbose(5, 'Sub Table for current column at: ' + str(initial_item) + " = " + str(sub_tab))
@@ -1007,7 +998,8 @@ class HTMLPage:
         return sub_tab
 
     def discover_table_row(self, initial_item):
-        """Discovers a row of HTMLItems from "initial_item".
+        """
+        Discovers a row of HTMLItems from "initial_item".
 
         Args:
             initial_item (HTMLItem): HTMLItem to be investigated.
@@ -1024,10 +1016,9 @@ class HTMLPage:
 
         return hitems
 
-    def discover_subtables_recursively(self, initial_item,
-                                       step):  # 
-        """From "initial_item" discovers SubTables by investigating alignment, with other
-           HTMLItems.
+    def discover_subtables_recursively(self, initial_item, step):
+        """
+        From "initial_item" discovers SubTables by investigating alignment, with other HTMLItems.
 
         Args:
             initial_item (HTMLItem): HTMLItem (Div Container) without category.
@@ -1038,23 +1029,23 @@ class HTMLPage:
         """
         print_verbose(5, "discover subtable rec, at item : " + str(initial_item) + " and step = " + str(step))
 
-        if (initial_item.has_category() or (initial_item.temp_assignment != 0 and step == 0)):
+        if initial_item.has_category() or (initial_item.temp_assignment != 0 and step == 0):
             print_verbose(5, "---> recusion end")
             return []  # end recursion
 
-        if (step == 0):  # col
+        if step == 0:  # col
             res = []
             cur_sub_table = self.discover_table_column(initial_item)
 
-            if (cur_sub_table.count_actual_items() > 0):
+            if cur_sub_table.count_actual_items() > 0:
                 print_verbose(5, "---> added new subtable")
                 res.append(cur_sub_table)
                 for i in cur_sub_table.idx:
-                    if (i != -1):
+                    if i != -1:
                         res.extend(self.discover_subtables_recursively(self.items[i], 1))
             return res
 
-        elif (step == 1):  # row
+        elif step == 1:  # row
             res = []
             hitems = self.discover_table_row(initial_item)
             print_verbose(5, "---> found hitems = " + str(hitems))
@@ -1066,7 +1057,8 @@ class HTMLPage:
         return []
 
     def discover_table(self, initial_item):
-        """Discovers HTMLTables in HTMLItems.
+        """
+        Discovers HTMLTables in HTMLItems.
 
         Args:
             initial_item (HTMLItem): (Div Container) that is not assigned a category yet.
@@ -1078,14 +1070,14 @@ class HTMLPage:
 
         done = False
 
-        while (not done):
+        while not done:
             done = True
 
             initial_item.temp_assignment = 0
             self.clear_all_temp_assignments()
 
             sub_tables = self.discover_subtables_recursively(initial_item, 0)
-            if (len(sub_tables) == 0):
+            if len(sub_tables) == 0:
                 return None
 
             table = sub_tables[0]
@@ -1096,17 +1088,14 @@ class HTMLPage:
                 table = HTMLTable.merge(table, sub_tables[i], self.page_width)
                 print_verbose(5, "Next table:" + str(table))
 
-            # TODO!!!
-            # table.recalc_geometry()
-            # table.unfold_patched_numbers()
             table.cleanup_table(self.page_width, self.paragraphs)
 
-            if (table.is_good_table()):
+            if table.is_good_table():
                 # did we miss any items?
                 missing_items = self.find_items_within_rect(table.table_rect,
                                                             [CAT_HEADLINE, CAT_OTHER_TEXT, CAT_RUNNING_TEXT,
                                                              CAT_FOOTER])
-                if (len(missing_items) > 0):
+                if len(missing_items) > 0:
                     # yes => reclassify
                     print_verbose(2, "Found missing items : " + str(missing_items))
                     for i in missing_items:
@@ -1116,11 +1105,12 @@ class HTMLPage:
         return table
 
     def mark_all_tables(self):
-        """Marks and groups HTMLItems (Div Container) as HTMLTable
         """
-        while (True):
+        Marks and groups HTMLItems (Div Container) as HTMLTable
+        """
+        while True:
             next = self.find_next_nonclassified_item()
-            if (next is None):
+            if next is None:
                 break  # we are done
 
             table = self.discover_table(next)
@@ -1128,7 +1118,7 @@ class HTMLPage:
             if config_for_rb.global_force_special_items_into_table:
                 table.force_special_items_into_table()
 
-            if (table.is_good_table()):
+            if table.is_good_table():
                 print_verbose(2, "---> good")
                 table.categorize_as_table()
                 self.tables.append(table)
@@ -1153,29 +1143,31 @@ class HTMLPage:
             # pass
 
     def mark_all_footnotes(self):
-        """Marks HTMLItems footnotes.
+        """
+        Marks HTMLItems footnotes.
         """
 
         def apply_cat_unsplit(idx, cat):
-            """Applies a category on set of HTMLItems starting from index "idx".
+            """
+            Applies a category on set of HTMLItems starting from index "idx".
 
             Args:
                 idx (int): Index for HTMLItems.
                 cat (int): Category to be assigned to set of HTMLItems.
             """
             self.items[idx].category = cat
-            if (self.items[idx].right_id != -1):
+            if self.items[idx].right_id != -1:
                 apply_cat_unsplit(self.items[idx].right_id, cat)
 
         print_verbose(5, "Marking all footnotes . . .")
         for idx in range(len(self.items)):
-            if (self.items[idx].left_id != -1):
+            if self.items[idx].left_id != -1:
                 continue  # skip this
             txt = self.get_txt_unsplit(idx)
             print_verbose(7, "Analyzing==>" + txt + ", cat=" + str(self.items[idx].category))
-            if (self.items[idx].category != CAT_OTHER_TEXT):
+            if self.items[idx].category != CAT_OTHER_TEXT:
                 continue  # skip this also
-            if (Format_Analyzer.looks_footnote(txt)):
+            if FormatAnalyzer.looks_footnote(txt):
                 # this is a footnote !
                 print_verbose(7, ".....>>> Yes, footnote!")
                 apply_cat_unsplit(idx, CAT_FOOTNOTE)
@@ -1186,7 +1178,8 @@ class HTMLPage:
     # =====================================================================================================================
 
     def render_to_png(self, in_dir, out_dir):
-        """Converts the HTML Datastructure of a page into a png.
+        """
+        Converts the HTML Datastructure of a page into a png.
 
         Args:
             in_dir (str): Path to directory containing the HTMLPages
@@ -1218,24 +1211,24 @@ class HTMLPage:
                     context.line([(c.x1, c.y0), (c.x1, c.y1)], fill=(0, 0, 0, 255), width=0)
 
                 # text
-        if (RENDERING_USE_CLUSTER_COLORS):
+        if RENDERING_USE_CLUSTER_COLORS:
             self.clusters_text.generate_rendering_colors_rec()
 
         for it in self.items:
             font_color = (0, 0, 255, 255)  # default
-            if (it.category in (CAT_RUNNING_TEXT, CAT_HEADLINE, CAT_OTHER_TEXT, CAT_FOOTER)):
+            if it.category in (CAT_RUNNING_TEXT, CAT_HEADLINE, CAT_OTHER_TEXT, CAT_FOOTER):
                 font_color = (216, 216, 216, 255)
 
-            if (it.category == CAT_TABLE_DATA):
+            if it.category == CAT_TABLE_DATA:
                 font_color = (0, 0, 0, 255)
 
-            if (it.category == CAT_TABLE_HEADLINE):
+            if it.category == CAT_TABLE_HEADLINE:
                 font_color = (255, 0, 0, 255)
 
-            if (it.category == CAT_TABLE_SPECIAL):
+            if it.category == CAT_TABLE_SPECIAL:
                 font_color = (255, 0, 128, 255)
 
-            if (it.category == CAT_FOOTNOTE):
+            if it.category == CAT_FOOTNOTE:
                 font_color = (127, 0, 255, 255)
 
             if (RENDERING_USE_CLUSTER_COLORS):
@@ -1261,7 +1254,8 @@ class HTMLPage:
     # =====================================================================================================================
 
     def generate_clusters(self):
-        """Generates hierarchical cluser of HTMLItems with different distance modes.
+        """
+        Generates hierarchical cluser of HTMLItems with different distance modes.
         """
         self.clusters = HTMLCluster.generate_clusters(self.items, CLUSTER_DISTANCE_MODE_EUCLIDIAN)
         self.clusters_text = HTMLCluster.generate_clusters(self.items, CLUSTER_DISTANCE_MODE_RAW_TEXT)
@@ -1271,13 +1265,14 @@ class HTMLPage:
     # =====================================================================================================================
 
     def remove_certain_items(self, txt, threshold):  # they would confuse tables and are not needed
-        """Remove char "txt" from HTMLItem (Div Container) if occurence > threshold.
+        """
+        Remove char "txt" from HTMLItem (Div Container) if occurence > threshold.
 
         Args:
             txt (str): String to check.
             threshold (int): Accepted number of occurences for "txt".
         """
-        
+
         count = 0
         for it in self.items:
             for w in it.words:
@@ -1308,8 +1303,8 @@ class HTMLPage:
             self.items = new_items
 
     def remove_flyspeck(self):
-        """Removes HTMLItems (Div Containers) below a certain threshold.
-           These are considered flyspeck.
+        """
+        Removes HTMLItems (Div Containers) below a certain threshold. These are considered flyspeck.
         """
 
         threshold = DEFAULT_FLYSPECK_HEIGHT * self.page_height
@@ -1326,15 +1321,16 @@ class HTMLPage:
         self.items = new_items
 
     def remove_overlapping_items(self):
-        """Remove HTMLItems (Div containers) with overlapping boxes
+        """
+        Remove HTMLItems (Div containers) with overlapping boxes
         """
 
         keep = [True] * len(self.items)
 
         for i in range(len(self.items) - 1):
-            if (keep[i]):
+            if keep[i]:
                 for j in range(i + 1, len(self.items)):
-                    if (Rect.calc_intersection_area(self.items[i].get_rect(), self.items[j].get_rect()) > 0.):
+                    if Rect.calc_intersection_area(self.items[i].get_rect(), self.items[j].get_rect()) > 0.:
                         # overlapping items => remove it
                         keep[j] = False
                         print_verbose(5, "Removing item : " + str(self.items[j]) + ", because overlap with : " + str(
@@ -1343,7 +1339,7 @@ class HTMLPage:
         new_items = []
         cur_id = 0
         for i in range(len(self.items)):
-            if (keep[i]):
+            if keep[i]:
                 self.items[i].this_id = cur_id
                 new_items.append(self.items[i])
                 cur_id += 1
@@ -1351,7 +1347,8 @@ class HTMLPage:
         self.items = new_items
 
     def save_all_tables_to_csv(self, outdir):
-        """Saves all HTMLTables as csv files into "outdir".
+        """
+        Saves all HTMLTables as csv files into "outdir".
 
         Args:
             outdir (str): Directory path to save data.
@@ -1361,7 +1358,8 @@ class HTMLPage:
                 remove_trailing_slash(outdir) + r'/tab_' + str(self.page_num) + r'_' + str(i + 1) + r'.csv')
 
     def save_all_footnotes_to_txt(self, outdir):
-        """Saves all Footnotes as text into "outdir".
+        """
+        Saves all Footnotes as text into "outdir".
 
         Args:
             outdir (str): Directory path to save data.
@@ -1378,7 +1376,8 @@ class HTMLPage:
         save_txt_to_file(res, remove_trailing_slash(outdir) + r'/footnotes_' + str(self.page_num) + r'.txt')
 
     def preprocess_data(self):
-        """Preprocesses raw data extracted from page
+        """
+        Preprocesses raw data extracted from page
         """
         self.remove_flyspeck()
         self.remove_certain_items('.', 50)
@@ -1414,7 +1413,8 @@ class HTMLPage:
         return res
 
     def to_json(self):
-        """Encodes a HTMLPage object into a JSON Format.
+        """
+        Encodes a HTMLPage object into a JSON Format.
 
         Returns:
             str: Encoded JSON data string.
@@ -1422,9 +1422,9 @@ class HTMLPage:
         for t in self.tables:
             t.items = None
 
-        if (self.clusters is not None):
+        if self.clusters is not None:
             self.clusters.cleanup_for_export()
-        if (self.clusters_text is not None):
+        if self.clusters_text is not None:
             self.clusters_text.cleanup_for_export()
 
         # data = json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
@@ -1443,7 +1443,8 @@ class HTMLPage:
         return data
 
     def save_to_file(self, json_file):
-        """_summary_
+        """
+        _summary_
 
         Args:
             json_file (_type_): _description_
@@ -1455,7 +1456,8 @@ class HTMLPage:
 
     @staticmethod
     def load_from_json(data):
-        """Load Object from JSON file.
+        """
+        Load Object from JSON file.
 
         Args:
             data (str): Data string to decode
@@ -1480,7 +1482,8 @@ class HTMLPage:
 
     @staticmethod
     def load_from_file(json_file):
-        """Loads a serialized HTMLPage object from a file.
+        """
+        Loads a serialized HTMLPage object from a file.
 
         Args:
             json_file (str): Path to file to open.
@@ -1507,7 +1510,7 @@ class HTMLPage:
             while b0:
                 b_out = 0
                 c0 = int.from_bytes(b0, byteorder='big')
-                if (c0 == 195):
+                if c0 == 195:
                     # strange character found
                     detected_strange_char += 1
 
@@ -1515,7 +1518,7 @@ class HTMLPage:
                     c1 = int.from_bytes(b1, byteorder='big')
                     chr = 0
 
-                    if (c1 >= 95 and c1 <= 191):
+                    if 95 <= c1 <= 191:
                         chr = 191 - c1 + 33
                     else:
                         print("BAD CHARACTER FOUND: 195+-->" + str(c1))
@@ -1523,8 +1526,7 @@ class HTMLPage:
 
                     b_out = chr.to_bytes(1, 'big')
 
-
-                elif (c0 == 194):
+                elif c0 == 194:
                     # strange character found
                     detected_strange_char += 1
 
@@ -1532,7 +1534,7 @@ class HTMLPage:
                     c1 = int.from_bytes(b1, byteorder='big')
                     chr = 0
 
-                    if (c1 >= 160 and c1 <= 255):
+                    if 160 <= c1 <= 255:
                         chr = 255 - c1 + 33
                     else:
                         print("BAD CHARACTER FOUND: 194+-->" + str(c1))
@@ -1543,7 +1545,7 @@ class HTMLPage:
                     b_out = b0
 
                 nb = int.from_bytes(b_out, byteorder='big')
-                if (nb == c0 or (nb != 60 and nb != 62)):  # ignore < and >
+                if nb == c0 or (nb != 60 and nb != 62):  # ignore < and >
                     new_bytes.append(nb)
                 else:
                     new_bytes.append(32)  # space
@@ -1572,10 +1574,10 @@ class HTMLPage:
                     is_txt = False
                 if hit_body and is_txt and new_bytes[i] == 45:
                     new_bytes[i] = 115  # s
-                if (hit_body and is_txt and old_bytes[i] == new_bytes[i]):
+                if hit_body and is_txt and old_bytes[i] == new_bytes[i]:
                     good_old_bytes += 1
 
-            if (detected_strange_char < good_old_bytes * 2):
+            if detected_strange_char < good_old_bytes * 2:
                 return  # too few strange characters
 
             shutil.copy(htmlfile, bak_file)
@@ -1584,17 +1586,17 @@ class HTMLPage:
 
     @staticmethod
     def parse_html_file(fonts_dir, htmlfile):
-        """Parses a single .html file into a HTMLPage object.
+        """
+        Parses a single .html file into a HTMLPage object.
 
-            HTML Files are mapped to HTMLPage objecs.
-            Div Containers are mapped to HTMLItems.
-            BBoxes are mapped to HTMLWords.
-            
-            1.  RegEx Patterns are initialized
-            2.  Iterate over each line of HTML File and match Patterns. 
-                Nested for loops are due to structure of HTML File
-            3.  Preprocess of detected raw data
+        HTML Files are mapped to HTMLPage objecs.
+        Div Containers are mapped to HTMLItems.
+        BBoxes are mapped to HTMLWords.
 
+        1.  RegEx Patterns are initialized
+        2.  Iterate over each line of HTML File and match Patterns.
+            Nested for loops are due to structure of HTML File
+        3.  Preprocess of detected raw data
 
         Args:
             fonts_dir (str): Path to the fonts for this file.
@@ -1641,7 +1643,7 @@ class HTMLPage:
         for i in range(0, len(html_file)):
             h = html_file[i].strip()
             print_verbose(7, '---->' + h)
-            if (pattern_background.match(h)):
+            if pattern_background.match(h):
                 bg = pattern_background.match(h).groups()
                 res.page_num = int(bg[2 + 2])
                 res.page_width = int(bg[0 + 2])
@@ -1653,11 +1655,11 @@ class HTMLPage:
             if pattern_font_url.match(h):
                 fu = pattern_font_url.match(h).groups()
                 font_url_dict[int(fu[0])] = fu[1]
-            if (pattern_bold.match(h)):
+            if pattern_bold.match(h):
                 b = pattern_bold.match(h).groups()
                 bold_styles.append(b[0])
                 print_verbose(7, 'Bold->' + str(b))
-            if (pattern_div.match(h)):
+            if pattern_div.match(h):
                 g = pattern_div.match(h).groups()
                 print_verbose(7, '-------->' + str(g))
                 spans = g[2 + 1].split('</span>')
@@ -1706,7 +1708,7 @@ class HTMLPage:
                             if pattern_bbox.match(b):
                                 bs = pattern_bbox.match(b).groups()
                                 word = HTMLWord()
-                                word.txt = Format_Analyzer.trim_whitespaces(html.unescape(bs[4]))
+                                word.txt = FormatAnalyzer.trim_whitespaces(html.unescape(bs[4]))
                                 word.rect.x0 = float(bs[0])
                                 word.rect.y0 = float(bs[1])
                                 word.rect.x1 = float(bs[2])
