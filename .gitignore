@@ -9,5 +9,4 @@ corrupted_pdf/
 checkPDFCorrupted/result.csv
 *.log
 input/
-input2/
 output/
