@@ -10,6 +10,9 @@ import jsonpickle
 import os
 import shutil
 import time
+import sys
+import multiprocessing as mp
+import logging
 
 from AnalyzerDirectory import AnalyzerDirectory
 from FormatAnalyzer import FormatAnalyzer
@@ -18,9 +21,28 @@ from HTMLDirectory import HTMLDirectory
 from KPIResultSet import KPIResultSet
 from PreparationOfKPISpecs import prepare_kpi_specs
 from TestData import TestData
+from logging.handlers import RotatingFileHandler
 
 # Constants Variables
 DEFAULT_YEAR = 2022
+
+
+def create_logger():
+    logger = logging.getLogger('my_logger')
+    logger.setLevel(logging.DEBUG)
+
+
+    # Create a RotatingFileHandler with a max file size of 1MB and a maximum of 5 backup files
+    file_handler = RotatingFileHandler('app.log', maxBytes=1024*1024, backupCount=5,encoding="utf-8")
+    file_handler.setLevel(logging.DEBUG)
+
+    # Create a formatter
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(formatter)
+
+    # Add the handler to the logger
+    logger.addHandler(file_handler)
+    return logger
 
 
 def parse_arguments():
@@ -344,8 +366,11 @@ def load_all_path_files_from_info_json_file(json_file):
 
 
 def main():
+
+    logger = create_logger()
     # Record the start time for performance measurement
     time_start = time.time()
+    logger.info(f"Start Time: '{time_start}'")
 
     parse_arguments()
 
@@ -383,10 +408,12 @@ def main():
     info_file_contents = load_all_path_files_from_info_json_file(json_file_name)
 
     # Iterate over each PDF in the list
-    for pdf in pdfs:
-        # Analyze the current PDF
-        kpi_results = analyze_and_save_results(pdf, kpis, info_file_contents)
-        overall_kpi_results.extend(kpi_results)
+    analyze_all_pdfs(pdfs, kpis, info_file_contents,overall_kpi_results)
+
+
+    # Record the finish time for performance measurement
+    time_finish = time.time()
+    logger.info(f"End Time: '{time_finish}'")
 
     # Record the finish time for performance measurement
     time_finish = time.time()
@@ -401,6 +428,8 @@ def main():
     # Calculate and print the total run-time
     total_time = time_finish - time_start
     print_verbose(1, "Total run-time: " + str(total_time) + " sec ( " + str(
+        total_time / max(len(pdfs), 1)) + " sec per PDF)")
+    logger.info("Total run-time: " + str(total_time) + " sec ( " + str(
         total_time / max(len(pdfs), 1)) + " sec per PDF)")
 
 
