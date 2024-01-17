@@ -12,6 +12,7 @@ except KeyError:
 print(path)
 SRC_DIR = os.path.join(path, "20240114_Expected_Values")
 OUT_DIR = os.path.join(path, "20240114_Expected_Values_Converted")
+RAW_DIR = os.path.join(path, "input2")
 
 print(SRC_DIR)
 
@@ -53,16 +54,46 @@ def is_empty(data,key):
         return False
     
 def write_csv_header(filename, header):
-    print("Write Header")
-    full_path = os.path.join(OUT_DIR,filename)
+    full_path = os.path.join(OUT_DIR,filename+".csv")
     with open(full_path, 'w', newline='') as csvfile:
         csv_writer = csv.writer(csvfile)
         csv_writer.writerow(header)
 
-def append_csv_line(filename, data):
-    with open(filename, 'a', newline='') as csvfile:
+def write_csv_lines(filename, lines):
+    full_path = os.path.join(OUT_DIR,filename+".csv")
+    with open(full_path, 'a', newline='') as csvfile:
         csv_writer = csv.writer(csvfile)
-        csv_writer.writerow(data)
+
+        for line in lines:
+            csv_writer.writerow(line)
+
+def check_exists(filename):
+    full_path = os.path.join(RAW_DIR,filename+".pdf")
+    if os.path.exists(full_path):
+        return True
+    else:
+        return False
+
+def extract_data(file,data):
+    return_data = []
+    for keys in data.keys():
+        scope = data.get(keys)
+
+        for idx in range(len(scope.get("Value"))):
+            # 0 KPI_ID | 1 KPI_NAME | 2 SRC_FILE | 3 PAGE_NUM | - | - | - | 7 RAW_TXT | 8 YEAR | 9 VALUE | - | 11 UNIT | - 
+            row = ['-'] * 13
+            row[0] = scope.get("ID")
+            row[1] = NAME_DICT.get(keys)
+            row[2] = file
+            row[3] = scope.get("Page")[idx]
+            row[7] = scope.get("Value")[idx]
+            row[8] = scope.get("Year")[idx]
+            row[9] = scope.get("Value")[idx]
+
+        return_data.append(row)
+    return return_data
+
+
 
 
 def main():
@@ -75,8 +106,10 @@ def main():
         "KPI_ID", "KPI_NAME", "SRC_FILE", "PAGE_NUM", "ITEM_IDS", "POS_X",
         "POS_Y", "RAW_TXT", "YEAR", "VALUE", "SCORE", "UNIT", "MATCH_TYPE"
     ]
+    missing_names = []
     
     for file in os.listdir(SRC_DIR):
+        
         try:
             data = load(file)
             no_files += 1
@@ -85,10 +118,18 @@ def main():
                 empty_pdfs.append(file)
                 continue
             
+            
+
+            formatted_data = extract_data(file,data)
+
+            file = file[:-5]
+            
+            if not check_exists(file):
+                missing_names.append(file)
+
             write_csv_header(file,header)
 
-            #for key in data.keys():
-            #    a
+            write_csv_lines(file,formatted_data)
 
         except Exception as e:
             problematics.append(file)
@@ -97,7 +138,9 @@ def main():
     print(f"Number of files '{no_files}'")
     print(f"Number of empty files '{len(empty_pdfs)}'")
     print(f"Number of problematic pdfs '{len(problematics)}'")
+    print(f"Number of pdfs without raw '{len(missing_names)}'")
     print(f"Problematics \n '{problematics}'")
+    print(f"Missings \n '{missing_names}'")
 
 if __name__ == "__main__":
     main()
