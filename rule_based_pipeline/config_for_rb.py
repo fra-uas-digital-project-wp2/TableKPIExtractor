@@ -15,7 +15,7 @@ global_raw_pdf_folder = r"raw_pdf/"
 global_input_folder = r"input/"
 global_working_folder = r"workdir/"
 global_output_folder = r"output/"
-global_expected_values_folder = r"expected_values/"
+global_expected_values_folder = r"20240114_Expected_Values_Converted/"
 
 
 # Filter PDFs and pages

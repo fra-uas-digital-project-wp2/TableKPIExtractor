@@ -112,22 +112,19 @@ def main():
         
         try:
             data = load(file)
+            file = file[:-5]
             no_files += 1
+
+            write_csv_header(file,header)
 
             if is_empty(data,"Scope 1") and is_empty(data,"Scope 2") and is_empty(data,"Scope 3"):
                 empty_pdfs.append(file)
                 continue
             
-            
-
             formatted_data = extract_data(file,data)
-
-            file = file[:-5]
             
             if not check_exists(file):
                 missing_names.append(file)
-
-            write_csv_header(file,header)
 
             write_csv_lines(file,formatted_data)
 

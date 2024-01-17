@@ -22,6 +22,7 @@ from KPIResultSet import KPIResultSet
 from PreparationOfKPISpecs import prepare_kpi_specs
 from TestData import TestData
 from logging.handlers import RotatingFileHandler
+from TestEvaluation import TestEvaluation
 
 # Constants Variables
 DEFAULT_YEAR = 2022
@@ -89,6 +90,7 @@ def fix_config_paths():
     config_for_rb.global_working_folder = path + r'/' + config_for_rb.global_working_folder
     config_for_rb.global_rendering_font_override = path + r'/' + config_for_rb.global_rendering_font_override
     config_for_rb.global_approx_font_name = path + r'/' + config_for_rb.global_approx_font_name
+    config_for_rb.global_expected_values_folder = path + r'/' + config_for_rb.global_expected_values_folder 
 
 
 def make_directories():
@@ -364,8 +366,38 @@ def load_all_path_files_from_info_json_file(json_file):
     json_data = jsonpickle.decode(data)
     return json_data
 
+def evaluation():
+    for file in os.listdir(config_for_rb.global_output_folder):
+        print(file)
+        file = file[:-8]
+
+        if file == "kpi_results":
+            continue
+
+        actual_values = TestData()
+        actual_values.load_from_csv(os.path.join(config_for_rb.global_output_folder,file+".pdf.csv"))
+
+        print_big("Data-set", False)
+        print(actual_values)
+
+
+        expected_values = KPIResultSet.load_from_csv(os.path.join(config_for_rb.global_expected_values_folder,file+".csv"))
+
+        print_big("Kpi-Results", do_wait=False)
+        print(expected_values)
+
+        print_big("Kpi-Evaluation", do_wait=False)
+        test_eval = TestEvaluation.generate_evaluation(file, expected_values, actual_values)
+        print(test_eval)
+
+
+
+    pass
+
 
 def main():
+
+
 
     logger = create_logger()
     # Record the start time for performance measurement
@@ -424,6 +456,8 @@ def main():
 
     # Save overall KPI results to a CSV file
     overall_kpi_results.save_to_csv_file(config_for_rb.global_output_folder + r'kpi_results_tmp.csv')
+
+    evaluation()
 
     # Calculate and print the total run-time
     total_time = time_finish - time_start
