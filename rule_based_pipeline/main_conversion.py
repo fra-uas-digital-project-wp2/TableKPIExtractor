@@ -90,7 +90,7 @@ def extract_data(file,data):
             row[8] = scope.get("Year")[idx]
             row[9] = scope.get("Value")[idx]
 
-        return_data.append(row)
+            return_data.append(row)
     return return_data
 
 

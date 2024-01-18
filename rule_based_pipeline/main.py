@@ -37,6 +37,8 @@ def create_logger():
     file_handler = RotatingFileHandler('app.log', maxBytes=1024*1024, backupCount=5,encoding="utf-8")
     file_handler.setLevel(logging.DEBUG)
 
+    open('app.log', 'w').close()
+
     # Create a formatter
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     file_handler.setFormatter(formatter)
@@ -366,7 +368,11 @@ def load_all_path_files_from_info_json_file(json_file):
     json_data = jsonpickle.decode(data)
     return json_data
 
-def evaluation():
+def evaluation(logger):
+
+    actual_values = TestData() # Output 
+    expected_values = KPIResultSet() #Expected Values
+
     for file in os.listdir(config_for_rb.global_output_folder):
         print(file)
         file = file[:-8]
@@ -374,21 +380,38 @@ def evaluation():
         if file == "kpi_results":
             continue
 
-        actual_values = TestData()
         actual_values.load_from_csv(os.path.join(config_for_rb.global_output_folder,file+".pdf.csv"))
 
-        print_big("Data-set", False)
-        print(actual_values)
+        #print_big("Data-set", False)
+        #print(actual_values)
+
+        expected_values.extend(
+            KPIResultSet.load_from_csv(
+                os.path.join(config_for_rb.global_expected_values_folder,file+".csv")))
+
+        #print_big("Kpi-Results", do_wait=False)
+        #print(expected_values)
+
+    print_big("Data-set", False)
+    print(actual_values)
+    
+    
+    print_big("Kpi-Results", do_wait=False)
+    print(expected_values)
+
+    print_big("Kpi-Evaluation", do_wait=False)
+    test_eval = TestEvaluation.generate_evaluation("", expected_values, actual_values)
+
+    logger.info(f"True Positives : '{test_eval.num_true_positive}'")
+    logger.info(f"False Positives : '{test_eval.num_false_positive}'")
+    logger.info(f"True Negatives : '{test_eval.num_true_negative}'")
+    logger.info(f"False Negatives : '{test_eval.num_true_positive}'")
+    logger.info(f"Precision : '{round(test_eval.measure_precision,3)}'")
+    logger.info(f"Recall : '{round(test_eval.measure_recall,3)}'")
+    logger.info(f"Accuracy : '{round(test_eval.measure_accuracy,3)}'")
 
 
-        expected_values = KPIResultSet.load_from_csv(os.path.join(config_for_rb.global_expected_values_folder,file+".csv"))
-
-        print_big("Kpi-Results", do_wait=False)
-        print(expected_values)
-
-        print_big("Kpi-Evaluation", do_wait=False)
-        test_eval = TestEvaluation.generate_evaluation(file, expected_values, actual_values)
-        print(test_eval)
+    print(test_eval)
 
 
 
@@ -408,6 +431,7 @@ def main():
 
     # Fix global paths
     fix_config_paths()
+
 
     # make directories if not exist
     make_directories()

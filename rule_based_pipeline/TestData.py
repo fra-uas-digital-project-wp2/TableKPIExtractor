@@ -93,7 +93,7 @@ class TestData:
         """
 
         # Initialize TestData samples list
-        self.samples = []
+        #self.samples = [] # TODO Add this line into the 
 
         # Read all lines from the CSV file
         with open(src_file_path, errors='ignore', encoding="ascii") as file:
