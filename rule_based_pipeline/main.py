@@ -108,6 +108,7 @@ def make_directories():
 
     os.makedirs(config_for_rb.global_working_folder, exist_ok=True)
     os.makedirs(config_for_rb.global_output_folder, exist_ok=True)
+    os.makedirs(config_for_rb.global_evaluation_results_folder, exist_ok=True)
 
 
 def print_configuration():
