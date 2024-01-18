@@ -37,7 +37,7 @@ def create_logger():
     file_handler = RotatingFileHandler('app.log', maxBytes=1024*1024, backupCount=5,encoding="utf-8")
     file_handler.setLevel(logging.DEBUG)
 
-    open('app.log', 'w').close()
+    #open('app.log', 'w').close()
 
     # Create a formatter
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
@@ -93,6 +93,7 @@ def fix_config_paths():
     config_for_rb.global_rendering_font_override = path + r'/' + config_for_rb.global_rendering_font_override
     config_for_rb.global_approx_font_name = path + r'/' + config_for_rb.global_approx_font_name
     config_for_rb.global_expected_values_folder = path + r'/' + config_for_rb.global_expected_values_folder 
+    config_for_rb.global_evaluation_results_folder = path + r'/' + config_for_rb.global_evaluation_results_folder
 
 
 def make_directories():
@@ -102,7 +103,7 @@ def make_directories():
     Returns:
         None
     """
-    if (not config_for_rb.global_debug_mode) and os.path.exists(config_for_rb.global_working_folder) and os.path.isdir(config_for_rb.global_working_folder):
+    if config_for_rb.global_reset_workdir and os.path.exists(config_for_rb.global_working_folder) and os.path.isdir(config_for_rb.global_working_folder):
         shutil.rmtree(config_for_rb.global_working_folder)
 
     os.makedirs(config_for_rb.global_working_folder, exist_ok=True)
@@ -374,30 +375,15 @@ def evaluation(logger):
     expected_values = KPIResultSet() #Expected Values
 
     for file in os.listdir(config_for_rb.global_output_folder):
-        print(file)
         file = file[:-8]
-
         if file == "kpi_results":
             continue
 
         actual_values.load_from_csv(os.path.join(config_for_rb.global_output_folder,file+".pdf.csv"))
 
-        #print_big("Data-set", False)
-        #print(actual_values)
-
         expected_values.extend(
             KPIResultSet.load_from_csv(
                 os.path.join(config_for_rb.global_expected_values_folder,file+".csv")))
-
-        #print_big("Kpi-Results", do_wait=False)
-        #print(expected_values)
-
-    print_big("Data-set", False)
-    print(actual_values)
-    
-    
-    print_big("Kpi-Results", do_wait=False)
-    print(expected_values)
 
     print_big("Kpi-Evaluation", do_wait=False)
     test_eval = TestEvaluation.generate_evaluation("", expected_values, actual_values)
@@ -464,8 +450,8 @@ def main():
     info_file_contents = load_all_path_files_from_info_json_file(json_file_name)
 
     # Iterate over each PDF in the list
-    analyze_all_pdfs(pdfs, kpis, info_file_contents,overall_kpi_results)
-
+    if not (config_for_rb.global_evaluation_only):
+        analyze_all_pdfs(pdfs, kpis, info_file_contents,overall_kpi_results)
 
     # Record the finish time for performance measurement
     time_finish = time.time()
@@ -481,7 +467,7 @@ def main():
     # Save overall KPI results to a CSV file
     overall_kpi_results.save_to_csv_file(config_for_rb.global_output_folder + r'kpi_results_tmp.csv')
 
-    evaluation()
+    evaluation(logger)
 
     # Calculate and print the total run-time
     total_time = time_finish - time_start

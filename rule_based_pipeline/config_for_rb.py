@@ -16,6 +16,7 @@ global_input_folder = r"input/"
 global_working_folder = r"workdir/"
 global_output_folder = r"output/"
 global_expected_values_folder = r"20240114_Expected_Values_Converted/"
+global_evaluation_results_folder = r"evaluation_results/"
 
 
 # Filter PDFs and pages
@@ -23,6 +24,8 @@ global_name_of_pdf = "*"
 global_page_of_table_in_pdf = "*"
 
 global_debug_mode = False  # default: False. If true, detected tables are printed and HTMLDirectory is serialized.
+global_reset_workdir = False
+global_evaluation_only = True
 
 
 global_rendering_font_override = r"default_font.otf"

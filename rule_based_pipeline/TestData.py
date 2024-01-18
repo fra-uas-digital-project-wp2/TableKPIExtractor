@@ -131,7 +131,10 @@ class TestData:
             sample.pos_y = result_list[6]
             sample.raw_txt = result_list[7]
             sample.year = year
-            sample.value = FormatAnalyzer.to_float_number(result_list[9])
+            try:
+                sample.value = FormatAnalyzer.to_float_number(result_list[9])
+            except:
+                sample.value = 0
             sample.score = result_list[10]
             sample.unit = result_list[11]
             sample.match_type = result_list[12]

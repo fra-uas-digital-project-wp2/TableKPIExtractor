@@ -4,6 +4,9 @@
 # Author : Ismail Demir (G124272)
 # Date   : 10.09.2020
 # ============================================================================================================================
+import os
+import config_for_rb
+
 from ConsoleTable import ConsoleTable
 from FormatAnalyzer import FormatAnalyzer
 
@@ -70,6 +73,9 @@ class TestEvaluation:
             self.measure_accuracy = (self.num_true_positive + self.num_true_negative) / float(self.num_true_positive + self.num_true_negative  + self.num_false_positive + self.num_false_negative)
 
 
+
+
+
     def to_string(self, max_width, min_col_width, console_table_format):
         """
         Convert the evaluation results to a formatted string.
@@ -101,6 +107,11 @@ class TestEvaluation:
 
         # Generate formatted string
         result = console_table.to_string(max_width, min_col_width, console_table_format)
+
+        self.to_csv(result)
+
+        # Reset Output String
+        result = ""
 
         # Add summary information to the result string
         result += "\nSUMMARY:\n"
@@ -141,6 +152,11 @@ class TestEvaluation:
             str: String representation of the TestEvaluation.
         """
         return self.to_string(120, 5, ConsoleTable.FORMAT_CSV)
+    
+    def to_csv(self,string):
+        with open(os.path.join(config_for_rb.global_evaluation_results_folder,"evaluation_results.csv"), 'w') as file:
+            # Write the string to the file
+            file.write(string)
 
     @staticmethod
     def generate_evaluation(pdf_file_name, expected_values, actual_values):
