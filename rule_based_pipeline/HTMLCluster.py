@@ -38,15 +38,6 @@ class HTMLCluster:
         self.items = []
         self.flat_text = ""
 
-    def is_internal_node(self):
-        """
-        Check if the cluster is an internal node.
-
-        Returns:
-            bool: True if the cluster is an internal node, False otherwise.
-        """
-        return len(self.children) > 0
-
     def is_leaf(self):
         """
         Check if the cluster is a leaf node.
@@ -198,7 +189,6 @@ class HTMLCluster:
             return dist(it1_x, it1_y, it2_x, it2_y)
         elif mode == CLUSTER_DISTANCE_MODE_RAW_TEXT:
             return dist(0, it1.pos_y, 0, it2.pos_y)
-        # return dist(it1.pos_x * 100, it1.pos_y, it2.pos_x * 100, it2.pos_y) #TODO: Add this a a new distance mode ! (20.09.2022)
 
         raise ValueError('Invalid distance mode')
 
