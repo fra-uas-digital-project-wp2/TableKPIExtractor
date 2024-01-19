@@ -7,7 +7,7 @@
 # Note   : 1 AnalyzerDirectory refers to * AnalyzerPage (one for each HTMLPage in that directory, resp. pdf-file)
 # ============================================================================================================================
 from AnalyzerPage import AnalyzerPage
-from config_for_rb import global_analyze_multiple_pages_at_one, global_ignore_all_years
+from Parameters import global_analyze_multiple_pages_at_one, global_ignore_all_years
 from HTMLDirectory import HTMLDirectory
 from HTMLPage import HTMLPage
 from KPIMeasure import KPIMeasure

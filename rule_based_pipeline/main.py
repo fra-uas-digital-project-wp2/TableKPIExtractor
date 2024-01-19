@@ -5,7 +5,7 @@
 # Date   : 12.06.2020
 # ============================================================================================================================
 import argparse
-import config_for_rb
+import Parameters
 import jsonpickle
 import os
 import shutil
@@ -31,9 +31,8 @@ def create_logger():
     logger = logging.getLogger('my_logger')
     logger.setLevel(logging.DEBUG)
 
-
     # Create a RotatingFileHandler with a max file size of 1MB and a maximum of 5 backup files
-    file_handler = RotatingFileHandler('app.log', maxBytes=1024*1024, backupCount=5,encoding="utf-8")
+    file_handler = RotatingFileHandler('app.log', maxBytes=1024 * 1024, backupCount=5, encoding="utf-8")
     file_handler.setLevel(logging.DEBUG)
 
     # Create a formatter
@@ -53,21 +52,21 @@ def parse_arguments():
         None
     """
     parser = argparse.ArgumentParser(description='Rule-based KPI extraction')
-    parser.add_argument('--raw_pdf_folder', type=str, default=config_for_rb.global_raw_pdf_folder,
+    parser.add_argument('--raw_pdf_folder', type=str, default=Parameters.global_raw_pdf_folder,
                         help='Folder where PDFs are stored')
-    parser.add_argument('--working_folder', type=str, default=config_for_rb.global_working_folder,
+    parser.add_argument('--working_folder', type=str, default=Parameters.global_working_folder,
                         help='Folder where working files are stored')
-    parser.add_argument('--output_folder', type=str, default=config_for_rb.global_output_folder,
+    parser.add_argument('--output_folder', type=str, default=Parameters.global_output_folder,
                         help='Folder where output is stored')
-    parser.add_argument('--verbosity', type=int, default=config_for_rb.global_verbosity,
+    parser.add_argument('--verbosity', type=int, default=Parameters.global_verbosity,
                         help='Verbosity level (0=shut up)')
 
     # TODO: why we need this? --> @Marc
     args = parser.parse_args()
-    config_for_rb.global_raw_pdf_folder = (remove_trailing_slash(args.raw_pdf_folder).replace("\\", "/") + r"/")
-    config_for_rb.global_working_folder = (remove_trailing_slash(args.working_folder).replace("\\", "/") + r"/")
-    config_for_rb.global_verbosity = args.verbosity
-    config_for_rb.global_output_folder = (remove_trailing_slash(args.output_folder).replace("\\", "/") + r"/")
+    Parameters.global_raw_pdf_folder = (remove_trailing_slash(args.raw_pdf_folder).replace("\\", "/") + r"/")
+    Parameters.global_working_folder = (remove_trailing_slash(args.working_folder).replace("\\", "/") + r"/")
+    Parameters.global_verbosity = args.verbosity
+    Parameters.global_output_folder = (remove_trailing_slash(args.output_folder).replace("\\", "/") + r"/")
 
 
 def fix_config_paths():
@@ -83,12 +82,12 @@ def fix_config_paths():
     except KeyError:
         path = os.path.dirname(os.path.realpath(__file__))
     path = remove_trailing_slash(path).replace('\\', '/')
-    config_for_rb.global_exec_folder = path + r'/'
-    config_for_rb.global_raw_pdf_folder = path + r'/' + config_for_rb.global_raw_pdf_folder
-    config_for_rb.global_output_folder = path + r'/' + config_for_rb.global_output_folder
-    config_for_rb.global_working_folder = path + r'/' + config_for_rb.global_working_folder
-    config_for_rb.global_rendering_font_override = path + r'/' + config_for_rb.global_rendering_font_override
-    config_for_rb.global_approx_font_name = path + r'/' + config_for_rb.global_approx_font_name
+    Parameters.global_exec_folder = path + r'/'
+    Parameters.global_raw_pdf_folder = path + r'/' + Parameters.global_raw_pdf_folder
+    Parameters.global_output_folder = path + r'/' + Parameters.global_output_folder
+    Parameters.global_working_folder = path + r'/' + Parameters.global_working_folder
+    Parameters.global_rendering_font_override = path + r'/' + Parameters.global_rendering_font_override
+    Parameters.global_approx_font_name = path + r'/' + Parameters.global_approx_font_name
 
 
 def make_directories():
@@ -98,11 +97,12 @@ def make_directories():
     Returns:
         None
     """
-    if (not config_for_rb.global_debug_mode) and os.path.exists(config_for_rb.global_working_folder) and os.path.isdir(config_for_rb.global_working_folder):
-        shutil.rmtree(config_for_rb.global_working_folder)
+    if (not Parameters.global_debug_mode) and os.path.exists(Parameters.global_working_folder) and os.path.isdir(
+            Parameters.global_working_folder):
+        shutil.rmtree(Parameters.global_working_folder)
 
-    os.makedirs(config_for_rb.global_working_folder, exist_ok=True)
-    os.makedirs(config_for_rb.global_output_folder, exist_ok=True)
+    os.makedirs(Parameters.global_working_folder, exist_ok=True)
+    os.makedirs(Parameters.global_output_folder, exist_ok=True)
 
 
 def print_configuration():
@@ -112,44 +112,42 @@ def print_configuration():
     Returns:
         None
     """
-    print_verbose(1, "Using config_for_rb.global_exec_folder=" + config_for_rb.global_exec_folder)
-    print_verbose(1, "Using config_for_rb.global_raw_pdf_folder=" + config_for_rb.global_raw_pdf_folder)
-    print_verbose(1, "Using config_for_rb.global_working_folder=" + config_for_rb.global_working_folder)
-    print_verbose(1, "Using config_for_rb.global_output_folder=" + config_for_rb.global_output_folder)
-    print_verbose(1, "Using config_for_rb.global_verbosity=" + str(config_for_rb.global_verbosity))
+    print_verbose(1, "Using Parameters.global_exec_folder=" + Parameters.global_exec_folder)
+    print_verbose(1, "Using Parameters.global_raw_pdf_folder=" + Parameters.global_raw_pdf_folder)
+    print_verbose(1, "Using Parameters.global_working_folder=" + Parameters.global_working_folder)
+    print_verbose(1, "Using Parameters.global_output_folder=" + Parameters.global_output_folder)
+    print_verbose(1, "Using Parameters.global_verbosity=" + str(Parameters.global_verbosity))
     print_verbose(1,
-                  "Using config_for_rb.global_rendering_font_override=" + config_for_rb.global_rendering_font_override)
+                  "Using Parameters.global_rendering_font_override=" + Parameters.global_rendering_font_override)
 
 
-def analyze_all_pdfs(pdfs, kpis, info_file_contents,overall_kpi_results):
-    if config_for_rb.global_debug_mode:
-        single_process_analysis(pdfs, kpis, info_file_contents,overall_kpi_results)
+def analyze_all_pdfs(pdfs, kpis, info_file_contents, overall_kpi_results):
+    if Parameters.global_debug_mode:
+        single_process_analysis(pdfs, kpis, info_file_contents, overall_kpi_results)
     else:
-        multi_process_analysis(pdfs, kpis, info_file_contents,overall_kpi_results)
+        multi_process_analysis(pdfs, kpis, info_file_contents, overall_kpi_results)
 
-def single_process_analysis(pdfs, kpis, info_file_contents,overall_kpi_results): 
+
+def single_process_analysis(pdfs, kpis, info_file_contents, overall_kpi_results):
     for pdf in pdfs:
         # Analyze the current PDF
         kpi_results = analyze_and_save_results(pdf, kpis, info_file_contents)
         overall_kpi_results.extend(kpi_results)
 
-def multi_process_analysis(pdfs, kpis, info_file_contents,overall_kpi_results):
+
+def multi_process_analysis(pdfs, kpis, info_file_contents, overall_kpi_results):
     cores = mp.cpu_count()
     queue = mp.Queue()
     for pdf in pdfs:
         queue.put(pdf)
-    
-    paths = []
-    paths.append(config_for_rb.global_exec_folder)
-    paths.append(config_for_rb.global_raw_pdf_folder)
-    paths.append(config_for_rb.global_output_folder)
-    paths.append(config_for_rb.global_working_folder)
-    paths.append(config_for_rb.global_rendering_font_override)
-    paths.append(config_for_rb.global_approx_font_name)
+
+    paths = [Parameters.global_exec_folder, Parameters.global_raw_pdf_folder, Parameters.global_output_folder,
+             Parameters.global_working_folder, Parameters.global_rendering_font_override,
+             Parameters.global_approx_font_name]
 
     processes = []
     for _ in range(cores):
-        p = mp.Process(target=mp_task,args = (queue,kpis, info_file_contents,overall_kpi_results,paths))
+        p = mp.Process(target=mp_task, args=(queue, kpis, info_file_contents, overall_kpi_results, paths))
         processes.append(p)
         p.deamon = True
         p.start()
@@ -162,17 +160,18 @@ def multi_process_analysis(pdfs, kpis, info_file_contents,overall_kpi_results):
         p.join()
     print("All processes have finished.")
 
-def mp_task(queue,kpis, info_file_contents,overall_kpi_results,paths):
+
+def mp_task(queue, kpis, info_file_contents, overall_kpi_results, paths):
     # Additional exception handling if needed
 
-    config_for_rb.global_exec_folder = paths[0]
-    config_for_rb.global_raw_pdf_folder = paths[1]
-    config_for_rb.global_output_folder = paths[2] 
-    config_for_rb.global_working_folder = paths[3] 
-    config_for_rb.global_rendering_font_override = paths[4] 
-    config_for_rb.global_approx_font_name = paths[5]
+    Parameters.global_exec_folder = paths[0]
+    Parameters.global_raw_pdf_folder = paths[1]
+    Parameters.global_output_folder = paths[2]
+    Parameters.global_working_folder = paths[3]
+    Parameters.global_rendering_font_override = paths[4]
+    Parameters.global_approx_font_name = paths[5]
 
-    while not queue.empty(): 
+    while not queue.empty():
         try:
             pdf = queue.get(block=False)
             print(f"PDF = '{pdf}'")
@@ -198,10 +197,10 @@ def analyze_and_save_results(pdf_name, kpis, info_file_contents):
     """
     kpi_results = KPIResultSet()
     # to analyze specific page, add e.g.:  wildcard_restrict_page=*00042
-    input_pdf = config_for_rb.global_raw_pdf_folder + pdf_name
+    input_pdf = Parameters.global_raw_pdf_folder + pdf_name
     cur_kpi_results = analyze_pdf(input_pdf, kpis, info_file_contents)
     kpi_results.extend(cur_kpi_results)
-    kpi_results.save_to_csv_file(config_for_rb.global_output_folder + pdf_name + r'.csv')
+    kpi_results.save_to_csv_file(Parameters.global_output_folder + pdf_name + r'.csv')
     print_verbose(1, "RESULT FOR " + pdf_name)
     print_verbose(1, kpi_results)
     return kpi_results
@@ -218,7 +217,7 @@ def generate_dummy_test_data():
     test_data = TestData()
 
     # Generate dummy test data from raw_pdf
-    test_data.generate_dummy_test_data(config_for_rb.global_raw_pdf_folder)
+    test_data.generate_dummy_test_data(Parameters.global_raw_pdf_folder)
 
     # Return the populated TestData object
     return test_data
@@ -256,7 +255,7 @@ def analyze_pdf(pdf_file, kpis, info_file_contents, wildcard_restrict_page='*', 
         # parse and create json and png
         directory = convert_html_to_json_and_png(html_dir_path, force_parse_pdf, do_wait)
 
-    if config_for_rb.global_debug_mode:
+    if Parameters.global_debug_mode:
         directory = load_json_files(html_dir_path, do_wait, wildcard_restrict_page)
 
     kpi_results = analyze_pages(directory, guess_year, kpis, do_wait)
@@ -305,7 +304,7 @@ def convert_html_to_json_and_png(html_dir_path, force_parse_pdf=False, do_wait=F
 
         html_directory.parse_html_directory(html_dir_path, 'page*.html')
 
-        if config_for_rb.global_debug_mode:
+        if Parameters.global_debug_mode:
             html_directory.render_to_png(html_dir_path, html_dir_path)
             html_directory.save_to_dir(html_dir_path)
 
@@ -366,7 +365,6 @@ def load_all_path_files_from_info_json_file(json_file):
 
 
 def main():
-
     logger = create_logger()
     # Record the start time for performance measurement
     time_start = time.time()
@@ -404,12 +402,11 @@ def main():
     overall_kpi_results = KPIResultSet()
 
     # Load information from the file info.json
-    json_file_name = remove_trailing_slash(config_for_rb.global_working_folder) + '/info.json'
+    json_file_name = remove_trailing_slash(Parameters.global_working_folder) + '/info.json'
     info_file_contents = load_all_path_files_from_info_json_file(json_file_name)
 
     # Iterate over each PDF in the list
-    analyze_all_pdfs(pdfs, kpis, info_file_contents,overall_kpi_results)
-
+    analyze_all_pdfs(pdfs, kpis, info_file_contents, overall_kpi_results)
 
     # Record the finish time for performance measurement
     time_finish = time.time()
@@ -423,7 +420,7 @@ def main():
     print_verbose(1, overall_kpi_results)
 
     # Save overall KPI results to a CSV file
-    overall_kpi_results.save_to_csv_file(config_for_rb.global_output_folder + r'kpi_results_tmp.csv')
+    overall_kpi_results.save_to_csv_file(Parameters.global_output_folder + r'kpi_results_tmp.csv')
 
     # Calculate and print the total run-time
     total_time = time_finish - time_start

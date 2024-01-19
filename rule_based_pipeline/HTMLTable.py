@@ -447,7 +447,7 @@ class HTMLTable:
                 return True  # at least one row was empty => consider always as connected
 
             # at least space that would occupy 4x row r0 are (not) empty #New: 27.06.2022 (was previously: * 4)
-            y_limit = min_y0 + (max_y0 - min_y0) * config_for_rb.global_row_connection_threshold
+            y_limit = min_y0 + (max_y0 - min_y0) * Parameters.global_row_connection_threshold
 
             if min_y1 <= y_limit:
                 return True
@@ -870,7 +870,7 @@ class HTMLTable:
                 raise ValueError('Some columns are overlapping, but there are no relevant items.')
             return res
 
-        def find_allowed_set_rec(tmp_idx, num_sp_items, last_sp_ix, lowest_num_so_far):
+        def find_allowed_set_rec(tmp_idx, num_sp_items, last_sp_ix, lowest_num_so_far, Parameters=None):
             # returns set of ix'es, such that after removing them, the rest is allowed (e.g., no overlap)
             nonlocal rec_counter
             nonlocal t_start
@@ -882,7 +882,7 @@ class HTMLTable:
 
             if (rec_counter % 1000 == 0):
                 t_now = time.time()
-                if (t_now - t_start > config_for_rb.global_max_identify_complex_items_timeout):  # max 5 sec TODO
+                if (t_now - t_start > Parameters.global_max_identify_complex_items_timeout):  # max 5 sec TODO
                     timeout = True
 
             if num_sp_items >= lowest_num_so_far or timeout:
@@ -1092,7 +1092,7 @@ class HTMLTable:
         print_verbose(3, "===============>>>>>>>>>>>>>>>> Cleanup done <<<<<<<<<<<< =====================")
 
     def is_good_table(self):
-        neccessary_actual_items = 4 if not config_for_rb.global_be_more_generous_with_good_tables else 2
+        neccessary_actual_items = 4 if not Parameters.global_be_more_generous_with_good_tables else 2
         if not (self.num_rows >= 2 and self.num_cols >= 2 and self.count_actual_items() >= neccessary_actual_items):
             print_verbose(7, "----->> bad, reason:1")
             return False
@@ -1127,7 +1127,7 @@ class HTMLTable:
         print_verbose(7, "----->> reached end of is_good_table")
         return (cnt_numerics > 3 and density > 0.6) or (cnt_numerics > 7 and density > 0.4) or cnt_numerics > 10 \
             or (cnt_weak_numerics > 3 and num_items > 5 and density > 0.4) \
-            or (cnt_weak_numerics > 0 and num_items > 2 and density > 0.4 and config_for_rb.global_be_more_generous_with_good_tables)
+            or (cnt_weak_numerics > 0 and num_items > 2 and density > 0.4 and Parameters.global_be_more_generous_with_good_tables)
 
     def categorize_as_table(self):
         """

@@ -1,7 +1,7 @@
 import fitz  # PyMuPDF
 import os
 import json
-from config_for_rb import global_expected_values_folder, global_raw_pdf_folder, global_input_folder
+from Parameters import global_expected_values_folder, global_raw_pdf_folder, global_input_folder
 
 
 def extract_pdf_page(filename, page_number):

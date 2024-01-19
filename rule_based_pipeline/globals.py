@@ -5,7 +5,7 @@
 # Date   : 12.06.2020
 # ============================================================================================================================
 import codecs
-import config_for_rb
+import Parameters
 import glob
 import os
 import sys
@@ -48,7 +48,7 @@ def wait_for_user():
 
 
 def print_big(txt, do_wait=True):
-    if config_for_rb.global_verbosity == 0:
+    if Parameters.global_verbosity == 0:
         return
     if do_wait:
         wait_for_user()
@@ -60,7 +60,7 @@ def print_big(txt, do_wait=True):
 
 
 def print_verbose(verbosity, txt):
-    if verbosity <= config_for_rb.global_verbosity:
+    if verbosity <= Parameters.global_verbosity:
         print(str(txt))
 
 
@@ -101,7 +101,7 @@ def get_text_width(text, font):
 
 def get_html_out_dir(fname):
     fname = '/' + fname.replace('\\', '/')
-    return config_for_rb.global_working_folder + r'html/' + fname[(fname.rfind(r'/') + 1):] + r'.html_dir'
+    return Parameters.global_working_folder + r'html/' + fname[(fname.rfind(r'/') + 1):] + r'.html_dir'
 
 
 def save_txt_to_file(txt, fname):

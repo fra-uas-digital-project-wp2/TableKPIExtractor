@@ -53,10 +53,11 @@ class KPIMeasure:
     def __repr__(self):
         return "<KPIMeasure: id=" + str(self.kpi_id) + ",name=" + str(self.kpi_name) + ", " + str(
             self.src_file) + ", page_num=" + str(self.page_num) + ", id=" + str(self.item_ids) + ", x/y=" \
-            + str(self.pos_x) + ", " + str(self.pos_y) + ", raw=" + str(self.raw_txt) + ", match_type=" + str(
-                self.match_type) \
-            + ", unit=" + str(self.unit) + ", YEAR=" + str(self.year) + ", VALUE=" + str(self.value) + ", SCORE=" + str(
-                self.score) + ">"
+               + str(self.pos_x) + ", " + str(self.pos_y) + ", raw=" + str(self.raw_txt) + ", match_type=" + str(
+            self.match_type) \
+               + ", unit=" + str(self.unit) + ", YEAR=" + str(self.year) + ", VALUE=" + str(
+            self.value) + ", SCORE=" + str(
+            self.score) + ">"
 
     @staticmethod
     def remove_all_years(lst):
@@ -119,7 +120,7 @@ class KPIMeasure:
 
         for k in lst:
             if k.year == -1:
-                if (not k.kpi_name in year_exist):
+                if not k.kpi_name in year_exist:
                     k.year = default_year
                     res.append(k)
 

@@ -9,7 +9,7 @@
 # ============================================================================================================================
 from HTMLPage import HTMLPage
 from glob import glob
-from globals import config_for_rb, get_html_out_dir, print_verbose, remove_trailing_slash
+from globals import Parameters, get_html_out_dir, print_verbose, remove_trailing_slash
 from os import system
 from shutil import rmtree
 
@@ -42,7 +42,7 @@ class HTMLDirectory:
         print_verbose(1, '-> call pdftohtml_mod ' + infile)
 
         # Construct the path to pdftohtml_mod executable
-        pdftohtml_mod = config_for_rb.global_exec_folder + r'/pdftohtml_mod/pdftohtml_mod "'
+        pdftohtml_mod = Parameters.global_exec_folder + r'/pdftohtml_mod/pdftohtml_mod "'
         print(pdftohtml_mod)
 
         # Execute the system command to convert PDF to HTML

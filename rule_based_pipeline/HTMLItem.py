@@ -8,7 +8,7 @@
 # Note   : 1 HTMLPage consists of * HTMLItems
 # ============================================================================================================================
 from FormatAnalyzer import FormatAnalyzer
-from config_for_rb import global_verbosity
+from Parameters import global_verbosity
 from globals import ALIGN_LEFT, CAT_DEFAULT, ALIGN_RIGHT, ALIGN_CENTER
 from Rect import Rect
 

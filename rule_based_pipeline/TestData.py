@@ -9,7 +9,7 @@ import jsonpickle
 
 from FormatAnalyzer import FormatAnalyzer
 from glob import glob
-import config_for_rb 
+import Parameters
 from globals import print_verbose, save_txt_to_file, remove_trailing_slash
 from io import StringIO
 from TestDataSample import TestDataSample
@@ -233,7 +233,7 @@ class TestData:
         json_data = jsonpickle.encode(info_file_contents)
 
         # Construct the file path for the 'info.json' file
-        info_file_path = remove_trailing_slash(config_for_rb.global_working_folder) + '/info.json'
+        info_file_path = remove_trailing_slash(Parameters.global_working_folder) + '/info.json'
 
         # Write the JSON data to the 'info.json' file
         with open(info_file_path, "w") as info_file:
