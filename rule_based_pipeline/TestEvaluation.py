@@ -4,6 +4,9 @@
 # Author : Ismail Demir (G124272)
 # Date   : 10.09.2020
 # ============================================================================================================================
+import os
+import config_for_rb
+
 from ConsoleTable import ConsoleTable
 from FormatAnalyzer import FormatAnalyzer
 
@@ -29,6 +32,7 @@ class TestEvaluation:
         self.num_false_negative = 0
         self.measure_precision = 0.0
         self.measure_recall = 0.0
+        self.measure_accuracy = 0.0
 
     def do_evaluations(self):
         """
@@ -63,9 +67,14 @@ class TestEvaluation:
         if self.num_true_positive > 0:
             self.measure_precision = self.num_true_positive / float(self.num_true_positive + self.num_false_positive)
             self.measure_recall = self.num_true_positive / float(self.num_true_positive + self.num_false_negative)
-        else:
-            self.measure_precision = 0.0
-            self.measure_recall = 0.0
+            
+        # Calculate accuracy
+        if self.num_true_positive > 0 or self.num_true_negative > 0:
+            self.measure_accuracy = (self.num_true_positive + self.num_true_negative) / float(self.num_true_positive + self.num_true_negative  + self.num_false_positive + self.num_false_negative)
+
+
+
+
 
     def to_string(self, max_width, min_col_width, console_table_format):
         """
@@ -99,14 +108,20 @@ class TestEvaluation:
         # Generate formatted string
         result = console_table.to_string(max_width, min_col_width, console_table_format)
 
+        self.to_csv(result)
+
+        # Reset Output String
+        result = ""
+
         # Add summary information to the result string
         result += "\nSUMMARY:\n"
         result += "True Positives : " + str(self.num_true_positive) + "\n"
         result += "False Positives : " + str(self.num_false_positive) + "\n"
         result += "True Negatives : " + str(self.num_true_negative) + "\n"
         result += "False Negatives : " + str(self.num_false_negative) + "\n"
-        result += "Precision : " + str(self.measure_precision) + "\n"
-        result += "Recall : " + str(self.measure_recall) + "\n"
+        result += "Precision : " + str(round(self.measure_precision,3)) + "\n"
+        result += "Recall : " + str(round(self.measure_recall,3)) + "\n"
+        result += "Accuracy : " + str(round(self.measure_accuracy,3)) + "\n"
 
         return result
 
@@ -137,6 +152,11 @@ class TestEvaluation:
             str: String representation of the TestEvaluation.
         """
         return self.to_string(120, 5, ConsoleTable.FORMAT_CSV)
+    
+    def to_csv(self,string):
+        with open(os.path.join(config_for_rb.global_evaluation_results_folder,"evaluation_results.csv"), 'w') as file:
+            # Write the string to the file
+            file.write(string)
 
     @staticmethod
     def generate_evaluation(pdf_file_name, expected_values, actual_values):
@@ -161,7 +181,7 @@ class TestEvaluation:
             # Iterate through each expected value
             for expected_value in expected_values.kpi_measures:
                 # Check if the KPI ID and year match between actual and expected values
-                if actual_value.kpi_id == expected_value.kpi_id and int(actual_value.year) == int(expected_value.year):
+                if actual_value.kpi_id == expected_value.kpi_id and int(actual_value.year) == int(expected_value.year) and actual_value.src_file[:-4] == expected_value.src_file:
                     # Remove Matched Value from Expected Values
                     expected_values.kpi_measures.remove(expected_value)
 
@@ -169,7 +189,7 @@ class TestEvaluation:
                     results.eval_samples.append({
                         'kpi_id': int(actual_value.kpi_id),
                         'kpi_name': actual_value.kpi_name,
-                        'pdf_file_name': pdf_file_name,
+                        'pdf_file_name': actual_value.src_file[:-4],
                         'year': int(actual_value.year),
                         'actual_value': actual_value.value,
                         'expected_value': FormatAnalyzer.to_float_number(expected_value.value)
@@ -184,7 +204,7 @@ class TestEvaluation:
                 results.eval_samples.append({
                     'kpi_id': int(actual_value.kpi_id),
                     'kpi_name': actual_value.kpi_name,
-                    'pdf_file_name': pdf_file_name,
+                    'pdf_file_name': actual_value.src_file[:-4],
                     'year': int(actual_value.year),
                     'actual_value': actual_value.value,
                     'expected_value': None
@@ -196,7 +216,7 @@ class TestEvaluation:
                 results.eval_samples.append({
                     'kpi_id': int(remaining_kpi_measure.kpi_id),
                     'kpi_name': remaining_kpi_measure.kpi_name,
-                    'pdf_file_name': pdf_file_name,
+                    'pdf_file_name': remaining_kpi_measure.src_file,
                     'year': int(remaining_kpi_measure.year),
                     'actual_value': None,
                     'expected_value': FormatAnalyzer.to_float_number(remaining_kpi_measure.value)

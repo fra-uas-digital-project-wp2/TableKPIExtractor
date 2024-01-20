@@ -22,6 +22,7 @@ from KPIResultSet import KPIResultSet
 from PreparationOfKPISpecs import prepare_kpi_specs
 from TestData import TestData
 from logging.handlers import RotatingFileHandler
+from TestEvaluation import TestEvaluation
 
 # Constants Variables
 DEFAULT_YEAR = 2022
@@ -35,6 +36,8 @@ def create_logger():
     # Create a RotatingFileHandler with a max file size of 1MB and a maximum of 5 backup files
     file_handler = RotatingFileHandler('app.log', maxBytes=1024*1024, backupCount=5,encoding="utf-8")
     file_handler.setLevel(logging.DEBUG)
+
+    #open('app.log', 'w').close()
 
     # Create a formatter
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
@@ -89,6 +92,8 @@ def fix_config_paths():
     config_for_rb.global_working_folder = path + r'/' + config_for_rb.global_working_folder
     config_for_rb.global_rendering_font_override = path + r'/' + config_for_rb.global_rendering_font_override
     config_for_rb.global_approx_font_name = path + r'/' + config_for_rb.global_approx_font_name
+    config_for_rb.global_expected_values_folder = path + r'/' + config_for_rb.global_expected_values_folder 
+    config_for_rb.global_evaluation_results_folder = path + r'/' + config_for_rb.global_evaluation_results_folder
 
 
 def make_directories():
@@ -98,11 +103,12 @@ def make_directories():
     Returns:
         None
     """
-    if (not config_for_rb.global_debug_mode) and os.path.exists(config_for_rb.global_working_folder) and os.path.isdir(config_for_rb.global_working_folder):
+    if config_for_rb.global_reset_workdir and os.path.exists(config_for_rb.global_working_folder) and os.path.isdir(config_for_rb.global_working_folder):
         shutil.rmtree(config_for_rb.global_working_folder)
 
     os.makedirs(config_for_rb.global_working_folder, exist_ok=True)
     os.makedirs(config_for_rb.global_output_folder, exist_ok=True)
+    os.makedirs(config_for_rb.global_evaluation_results_folder, exist_ok=True)
 
 
 def print_configuration():
@@ -364,8 +370,44 @@ def load_all_path_files_from_info_json_file(json_file):
     json_data = jsonpickle.decode(data)
     return json_data
 
+def evaluation(logger):
+
+    actual_values = TestData() # Output 
+    expected_values = KPIResultSet() #Expected Values
+
+    for file in os.listdir(config_for_rb.global_output_folder):
+        file = file[:-8]
+        if file == "kpi_results":
+            continue
+
+        actual_values.load_from_csv(os.path.join(config_for_rb.global_output_folder,file+".pdf.csv"))
+
+        expected_values.extend(
+            KPIResultSet.load_from_csv(
+                os.path.join(config_for_rb.global_expected_values_folder,file+".csv")))
+
+    print_big("Kpi-Evaluation", do_wait=False)
+    test_eval = TestEvaluation.generate_evaluation("", expected_values, actual_values)
+
+    logger.info(f"True Positives : '{test_eval.num_true_positive}'")
+    logger.info(f"False Positives : '{test_eval.num_false_positive}'")
+    logger.info(f"True Negatives : '{test_eval.num_true_negative}'")
+    logger.info(f"False Negatives : '{test_eval.num_true_positive}'")
+    logger.info(f"Precision : '{round(test_eval.measure_precision,3)}'")
+    logger.info(f"Recall : '{round(test_eval.measure_recall,3)}'")
+    logger.info(f"Accuracy : '{round(test_eval.measure_accuracy,3)}'")
+
+
+    print(test_eval)
+
+
+
+    pass
+
 
 def main():
+
+
 
     logger = create_logger()
     # Record the start time for performance measurement
@@ -376,6 +418,7 @@ def main():
 
     # Fix global paths
     fix_config_paths()
+
 
     # make directories if not exist
     make_directories()
@@ -408,8 +451,8 @@ def main():
     info_file_contents = load_all_path_files_from_info_json_file(json_file_name)
 
     # Iterate over each PDF in the list
-    analyze_all_pdfs(pdfs, kpis, info_file_contents,overall_kpi_results)
-
+    if not (config_for_rb.global_evaluation_only):
+        analyze_all_pdfs(pdfs, kpis, info_file_contents,overall_kpi_results)
 
     # Record the finish time for performance measurement
     time_finish = time.time()
@@ -424,6 +467,8 @@ def main():
 
     # Save overall KPI results to a CSV file
     overall_kpi_results.save_to_csv_file(config_for_rb.global_output_folder + r'kpi_results_tmp.csv')
+
+    evaluation(logger)
 
     # Calculate and print the total run-time
     total_time = time_finish - time_start

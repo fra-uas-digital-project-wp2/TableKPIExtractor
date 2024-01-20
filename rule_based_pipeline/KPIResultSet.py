@@ -150,7 +150,6 @@ class KPIResultSet:
         with open(csv_file, "r") as f:
             reader = csv.DictReader(f)
             data = [row for row in reader]
-        print(data)
         return KPIResultSet.create_from_csv_data(data)
 
     @classmethod
