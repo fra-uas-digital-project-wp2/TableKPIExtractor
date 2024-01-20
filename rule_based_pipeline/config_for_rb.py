@@ -24,8 +24,8 @@ global_name_of_pdf = "*"
 global_page_of_table_in_pdf = "*"
 
 global_debug_mode = False  # default: False. If true, detected tables are printed and HTMLDirectory is serialized.
-global_reset_workdir = True
-global_evaluation_only = False
+global_reset_workdir = False
+global_evaluation_only = True
 
 
 global_rendering_font_override = r"default_font.otf"
