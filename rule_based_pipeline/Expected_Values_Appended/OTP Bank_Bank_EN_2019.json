@@ -24,6 +24,33 @@
     "ID": 6
   },
   "Scope 2": {
+    "Year": [],
+    "Value": [],
+    "Page": [],
+    "ID": 7
+  },
+  "Scope 3": {
+    "Year": [],
+    "Value": [],
+    "Page": [],
+    "ID": 8
+  },
+  "Scope 2 Market": {
+    "Year": [
+      2018,
+      2019
+    ],
+    "Value": [
+      "12,973",
+      "8640"
+    ],
+    "Page": [
+      91,
+      91
+    ],
+    "ID": 9
+  },
+  "Scope 2 Location": {
     "Year": [
       2015,
       2016,
@@ -45,24 +72,6 @@
       91,
       91
     ],
-    "ID": 7
-  },
-  "Scope 3": {
-    "Year": [],
-    "Value": [],
-    "Page": [],
-    "ID": 8
-  },
-  "Scope 2 Market": {
-    "Year": [],
-    "Value": [],
-    "Page": [],
-    "ID": 9
-  },
-  "Scope 2 Location": {
-    "Year": [],
-    "Value": [],
-    "Page": [],
     "ID": 10
   }
 }

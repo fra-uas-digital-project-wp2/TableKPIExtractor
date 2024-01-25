@@ -24,6 +24,39 @@
     "ID": 6
   },
   "Scope 2": {
+    "Year": [],
+    "Value": [],
+    "Page": [],
+    "ID": 7
+  },
+  "Scope 3": {
+    "Year": [],
+    "Value": [],
+    "Page": [],
+    "ID": 8
+  },
+  "Scope 2 Market": {
+    "Year": [
+      2018,
+      2019,
+      2020,
+      2021
+    ],
+    "Value": [
+      "12,973",
+      "8,640",
+      "8,350",
+      "8,369"
+    ],
+    "Page": [
+      91,
+      91,
+      91,
+      91
+    ],
+    "ID": 9
+  },
+  "Scope 2 Location": {
     "Year": [
       2017,
       2018,
@@ -45,24 +78,6 @@
       92,
       92
     ],
-    "ID": 7
-  },
-  "Scope 3": {
-    "Year": [],
-    "Value": [],
-    "Page": [],
-    "ID": 8
-  },
-  "Scope 2 Market": {
-    "Year": [],
-    "Value": [],
-    "Page": [],
-    "ID": 9
-  },
-  "Scope 2 Location": {
-    "Year": [],
-    "Value": [],
-    "Page": [],
     "ID": 10
   }
 }

@@ -12,15 +12,9 @@
     "ID": 6
   },
   "Scope 2": {
-    "Year": [
-      2022
-    ],
-    "Value": [
-      "61,916"
-    ],
-    "Page": [
-      22
-    ],
+    "Year": [],
+    "Value": [],
+    "Page": [],
     "ID": 7
   },
   "Scope 3": {
@@ -36,15 +30,27 @@
     "ID": 8
   },
   "Scope 2 Market": {
-    "Year": [],
-    "Value": [],
-    "Page": [],
+    "Year": [
+      2022
+    ],
+    "Value": [
+      "12,857"
+    ],
+    "Page": [
+      22
+    ],
     "ID": 9
   },
   "Scope 2 Location": {
-    "Year": [],
-    "Value": [],
-    "Page": [],
+    "Year": [
+      2022
+    ],
+    "Value": [
+      "61,916"
+    ],
+    "Page": [
+      22
+    ],
     "ID": 10
   }
 }

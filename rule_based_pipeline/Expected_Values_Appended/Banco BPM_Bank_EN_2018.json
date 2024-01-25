@@ -15,15 +15,9 @@
     "ID": 6
   },
   "Scope 2": {
-    "Year": [
-      2018
-    ],
-    "Value": [
-      "48,471"
-    ],
-    "Page": [
-      69
-    ],
+    "Year": [],
+    "Value": [],
+    "Page": [],
     "ID": 7
   },
   "Scope 3": {
@@ -33,15 +27,15 @@
     "ID": 8
   },
   "Scope 2 Market": {
-    "Year": [],
-    "Value": [],
-    "Page": [],
+    "Year": [2018],
+    "Value": ["5,382"],
+    "Page": [69],
     "ID": 9
   },
   "Scope 2 Location": {
-    "Year": [],
-    "Value": [],
-    "Page": [],
+    "Year": [2018],
+    "Value": ["48,471"],
+    "Page": [69],
     "ID": 10
   }
 }
