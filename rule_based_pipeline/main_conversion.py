@@ -10,7 +10,7 @@ try:
 except KeyError:
         path = os.path.dirname(os.path.realpath(__file__))
 print(path)
-SRC_DIR = os.path.join(path, "20240114_Expected_Values")
+SRC_DIR = os.path.join(path, "Expected_Values_Appended")
 OUT_DIR = os.path.join(path, "20240114_Expected_Values_Converted")
 RAW_DIR = os.path.join(path, "input2")
 
@@ -20,6 +20,8 @@ NAME_DICT = {
              "Scope 1" : "Scope 1 / Direct total GHGs emissions",
              "Scope 2" : "Scope 2 Energy indirect total GHGs emissions",
              "Scope 3" : "Scope 3 Upstream Energy indirect total GHGs emissions",
+             "Scope 2 Market" : 'Scope 2 Market Energy indirect total GHGs emissions',
+             "Scope 2 Location" : 'Scope 2 Location Energy indirect total GHGs emissions', 
             }
 
 def create_logger():
@@ -102,6 +104,8 @@ def main():
     no_files = 0
     problematics = []
     empty_pdfs = []
+    non_empty = []
+    ToDo = []
     header = [
         "KPI_ID", "KPI_NAME", "SRC_FILE", "PAGE_NUM", "ITEM_IDS", "POS_X",
         "POS_Y", "RAW_TXT", "YEAR", "VALUE", "SCORE", "UNIT", "MATCH_TYPE"
@@ -124,6 +128,7 @@ def main():
             if is_empty(data,"Scope 1") and is_empty(data,"Scope 2") and is_empty(data,"Scope 3"):
                 empty_pdfs.append(file)
                 continue
+            non_empty.append(file)
             
             formatted_data = extract_data(file,data)
             
@@ -140,6 +145,6 @@ def main():
     print(f"Number of pdfs without raw '{len(missing_names)}'")
     print(f"Problematics \n '{problematics}'")
     print(f"Missings \n '{missing_names}'")
-
+    print(f"Non-Empty PDFs \n '{non_empty}'")
 if __name__ == "__main__":
     main()
