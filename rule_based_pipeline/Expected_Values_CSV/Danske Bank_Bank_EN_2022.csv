@@ -1,0 +1,17 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,Danske Bank_Bank_EN_2022,48,-,-,-,468,2022,468,-,-,-
+6,Scope 1 / Direct total GHGs emissions,Danske Bank_Bank_EN_2022,48,-,-,-,787,2021,787,-,-,-
+6,Scope 1 / Direct total GHGs emissions,Danske Bank_Bank_EN_2022,48,-,-,-,810,2020,810,-,-,-
+6,Scope 1 / Direct total GHGs emissions,Danske Bank_Bank_EN_2022,48,-,-,-,790,2019,790,-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Danske Bank_Bank_EN_2022,48,-,-,-,"4,641",2022,"4,641",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Danske Bank_Bank_EN_2022,48,-,-,-,"1,161",2021,"1,161",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Danske Bank_Bank_EN_2022,48,-,-,-,"3,942",2020,"3,942",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Danske Bank_Bank_EN_2022,48,-,-,-,"9,960",2019,"9,960",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Danske Bank_Bank_EN_2022,48,-,-,-,"1,871",2022,"1,871",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Danske Bank_Bank_EN_2022,48,-,-,-,"2,786",2021,"2,786",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Danske Bank_Bank_EN_2022,48,-,-,-,"3,119",2020,"3,119",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Danske Bank_Bank_EN_2022,48,-,-,-,"4,480",2019,"4,480",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Danske Bank_Bank_EN_2022,48,-,-,-,"7,711",2022,"7,711",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Danske Bank_Bank_EN_2022,48,-,-,-,"8,037",2021,"8,037",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Danske Bank_Bank_EN_2022,48,-,-,-,"15,084",2020,"15,084",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Danske Bank_Bank_EN_2022,48,-,-,-,"25,417",2019,"25,417",-,-,-

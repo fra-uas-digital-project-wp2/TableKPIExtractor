@@ -1,0 +1,13 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,National Bank of Greece_Bank_EN_2022,96,-,-,-,"2,259",2020,"2,259",-,-,-
+6,Scope 1 / Direct total GHGs emissions,National Bank of Greece_Bank_EN_2022,96,-,-,-,"2,381",2021,"2,381",-,-,-
+6,Scope 1 / Direct total GHGs emissions,National Bank of Greece_Bank_EN_2022,96,-,-,-,"2,742",2022,"2,742",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,National Bank of Greece_Bank_EN_2022,97,-,-,-,"53,378",2020,"53,378",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,National Bank of Greece_Bank_EN_2022,97,-,-,-,"49,296",2021,"49,296",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,National Bank of Greece_Bank_EN_2022,97,-,-,-,"43,690",2022,"43,690",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,National Bank of Greece_Bank_EN_2022,97,-,-,-,"23,419",2020,"23,419",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,National Bank of Greece_Bank_EN_2022,97,-,-,-,224,2021,224,-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,National Bank of Greece_Bank_EN_2022,97,-,-,-,2,2022,2,-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,National Bank of Greece_Bank_EN_2022,97,-,-,-,"20,989",2020,"20,989",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,National Bank of Greece_Bank_EN_2022,97,-,-,-,"19,161",2021,"19,161",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,National Bank of Greece_Bank_EN_2022,97,-,-,-,"15,143",2022,"15,143",-,-,-

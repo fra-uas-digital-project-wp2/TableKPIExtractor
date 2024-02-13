@@ -1,0 +1,5 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,Erste Group Bank_Bank_EN_2018,77,-,-,-,"27,332",2018,"27,332",-,-,-
+6,Scope 1 / Direct total GHGs emissions,Erste Group Bank_Bank_EN_2018,77,-,-,-,"27,967",2017,"27,967",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,Erste Group Bank_Bank_EN_2018,77,-,-,-,"34,211",2018,"34,211",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,Erste Group Bank_Bank_EN_2018,77,-,-,-,"48,969",2017,"48,969",-,-,-

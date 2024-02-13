@@ -1,0 +1,9 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,Raiffeisen Bank International_Bank_EN_2021,153,-,-,-,"4,827",2021,"4,827",-,-,-
+6,Scope 1 / Direct total GHGs emissions,Raiffeisen Bank International_Bank_EN_2021,153,-,-,-,"6,444",2020,"6,444",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Raiffeisen Bank International_Bank_EN_2021,153,-,-,-,"30,925",2021,"30,925",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Raiffeisen Bank International_Bank_EN_2021,153,-,-,-,"34,244",2020,"34,244",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Raiffeisen Bank International_Bank_EN_2021,153,-,-,-,"46,212",2021,"46,212",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Raiffeisen Bank International_Bank_EN_2021,153,-,-,-,"50,782",2020,"50,782",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Raiffeisen Bank International_Bank_EN_2021,153,-,-,-,"41,064",2021,"41,064",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Raiffeisen Bank International_Bank_EN_2021,153,-,-,-,"46,445",2020,"46,445",-,-,-

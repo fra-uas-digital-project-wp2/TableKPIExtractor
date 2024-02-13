@@ -1,0 +1,5 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,Commerzbank_Bank_EN_2022,22,-,-,-,"21,613",2022,"21,613",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Commerzbank_Bank_EN_2022,22,-,-,-,"43,932",2022,"43,932",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Commerzbank_Bank_EN_2022,22,-,-,-,"12,857",2022,"12,857",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Commerzbank_Bank_EN_2022,22,-,-,-,"61,916",2022,"61,916",-,-,-

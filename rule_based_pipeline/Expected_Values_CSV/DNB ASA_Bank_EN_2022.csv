@@ -1,0 +1,7 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,DNB ASA_Bank_EN_2022,89,-,-,-,"2,324,493",2022,"2,324,493",-,-,-
+6,Scope 1 / Direct total GHGs emissions,DNB ASA_Bank_EN_2022,89,-,-,-,"2,831,180",2021,"2,831,180",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,DNB ASA_Bank_EN_2022,89,-,-,-,"2,324,493",2022,"2,324,493",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,DNB ASA_Bank_EN_2022,89,-,-,-,"2,831,180",2021,"2,831,180",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,DNB ASA_Bank_EN_2022,89,-,-,-,"15,991,641",2022,"15,991,641",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,DNB ASA_Bank_EN_2022,89,-,-,-,"18,207,985",2021,"18,207,985",-,-,-

@@ -1,0 +1,13 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,DekaBank Deutsche Girozentrale_Asset Manager_EN_2018,42,-,-,-,"1,770,629",2018,"1,770,629",-,-,-
+6,Scope 1 / Direct total GHGs emissions,DekaBank Deutsche Girozentrale_Asset Manager_EN_2018,42,-,-,-,"1,844,898",2017,"1,844,898",-,-,-
+6,Scope 1 / Direct total GHGs emissions,DekaBank Deutsche Girozentrale_Asset Manager_EN_2018,42,-,-,-,"1,815,069",2016,"1,815,069",-,-,-
+6,Scope 1 / Direct total GHGs emissions,DekaBank Deutsche Girozentrale_Asset Manager_EN_2018,42,-,-,-,"1,859,778",2015,"1,859,778",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,DekaBank Deutsche Girozentrale_Asset Manager_EN_2018,42,-,-,-,"5,357,316",2018,"5,357,316",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,DekaBank Deutsche Girozentrale_Asset Manager_EN_2018,42,-,-,-,"4,844,680",2017,"4,844,680",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,DekaBank Deutsche Girozentrale_Asset Manager_EN_2018,42,-,-,-,"5,016,864",2016,"5,016,864",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,DekaBank Deutsche Girozentrale_Asset Manager_EN_2018,42,-,-,-,"7,183,277",2015,"7,183,277",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,DekaBank Deutsche Girozentrale_Asset Manager_EN_2018,42,-,-,-,"3,641,129",2018,"3,641,129",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,DekaBank Deutsche Girozentrale_Asset Manager_EN_2018,42,-,-,-,"3,898,611",2017,"3,898,611",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,DekaBank Deutsche Girozentrale_Asset Manager_EN_2018,42,-,-,-,"3,361,295",2016,"3,361,295",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,DekaBank Deutsche Girozentrale_Asset Manager_EN_2018,42,-,-,-,"3,364,716",2015,"3,364,716",-,-,-

@@ -1,0 +1,7 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,Banco BPM_Bank_EN_2020,98,-,-,-,"10,465",2020,"10,465",-,-,-
+6,Scope 1 / Direct total GHGs emissions,Banco BPM_Bank_EN_2020,98,-,-,-,"12,473",2019,"12,473",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,Banco BPM_Bank_EN_2020,98,-,-,-,"4,330",2020,"4,330",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,Banco BPM_Bank_EN_2020,98,-,-,-,"5,014",2019,"5,014",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Banco BPM_Bank_EN_2020,98,-,-,-,"33,239",2020,"33,239",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Banco BPM_Bank_EN_2020,98,-,-,-,"39,260",2019,"39,260",-,-,-

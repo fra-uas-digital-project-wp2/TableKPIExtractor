@@ -1,0 +1,5 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,NIBC Bank Deutschland AG_Bank_EN_2022,26,-,-,-,322,2022,322,-,-,-
+6,Scope 1 / Direct total GHGs emissions,NIBC Bank Deutschland AG_Bank_EN_2022,26,-,-,-,176,2021,176,-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,NIBC Bank Deutschland AG_Bank_EN_2022,26,-,-,-,"3,587,138",2022,"3,587,138",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,NIBC Bank Deutschland AG_Bank_EN_2022,26,-,-,-,"4,536,725",2021,"4,536,725",-,-,-

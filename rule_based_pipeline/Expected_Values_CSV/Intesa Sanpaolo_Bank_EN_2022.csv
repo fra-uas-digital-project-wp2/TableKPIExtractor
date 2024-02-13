@@ -1,0 +1,7 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,Intesa Sanpaolo_Bank_EN_2022,73,-,-,-,"96,192",2019,"96,192",-,-,-
+6,Scope 1 / Direct total GHGs emissions,Intesa Sanpaolo_Bank_EN_2022,73,-,-,-,"128,479",2012,"128,479",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,Intesa Sanpaolo_Bank_EN_2022,73,-,-,-,"96,192",2019,"96,192",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,Intesa Sanpaolo_Bank_EN_2022,73,-,-,-,"128,479",2012,"128,479",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Intesa Sanpaolo_Bank_EN_2022,73,-,-,-,"6,025",2019,"6,025",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Intesa Sanpaolo_Bank_EN_2022,73,-,-,-,"21,069",2012,"21,069",-,-,-

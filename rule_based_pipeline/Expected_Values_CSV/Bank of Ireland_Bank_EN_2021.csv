@@ -1,0 +1,13 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,Bank of Ireland_Bank_EN_2021,98,-,-,-,"4,285",2021,"4,285",-,-,-
+6,Scope 1 / Direct total GHGs emissions,Bank of Ireland_Bank_EN_2021,98,-,-,-,"5,579",2020,"5,579",-,-,-
+6,Scope 1 / Direct total GHGs emissions,Bank of Ireland_Bank_EN_2021,98,-,-,-,"4,215",2019,"4,215",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Bank of Ireland_Bank_EN_2021,98,-,-,-,557,2021,557,-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Bank of Ireland_Bank_EN_2021,98,-,-,-,"2,203",2020,"2,203",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Bank of Ireland_Bank_EN_2021,98,-,-,-,"5,056",2019,"5,056",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Bank of Ireland_Bank_EN_2021,98,-,-,-,22,2021,22,-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Bank of Ireland_Bank_EN_2021,98,-,-,-,659,2020,659,-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Bank of Ireland_Bank_EN_2021,98,-,-,-,"11,747",2019,"11,747",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Bank of Ireland_Bank_EN_2021,98,-,-,-,"7,772",2021,"7,772",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Bank of Ireland_Bank_EN_2021,98,-,-,-,"10,000",2020,"10,000",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Bank of Ireland_Bank_EN_2021,98,-,-,-,"11,747",2019,"11,747",-,-,-

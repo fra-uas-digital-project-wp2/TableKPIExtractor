@@ -1,0 +1,17 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,axa investment managers deutschland gmbh_Asset Manager_EN_2022,189,-,-,-,"23,280",2022,"23,280",-,-,-
+6,Scope 1 / Direct total GHGs emissions,axa investment managers deutschland gmbh_Asset Manager_EN_2022,189,-,-,-,"23,362",2021,"23,362",-,-,-
+6,Scope 1 / Direct total GHGs emissions,axa investment managers deutschland gmbh_Asset Manager_EN_2022,189,-,-,-,"26,292",2020,"26,292",-,-,-
+6,Scope 1 / Direct total GHGs emissions,axa investment managers deutschland gmbh_Asset Manager_EN_2022,189,-,-,-,"37,889",2019,"37,889",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,axa investment managers deutschland gmbh_Asset Manager_EN_2022,189,-,-,-,"167,549",2022,"167,549",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,axa investment managers deutschland gmbh_Asset Manager_EN_2022,189,-,-,-,"108,432",2021,"108,432",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,axa investment managers deutschland gmbh_Asset Manager_EN_2022,189,-,-,-,"128,996",2020,"128,996",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,axa investment managers deutschland gmbh_Asset Manager_EN_2022,189,-,-,-,"238,976",2019,"238,976",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,axa investment managers deutschland gmbh_Asset Manager_EN_2022,189,-,-,-,"39,370",2022,"39,370",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,axa investment managers deutschland gmbh_Asset Manager_EN_2022,189,-,-,-,"31,997",2021,"31,997",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,axa investment managers deutschland gmbh_Asset Manager_EN_2022,189,-,-,-,"40,894",2020,"40,894",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,axa investment managers deutschland gmbh_Asset Manager_EN_2022,189,-,-,-,"62,765",2019,"62,765",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,axa investment managers deutschland gmbh_Asset Manager_EN_2022,189,-,-,-,"61,136",2022,"61,136",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,axa investment managers deutschland gmbh_Asset Manager_EN_2022,189,-,-,-,"53,492",2021,"53,492",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,axa investment managers deutschland gmbh_Asset Manager_EN_2022,189,-,-,-,"63,914",2020,"63,914",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,axa investment managers deutschland gmbh_Asset Manager_EN_2022,189,-,-,-,"88,558",2019,"88,558",-,-,-

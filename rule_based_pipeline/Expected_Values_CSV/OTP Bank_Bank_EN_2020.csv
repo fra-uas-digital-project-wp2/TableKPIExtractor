@@ -1,0 +1,14 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,OTP Bank_Bank_EN_2020,114,-,-,-,"5,272",2016,"5,272",-,-,-
+6,Scope 1 / Direct total GHGs emissions,OTP Bank_Bank_EN_2020,114,-,-,-,"6,781",2017,"6,781",-,-,-
+6,Scope 1 / Direct total GHGs emissions,OTP Bank_Bank_EN_2020,114,-,-,-,"6,714",2018,"6,714",-,-,-
+6,Scope 1 / Direct total GHGs emissions,OTP Bank_Bank_EN_2020,114,-,-,-,"6,779",2019,"6,779",-,-,-
+6,Scope 1 / Direct total GHGs emissions,OTP Bank_Bank_EN_2020,114,-,-,-,"6,078",2020,"6,078",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,OTP Bank_Bank_EN_2020,91,-,-,-,"12,973",2018,"12,973",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,OTP Bank_Bank_EN_2020,91,-,-,-,"8,640",2019,"8,640",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,OTP Bank_Bank_EN_2020,91,-,-,-,"8,350",2020,"8,350",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,OTP Bank_Bank_EN_2020,114,-,-,-,"8,509",2016,"8,509",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,OTP Bank_Bank_EN_2020,114,-,-,-,"8,600",2017,"8,600",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,OTP Bank_Bank_EN_2020,114,-,-,-,"10,540",2018,"10,540",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,OTP Bank_Bank_EN_2020,114,-,-,-,"10,786",2019,"10,786",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,OTP Bank_Bank_EN_2020,114,-,-,-,"9,883",2020,"9,883",-,-,-

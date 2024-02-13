@@ -1,0 +1,13 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,Banco BPM_Bank_EN_2022,195,-,-,-,"11,475",2022,"11,475",-,-,-
+6,Scope 1 / Direct total GHGs emissions,Banco BPM_Bank_EN_2022,195,-,-,-,"12,279",2021,"12,279",-,-,-
+6,Scope 1 / Direct total GHGs emissions,Banco BPM_Bank_EN_2022,195,-,-,-,"12,136",2020,"12,136",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Banco BPM_Bank_EN_2022,195,-,-,-,"12,920.8",2022,"12,920.8",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Banco BPM_Bank_EN_2022,195,-,-,-,"13,426.7",2021,"13,426.7",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Banco BPM_Bank_EN_2022,195,-,-,-,"15,674.8",2020,"15,674.8",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Banco BPM_Bank_EN_2022,195,-,-,-,"3,889.6",2022,"3,889.6",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Banco BPM_Bank_EN_2022,195,-,-,-,"4,637.8",2021,"4,637.8",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Banco BPM_Bank_EN_2022,195,-,-,-,"4,540.7",2020,"4,540.7",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Banco BPM_Bank_EN_2022,195,-,-,-,"29,680.6",2022,"29,680.6",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Banco BPM_Bank_EN_2022,195,-,-,-,"35,102.7",2021,"35,102.7",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Banco BPM_Bank_EN_2022,195,-,-,-,"37,780",2020,"37,780",-,-,-

@@ -1,0 +1,10 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,HSBC Holdings plc_Bank_EN_2022,9,-,-,-,"19,000",2022,"19,000",-,-,-
+6,Scope 1 / Direct total GHGs emissions,HSBC Holdings plc_Bank_EN_2022,9,-,-,-,"22,000",2021,"22,000",-,-,-
+6,Scope 1 / Direct total GHGs emissions,HSBC Holdings plc_Bank_EN_2022,9,-,-,-,"20,000",2020,"20,000",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,HSBC Holdings plc_Bank_EN_2022,9,-,-,-,"224,000",2022,"224,000",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,HSBC Holdings plc_Bank_EN_2022,9,-,-,-,"307,000",2021,"307,000",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,HSBC Holdings plc_Bank_EN_2022,9,-,-,-,"343,000",2020,"343,000",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,HSBC Holdings plc_Bank_EN_2022,9,-,-,-,"42,000",2022,"42,000",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,HSBC Holdings plc_Bank_EN_2022,9,-,-,-,"12,000",2021,"12,000",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,HSBC Holdings plc_Bank_EN_2022,9,-,-,-,"81,000",2020,"81,000",-,-,-

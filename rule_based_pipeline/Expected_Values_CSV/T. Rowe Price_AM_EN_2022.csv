@@ -1,0 +1,16 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,T. Rowe Price_AM_EN_2022,38,-,-,-,941,2022,941,-,-,-
+6,Scope 1 / Direct total GHGs emissions,T. Rowe Price_AM_EN_2022,38,-,-,-,877,2021,877,-,-,-
+6,Scope 1 / Direct total GHGs emissions,T. Rowe Price_AM_EN_2022,38,-,-,-,796,2020,796,-,-,-
+6,Scope 1 / Direct total GHGs emissions,T. Rowe Price_AM_EN_2022,38,-,-,-,"1,424",2019,"1,424",-,-,-
+6,Scope 1 / Direct total GHGs emissions,T. Rowe Price_AM_EN_2022,38,-,-,-,"2,162",2018,"2,162",-,-,-
+6,Scope 1 / Direct total GHGs emissions,T. Rowe Price_AM_EN_2022,38,-,-,-,"1,259",2017,"1,259",-,-,-
+6,Scope 1 / Direct total GHGs emissions,T. Rowe Price_AM_EN_2022,38,-,-,-,"1,050",2016,"1,050",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2022,38,-,-,-,"19,210",2022,"19,210",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2022,38,-,-,-,"18,887",2021,"18,887",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2022,38,-,-,-,"20,661",2020,"20,661",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2022,38,-,-,-,"24,791",2019,"24,791",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2022,38,-,-,-,"28,607",2018,"28,607",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2022,38,-,-,-,"28,877",2017,"28,877",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2022,38,-,-,-,"34,065",2016,"34,065",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2022,37,-,-,-,"14,826",2022,"14,826",-,-,-

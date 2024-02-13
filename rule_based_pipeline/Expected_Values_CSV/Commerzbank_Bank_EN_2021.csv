@@ -1,0 +1,9 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,Commerzbank_Bank_EN_2021,18,-,-,-,"28,314",2020,"28,314",-,-,-
+6,Scope 1 / Direct total GHGs emissions,Commerzbank_Bank_EN_2021,18,-,-,-,"37,001",2019,"37,001",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Commerzbank_Bank_EN_2021,18,-,-,-,"43,372",2020,"43,372",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Commerzbank_Bank_EN_2021,18,-,-,-,"71,794",2019,"71,794",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Commerzbank_Bank_EN_2021,18,-,-,-,"12,262",2020,"12,262",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Commerzbank_Bank_EN_2021,18,-,-,-,"15,093",2019,"15,093",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Commerzbank_Bank_EN_2021,18,-,-,-,"77,903",2020,"77,903",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Commerzbank_Bank_EN_2021,18,-,-,-,"98,282",2019,"98,282",-,-,-

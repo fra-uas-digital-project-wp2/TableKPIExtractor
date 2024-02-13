@@ -1,0 +1,10 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,Swedbank_Bank_EN_2020,222,-,-,-,632,2020,632,-,-,-
+6,Scope 1 / Direct total GHGs emissions,Swedbank_Bank_EN_2020,222,-,-,-,1020,2019,1020,-,-,-
+6,Scope 1 / Direct total GHGs emissions,Swedbank_Bank_EN_2020,222,-,-,-,1017,2018,1017,-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,Swedbank_Bank_EN_2020,222,-,-,-,5331,2020,5331,-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,Swedbank_Bank_EN_2020,222,-,-,-,6067,2019,6067,-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,Swedbank_Bank_EN_2020,222,-,-,-,6014,2018,6014,-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Swedbank_Bank_EN_2020,222,-,-,-,5683,2020,5683,-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Swedbank_Bank_EN_2020,222,-,-,-,17927,2019,17927,-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Swedbank_Bank_EN_2020,222,-,-,-,19952,2018,19952,-,-,-

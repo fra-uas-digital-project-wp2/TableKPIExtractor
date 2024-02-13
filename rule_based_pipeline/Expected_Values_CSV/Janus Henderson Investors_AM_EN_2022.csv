@@ -1,0 +1,17 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,Janus Henderson Investors_AM_EN_2022,28,-,-,-,144,2022,144,-,-,-
+6,Scope 1 / Direct total GHGs emissions,Janus Henderson Investors_AM_EN_2022,28,-,-,-,52,2021,52,-,-,-
+6,Scope 1 / Direct total GHGs emissions,Janus Henderson Investors_AM_EN_2022,28,-,-,-,63,2020,63,-,-,-
+6,Scope 1 / Direct total GHGs emissions,Janus Henderson Investors_AM_EN_2022,28,-,-,-,57,2019,57,-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Janus Henderson Investors_AM_EN_2022,28,-,-,-,"4,534",2022,"4,534",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Janus Henderson Investors_AM_EN_2022,28,-,-,-,"1,350",2021,"1,350",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Janus Henderson Investors_AM_EN_2022,28,-,-,-,"2,865",2020,"2,865",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Janus Henderson Investors_AM_EN_2022,28,-,-,-,"7,604",2019,"7,604",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Janus Henderson Investors_AM_EN_2022,28,-,-,-,156,2022,156,-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Janus Henderson Investors_AM_EN_2022,28,-,-,-,"2,759",2021,"2,759",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Janus Henderson Investors_AM_EN_2022,28,-,-,-,"4,934",2020,"4,934",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Janus Henderson Investors_AM_EN_2022,28,-,-,-,"4,997",2019,"4,997",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Janus Henderson Investors_AM_EN_2022,28,-,-,-,"3,397",2022,"3,397",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Janus Henderson Investors_AM_EN_2022,28,-,-,-,"3,551",2021,"3,551",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Janus Henderson Investors_AM_EN_2022,28,-,-,-,"4,782",2020,"4,782",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Janus Henderson Investors_AM_EN_2022,28,-,-,-,"4,764",2019,"4,764",-,-,-

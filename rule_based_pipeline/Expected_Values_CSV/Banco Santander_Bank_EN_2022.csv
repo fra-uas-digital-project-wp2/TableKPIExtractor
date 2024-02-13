@@ -1,0 +1,9 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,Banco Santander_Bank_EN_2022,89,-,-,-,"21,967",2022,"21,967",-,-,-
+6,Scope 1 / Direct total GHGs emissions,Banco Santander_Bank_EN_2022,89,-,-,-,"25,672",2021,"25,672",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Banco Santander_Bank_EN_2022,89,-,-,-,"81,535",2022,"81,535",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Banco Santander_Bank_EN_2022,89,-,-,-,"35,420",2021,"35,420",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Banco Santander_Bank_EN_2022,89,-,-,-,"30,917",2022,"30,917",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Banco Santander_Bank_EN_2022,89,-,-,-,"52,904",2021,"52,904",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Banco Santander_Bank_EN_2022,89,-,-,-,"217,906",2022,"217,906",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Banco Santander_Bank_EN_2022,89,-,-,-,"265,095",2021,"265,095",-,-,-

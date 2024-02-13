@@ -1,0 +1,10 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,Deutsche Bank_Bank_EN_2020,86,-,-,-,"41,458",2020,"41,458",-,-,-
+6,Scope 1 / Direct total GHGs emissions,Deutsche Bank_Bank_EN_2020,86,-,-,-,"49,846",2019,"49,846",-,-,-
+6,Scope 1 / Direct total GHGs emissions,Deutsche Bank_Bank_EN_2020,86,-,-,-,"50,639",2018,"50,639",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,Deutsche Bank_Bank_EN_2020,86,-,-,-,"76,846",2020,"76,846",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,Deutsche Bank_Bank_EN_2020,86,-,-,-,"90,338",2019,"90,338",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,Deutsche Bank_Bank_EN_2020,86,-,-,-,"101,655",2018,"101,655",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Deutsche Bank_Bank_EN_2020,86,-,-,-,"15,442",2020,"15,442",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Deutsche Bank_Bank_EN_2020,86,-,-,-,"42,649",2019,"42,649",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Deutsche Bank_Bank_EN_2020,86,-,-,-,"56,898",2018,"56,898",-,-,-

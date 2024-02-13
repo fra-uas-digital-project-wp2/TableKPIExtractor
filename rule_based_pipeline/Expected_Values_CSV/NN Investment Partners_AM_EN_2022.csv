@@ -1,0 +1,13 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,NN Investment Partners_AM_EN_2022,147,-,-,-,4,2022,4,-,-,-
+6,Scope 1 / Direct total GHGs emissions,NN Investment Partners_AM_EN_2022,147,-,-,-,4,2021,4,-,-,-
+6,Scope 1 / Direct total GHGs emissions,NN Investment Partners_AM_EN_2022,147,-,-,-,5,2020,5,-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,NN Investment Partners_AM_EN_2022,147,-,-,-,2,2022,2,-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,NN Investment Partners_AM_EN_2022,147,-,-,-,0.5,2021,0.5,-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,NN Investment Partners_AM_EN_2022,147,-,-,-,1,2020,1,-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,NN Investment Partners_AM_EN_2022,147,-,-,-,3,2022,3,-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,NN Investment Partners_AM_EN_2022,147,-,-,-,5,2021,5,-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,NN Investment Partners_AM_EN_2022,147,-,-,-,5,2020,5,-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,NN Investment Partners_AM_EN_2022,147,-,-,-,7,2022,7,-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,NN Investment Partners_AM_EN_2022,147,-,-,-,9,2021,9,-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,NN Investment Partners_AM_EN_2022,147,-,-,-,11,2020,11,-,-,-

@@ -1,0 +1,13 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,M&G Investments_AM_EN_2022,29,-,-,-,"1,435",2022,"1,435",-,-,-
+6,Scope 1 / Direct total GHGs emissions,M&G Investments_AM_EN_2022,29,-,-,-,"1,703",2021,"1,703",-,-,-
+6,Scope 1 / Direct total GHGs emissions,M&G Investments_AM_EN_2022,29,-,-,-,"2,128",2019,"2,128",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,M&G Investments_AM_EN_2022,29,-,-,-,"3,316",2022,"3,316",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,M&G Investments_AM_EN_2022,29,-,-,-,368,2021,368,-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,M&G Investments_AM_EN_2022,29,-,-,-,"9,449",2019,"9,449",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,M&G Investments_AM_EN_2022,29,-,-,-,91,2022,91,-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,M&G Investments_AM_EN_2022,29,-,-,-,184,2021,184,-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,M&G Investments_AM_EN_2022,29,-,-,-,"1,880",2019,"1,880",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,M&G Investments_AM_EN_2022,29,-,-,-,"4,079",2022,"4,079",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,M&G Investments_AM_EN_2022,29,-,-,-,"4,228",2021,"4,228",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,M&G Investments_AM_EN_2022,29,-,-,-,"5,849",2019,"5,849",-,-,-

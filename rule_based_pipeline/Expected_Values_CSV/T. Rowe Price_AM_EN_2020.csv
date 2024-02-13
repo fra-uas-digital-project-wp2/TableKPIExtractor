@@ -1,0 +1,22 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,T. Rowe Price_AM_EN_2020,17,-,-,-,796,2020,796,-,-,-
+6,Scope 1 / Direct total GHGs emissions,T. Rowe Price_AM_EN_2020,17,-,-,-,"1,424",2019,"1,424",-,-,-
+6,Scope 1 / Direct total GHGs emissions,T. Rowe Price_AM_EN_2020,17,-,-,-,"2,162",2018,"2,162",-,-,-
+6,Scope 1 / Direct total GHGs emissions,T. Rowe Price_AM_EN_2020,17,-,-,-,"1,259",2017,"1,259",-,-,-
+6,Scope 1 / Direct total GHGs emissions,T. Rowe Price_AM_EN_2020,17,-,-,-,"1,050",2016,"1,050",-,-,-
+6,Scope 1 / Direct total GHGs emissions,T. Rowe Price_AM_EN_2020,17,-,-,-,928,2015,928,-,-,-
+6,Scope 1 / Direct total GHGs emissions,T. Rowe Price_AM_EN_2020,17,-,-,-,"1,190",2010,"1,190",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2020,17,-,-,-,"20,661",2020,"20,661",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2020,17,-,-,-,"24,791",2019,"24,791",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2020,17,-,-,-,"28,607",2018,"28,607",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2020,17,-,-,-,"28,877",2017,"28,877",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2020,17,-,-,-,"34,065",2016,"34,065",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2020,17,-,-,-,"36,650",2015,"36,650",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2020,17,-,-,-,"37,207",2010,"37,207",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2020,17,-,-,-,"2,377",2020,"2,377",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2020,17,-,-,-,"10,204",2019,"10,204",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2020,17,-,-,-,"8,357",2018,"8,357",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2020,17,-,-,-,"6,699",2017,"6,699",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2020,17,-,-,-,"6,410",2016,"6,410",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2020,17,-,-,-,"5,941",2015,"5,941",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,T. Rowe Price_AM_EN_2020,17,-,-,-,"4,775",2010,"4,775",-,-,-

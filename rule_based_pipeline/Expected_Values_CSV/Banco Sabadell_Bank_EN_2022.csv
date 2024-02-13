@@ -1,0 +1,17 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,Banco Sabadell_Bank_EN_2022,35,-,-,-,"3,981",2022,"3,981",-,-,-
+6,Scope 1 / Direct total GHGs emissions,Banco Sabadell_Bank_EN_2022,35,-,-,-,"4,975",2021,"4,975",-,-,-
+6,Scope 1 / Direct total GHGs emissions,Banco Sabadell_Bank_EN_2022,35,-,-,-,"4,747",2020,"4,747",-,-,-
+6,Scope 1 / Direct total GHGs emissions,Banco Sabadell_Bank_EN_2022,35,-,-,-,"5,263",2019,"5,263",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Banco Sabadell_Bank_EN_2022,35,-,-,-,"2,994",2022,"2,994",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Banco Sabadell_Bank_EN_2022,35,-,-,-,"2,281",2021,"2,281",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Banco Sabadell_Bank_EN_2022,35,-,-,-,"3,311",2020,"3,311",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Banco Sabadell_Bank_EN_2022,35,-,-,-,"8,357",2019,"8,357",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Banco Sabadell_Bank_EN_2022,35,-,-,-,7,2022,7,-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Banco Sabadell_Bank_EN_2022,35,-,-,-,10,2021,10,-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Banco Sabadell_Bank_EN_2022,35,-,-,-,26,2020,26,-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Banco Sabadell_Bank_EN_2022,35,-,-,-,"3,971",2019,"3,971",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Banco Sabadell_Bank_EN_2022,35,-,-,-,"14,619",2022,"14,619",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Banco Sabadell_Bank_EN_2022,35,-,-,-,"17,297",2021,"17,297",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Banco Sabadell_Bank_EN_2022,35,-,-,-,"17,356",2020,"17,356",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Banco Sabadell_Bank_EN_2022,35,-,-,-,"20,964",2019,"20,964",-,-,-

@@ -1,0 +1,10 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,DZ Bank_Bank_EN_2022,86,-,-,-,"2,236",2021,"2,236",-,-,-
+6,Scope 1 / Direct total GHGs emissions,DZ Bank_Bank_EN_2022,86,-,-,-,"2,543",2020,"2,543",-,-,-
+6,Scope 1 / Direct total GHGs emissions,DZ Bank_Bank_EN_2022,86,-,-,-,"3,490",2019,"3,490",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,DZ Bank_Bank_EN_2022,86,-,-,-,"2,935",2021,"2,935",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,DZ Bank_Bank_EN_2022,86,-,-,-,"2,075",2020,"2,075",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,DZ Bank_Bank_EN_2022,86,-,-,-,"2,203",2019,"2,203",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,DZ Bank_Bank_EN_2022,86,-,-,-,"4,056",2021,"4,056",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,DZ Bank_Bank_EN_2022,86,-,-,-,"4,376",2020,"4,376",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,DZ Bank_Bank_EN_2022,86,-,-,-,"8,461",2019,"8,461",-,-,-

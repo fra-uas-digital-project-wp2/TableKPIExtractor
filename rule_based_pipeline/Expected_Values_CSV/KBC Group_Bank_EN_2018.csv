@@ -1,0 +1,7 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,KBC Group_Bank_EN_2018,51,-,-,-,"37,629",2018,"37,629",-,-,-
+6,Scope 1 / Direct total GHGs emissions,KBC Group_Bank_EN_2018,51,-,-,-,"41,730",2017,"41,730",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,KBC Group_Bank_EN_2018,51,-,-,-,"22,955",2018,"22,955",-,-,-
+7,Scope 2 Energy indirect total GHGs emissions,KBC Group_Bank_EN_2018,51,-,-,-,"27,551",2017,"27,551",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,KBC Group_Bank_EN_2018,51,-,-,-,"25,004",2018,"25,004",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,KBC Group_Bank_EN_2018,51,-,-,-,"24,903",2017,"24,903",-,-,-

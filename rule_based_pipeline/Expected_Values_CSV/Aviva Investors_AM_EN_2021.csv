@@ -1,0 +1,10 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,Aviva Investors_AM_EN_2021,38,-,-,-,"10,630",2021,"10,630",-,-,-
+6,Scope 1 / Direct total GHGs emissions,Aviva Investors_AM_EN_2021,38,-,-,-,"11,738",2020,"11,738",-,-,-
+6,Scope 1 / Direct total GHGs emissions,Aviva Investors_AM_EN_2021,38,-,-,-,"14,180",2019,"14,180",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Aviva Investors_AM_EN_2021,38,-,-,-,"4,016",2021,"4,016",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Aviva Investors_AM_EN_2021,38,-,-,-,"4,988",2020,"4,988",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Aviva Investors_AM_EN_2021,38,-,-,-,"13,885",2019,"13,885",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Aviva Investors_AM_EN_2021,38,-,-,-,"13,067",2021,"13,067",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Aviva Investors_AM_EN_2021,38,-,-,-,"16,879",2020,"16,879",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Aviva Investors_AM_EN_2021,38,-,-,-,"22,690",2019,"22,690",-,-,-

@@ -1,0 +1,13 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,Aberdeen Asset Management AG Germany_Asset Manager_EN_2021,84,-,-,-,"1,061",2021,"1,061",-,-,-
+6,Scope 1 / Direct total GHGs emissions,Aberdeen Asset Management AG Germany_Asset Manager_EN_2021,84,-,-,-,"1,212",2020,"1,212",-,-,-
+6,Scope 1 / Direct total GHGs emissions,Aberdeen Asset Management AG Germany_Asset Manager_EN_2021,84,-,-,-,"2,667",2018,"2,667",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Aberdeen Asset Management AG Germany_Asset Manager_EN_2021,84,-,-,-,"8,838",2021,"8,838",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Aberdeen Asset Management AG Germany_Asset Manager_EN_2021,84,-,-,-,"10,045",2020,"10,045",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Aberdeen Asset Management AG Germany_Asset Manager_EN_2021,84,-,-,-,"22,482",2018,"22,482",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Aberdeen Asset Management AG Germany_Asset Manager_EN_2021,84,-,-,-,769,2021,769,-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Aberdeen Asset Management AG Germany_Asset Manager_EN_2021,84,-,-,-,"1,081",2020,"1,081",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Aberdeen Asset Management AG Germany_Asset Manager_EN_2021,84,-,-,-,"4,376",2018,"4,376",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Aberdeen Asset Management AG Germany_Asset Manager_EN_2021,84,-,-,-,"2,396",2021,"2,396",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Aberdeen Asset Management AG Germany_Asset Manager_EN_2021,84,-,-,-,"3,177",2020,"3,177",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Aberdeen Asset Management AG Germany_Asset Manager_EN_2021,84,-,-,-,"7,069",2018,"7,069",-,-,-

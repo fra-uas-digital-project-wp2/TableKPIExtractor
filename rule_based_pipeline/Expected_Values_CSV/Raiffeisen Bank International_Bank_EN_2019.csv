@@ -1,0 +1,9 @@
+KPI_ID,KPI_NAME,SRC_FILE,PAGE_NUM,ITEM_IDS,POS_X,POS_Y,RAW_TXT,YEAR,VALUE,SCORE,UNIT,MATCH_TYPE
+6,Scope 1 / Direct total GHGs emissions,Raiffeisen Bank International_Bank_EN_2019,133,-,-,-,"7,073",2019,"7,073",-,-,-
+6,Scope 1 / Direct total GHGs emissions,Raiffeisen Bank International_Bank_EN_2019,133,-,-,-,"7,696",2018,"7,696",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Raiffeisen Bank International_Bank_EN_2019,133,-,-,-,"40,856",2019,"40,856",-,-,-
+8,Scope 3 Upstream Energy indirect total GHGs emissions,Raiffeisen Bank International_Bank_EN_2019,133,-,-,-,"42,535",2018,"42,535",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Raiffeisen Bank International_Bank_EN_2019,133,-,-,-,"49,708",2019,"49,708",-,-,-
+9,Scope 2 Market Energy indirect total GHGs emissions,Raiffeisen Bank International_Bank_EN_2019,133,-,-,-,"53,825",2018,"53,825",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Raiffeisen Bank International_Bank_EN_2019,133,-,-,-,"54,545",2019,"54,545",-,-,-
+10,Scope 2 Location Energy indirect total GHGs emissions,Raiffeisen Bank International_Bank_EN_2019,133,-,-,-,"57,613",2018,"57,613",-,-,-
