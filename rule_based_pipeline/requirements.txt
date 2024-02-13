@@ -1,7 +1,0 @@
-numpy
-jsonpickle
-scipy
-Pillow
-pandas
-pytest
-flask

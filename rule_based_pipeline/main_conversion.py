@@ -10,9 +10,9 @@ try:
 except KeyError:
         path = os.path.dirname(os.path.realpath(__file__))
 print(path)
-SRC_DIR = os.path.join(path, "Expected_Values_Appended")
-OUT_DIR = os.path.join(path, "20240114_Expected_Values_Converted")
-RAW_DIR = os.path.join(path, "input2")
+SRC_DIR = os.path.join(path, "Expected_Values_JSON")
+OUT_DIR = os.path.join(path, "Expected_Values_CSV")
+RAW_DIR = os.path.join(path, "raw_pdf")
 
 print(SRC_DIR)
 

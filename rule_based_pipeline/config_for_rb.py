@@ -9,14 +9,16 @@
 # Change verbosity here. verbosity 6-8 are good values for debugging without too much output
 global_verbosity = 1
 
-global_exec_folder = r"./rule_based_pipeline/"
+global_exec_folder = r"./rule_based_pipeline/"                  #TODO: MUST BE SET IN BEGINNING
+global_raw_pdf_folder = r"raw_pdf/"                             #TODO: MUST BE CREATED IN BEGINNING
 
-global_raw_pdf_folder = r"raw_pdf/"
-global_input_folder = r"input/"
-global_working_folder = r"workdir/"
-global_output_folder = r"output/"
-global_expected_values_folder = r"20240114_Expected_Values_Converted/"
-global_evaluation_results_folder = r"evaluation_results/"
+
+#global_input_folder = r"input/"
+global_working_folder = r"workdir/"                             #Do nothing, will be created if not existing!
+global_output_folder = r"output/"                               #Do nothing, will be created if not existing!
+global_evaluation_results_folder = r"evaluation_results/"       #Do nothing, will be created if not existing!
+
+global_expected_values_folder = r"Expected_Values_CSV/"         #Do nothing, is in repository!
 
 
 # Filter PDFs and pages

@@ -98,7 +98,7 @@ def fix_config_paths():
 
 def make_directories():
     """
-    Creates 2 necessary directories (working_folder and output_folder) if they not exist.
+    Creates 3 necessary directories if they not exist.
 
     Returns:
         None
