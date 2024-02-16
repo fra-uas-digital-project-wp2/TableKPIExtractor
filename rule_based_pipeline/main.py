@@ -65,7 +65,7 @@ def parse_arguments():
     parser.add_argument('--verbosity', type=int, default=config_for_rb.global_verbosity,
                         help='Verbosity level (0=shut up)')
 
-    # TODO: why we need this? --> @Marc
+   
     args = parser.parse_args()
     config_for_rb.global_raw_pdf_folder = (remove_trailing_slash(args.raw_pdf_folder).replace("\\", "/") + r"/")
     config_for_rb.global_working_folder = (remove_trailing_slash(args.working_folder).replace("\\", "/") + r"/")
